@@ -25,18 +25,13 @@ import ApplicationDetails from "./components/employer-pages/ApplicationDetails";
 import AdminLayout from "./components/admin-ui/AdminLayout";
 import AdminDashboard from "./components/admin-pages/AdminDashboard";
 import AdminLoginPage from "./components/admin-pages/AdminLoginPage";
-import UsersPage from "./components/admin-pages/UsersPage";
 import UserManagementPage from "./components/admin-pages/UserManagementPage";
-import JobSeekerVerification from "./components/admin-pages/JobSeekerVerification";
-import JobSeekerVerificationDetails from "./components/admin-pages/JobSeekerVerificationDetails";
-import { SocketContextProvider } from "./contexts/socket.context";
 import CompanyVerification from "./components/admin-pages/CompanyVerification";
 import CompanyVerificationDetails from "./components/admin-pages/CompanyVerificationDetails";
 import VerificationPage from "./components/shared-pages/VerificationPage";
 import JobVacancyVerification from "./components/admin-pages/JobVacancyVerification";
 import JobVacancyVerificationDetails from "./components/admin-pages/JobVacancyVerificationDetails";
 import JobVacancyDetails from "./components/employer-pages/JobVacancyDetails";
-import ActivityLog from "./components/admin-pages/ActivityLog";
 import AuditTrail from "./components/admin-pages/AuditTrail";
 import AccreditedCompanies from "./components/admin-pages/AccreditedCompanies";
 import HiredApplicants from "./components/admin-pages/HiredApplicants";
@@ -46,7 +41,6 @@ import ForgotPasswordPage from "./components/shared-pages/ForgotPasswordPage";
 import ResetPassword from "./components/shared-pages/ResetPassword";
 import ChangePasswordPage from "./components/admin-pages/ChangePasswordPage";
 import ApplicationDetail from "./components/jobseeker-pages/ApplicationDetail";
-import PrivateRoute from "./utils/PrivateRoute";
 import { useUser } from "./contexts/user.context";
 
 function App() {
@@ -111,8 +105,14 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<Navigate to="/employer/dashboard" />} />
-        <Route path="application-details/:applicationId" element={<ApplicationDetails />} />
-        <Route path="jobseeker-details/:jobSeekerId" element={<JobSeekerDetails />} />
+        <Route
+          path="application-details/:applicationId"
+          element={<ApplicationDetails />}
+        />
+        <Route
+          path="jobseeker-details/:jobSeekerId"
+          element={<JobSeekerDetails />}
+        />
         <Route path="dashboard" element={<EmployerDashboard />} />
         <Route path="company-profile" element={<CompanyProfile />} />
         <Route path="job-vacancy" element={<JobVacancyPage />} />
@@ -126,7 +126,9 @@ const AppRoutes = () => {
       <Route
         path="/admin/*"
         element={
-          user && (user.accountData.role === "admin" || user.accountData.role === "staff") ? (
+          user &&
+          (user.accountData.role === "admin" ||
+            user.accountData.role === "staff") ? (
             <AdminLayout />
           ) : (
             <Navigate to="/login" />
@@ -150,16 +152,8 @@ const AppRoutes = () => {
           element={<ChangePasswordPage />}
         />
         <Route
-          path="verification/jobseeker"
-          element={<JobSeekerVerification />}
-        />
-        <Route
           path="verification/job-vacancy"
           element={<JobVacancyVerification />}
-        />
-        <Route
-          path="verification/jobseeker/jobseeker-verification-details/:documentId"
-          element={<JobSeekerVerificationDetails />}
         />
         <Route path="verification/company" element={<CompanyVerification />} />
         <Route

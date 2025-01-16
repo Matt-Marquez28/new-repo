@@ -1,119 +1,154 @@
 import React, { useState } from "react";
-import {
-  CDBSidebar,
-  CDBSidebarContent,
-  CDBSidebarFooter,
-  CDBSidebarHeader,
-  CDBSidebarMenu,
-  CDBSidebarMenuItem,
-} from "cdbreact";
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../contexts/user.context";
 
 const AdminSidebar = () => {
   const { user } = useUser();
+  const [isCollapsed, setIsCollapsed] = useState(false); // State to manage collapsed state
 
   // Define active link styles here
   const activeLinkStyle = {
     backgroundColor: "#007BFF", // Example active background
+    color: "#fff", // Example active text color
+  };
+
+  // Toggle sidebar collapse
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
   };
 
   return (
-    <div style={{ display: "flex", overflow: "scroll initial" }}>
-      <CDBSidebar textColor="#333" backgroundColor="#F8F9FA" className="border">
-        <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
-          <a
-            href="/"
-            className="text-decoration-none"
-            style={{ color: "inherit" }}
-          >
-            Menu
-          </a>
-        </CDBSidebarHeader>
+    <div className="d-flex" style={{ overflow: "scroll initial" }}>
+      <div
+        className={`d-flex flex-column flex-shrink-0 p-3 bg-light border`}
+        style={{
+          width: isCollapsed ? "80px" : "280px",
+          transition: "width 0.3s",
+        }}
+      >
+        {/* MENU Heading */}
+        <div className="text-center">
+          <h5>{!isCollapsed && "MENU"}</h5>
+        </div>
 
-        <CDBSidebarContent className="sidebar-content">
-          <CDBSidebarMenu>
+        {/* Toggle Button */}
+        <div className="text-center">
+          <button
+            className="btn btn-link text-decoration-none p-0"
+            onClick={toggleSidebar}
+            aria-label="Toggle Sidebar"
+          >
+            <i
+              className={`bi ${
+                isCollapsed ? "bi bi-toggle-off" : "bi bi-toggle-on"
+              } fs-4`}
+            ></i>
+          </button>
+        </div>
+
+        <hr />
+        <ul className="nav nav-pills flex-column mb-auto">
+          <li className="nav-item">
             <NavLink
               exact
               to="/admin/dashboard"
-              style={({ isActive }) => (isActive ? activeLinkStyle : {})}
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+              })}
             >
-              <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
+              <i className="bi bi-columns me-2"></i>
+              {!isCollapsed && "Dashboard"}
             </NavLink>
-
+          </li>
+          <li className="nav-item">
             <NavLink
               exact
               to="verification/company"
-              style={({ isActive }) => (isActive ? activeLinkStyle : {})}
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+              })}
             >
-              <CDBSidebarMenuItem icon="building">
-                Company Verification
-              </CDBSidebarMenuItem>
+              <i className="bi bi-building me-2"></i>
+              {!isCollapsed && "Company Verification"}
             </NavLink>
-
+          </li>
+          <li className="nav-item">
             <NavLink
               exact
               to="verification/job-vacancy"
-              style={({ isActive }) => (isActive ? activeLinkStyle : {})}
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+              })}
             >
-              <CDBSidebarMenuItem icon="briefcase">
-                Job Vacancy Verification
-              </CDBSidebarMenuItem>
+              <i className="bi bi-briefcase me-2"></i>
+              {!isCollapsed && "Job Vacancy Verification"}
             </NavLink>
-
-            <NavLink
-              exact
-              to="user-management"
-              style={({ isActive }) =>
-                user.accountData.role === "staff"
-                  ? { pointerEvents: "none", color: "#ccc" } // Disabled styles
-                  : isActive
-                  ? activeLinkStyle
-                  : {}
-              }
-            >
-              <CDBSidebarMenuItem
-                icon="users"
-                style={{
-                  color: user.accountData.role === "staff" ? "#ccc" : undefined, // Adjust text color
-                }}
-              >
-                Manage User
-              </CDBSidebarMenuItem>
-            </NavLink>
-
+          </li>
+          <li className="nav-item">
             <NavLink
               exact
               to="/analytics"
-              style={({ isActive }) => (isActive ? activeLinkStyle : {})}
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+              })}
             >
-              <CDBSidebarMenuItem icon="chart-line">
-                Analytics
-              </CDBSidebarMenuItem>
+              <i className="bi bi-bar-chart-line me-2"></i>
+              {!isCollapsed && "Analytics"}
             </NavLink>
-
+          </li>
+          <li className="nav-item">
             <NavLink
               exact
               to="audit-trail"
-              style={({ isActive }) => (isActive ? activeLinkStyle : {})}
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+              })}
             >
-              <CDBSidebarMenuItem icon="exclamation-circle">
-                Audit Trail
-              </CDBSidebarMenuItem>
+              <i className="bi bi-exclamation-circle me-2"></i>
+              {!isCollapsed && "Audit Trail"}
             </NavLink>
-          </CDBSidebarMenu>
-        </CDBSidebarContent>
-
-        <CDBSidebarFooter style={{ textAlign: "center" }}>
-          <div
-            style={{
-              padding: "20px 5px",
-            }}
-          >
-            Sidebar Footer
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="user-management"
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+                ...(user.accountData.role === "staff"
+                  ? { pointerEvents: "none", color: "#ccc" } // Disabled styles
+                  : {}),
+              })}
+            >
+              <i className="bi bi-people me-2"></i>
+              {!isCollapsed && "Manage User"}
+            </NavLink>
+          </li>
+        </ul>
+        <hr />
+        <div className="text-center">
+          <div style={{ padding: "20px 5px" }}>
+            {!isCollapsed && "Sidebar Footer"}
           </div>
-        </CDBSidebarFooter>
-      </CDBSidebar>
+        </div>
+      </div>
     </div>
   );
 };

@@ -198,22 +198,26 @@ const CompanyVerificationDetails = () => {
           <Button variant="secondary" onClick={handleCloseVerifyModal}>
             <i className="bi bi-file-earmark-x"></i> Cancel
           </Button>
-          <Button variant="success" onClick={handleConfirmVerify} disabled={isSubmitting}>
-      {isSubmitting ? (
-        <>
-          <span
-            className="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>{" "}
-          Submitting...
-        </>
-      ) : (
-        <>
-          <i className="bi bi-file-earmark-check"></i> Verify
-        </>
-      )}
-    </Button>
+          <Button
+            variant="success"
+            onClick={handleConfirmVerify}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span
+                  className="spinner-grow spinner-grow-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>{" "}
+                Submitting...
+              </>
+            ) : (
+              <>
+                <i className="bi bi-file-earmark-check"></i> Accredit
+              </>
+            )}
+          </Button>
         </Modal.Footer>
       </Modal>
 

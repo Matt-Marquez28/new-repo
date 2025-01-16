@@ -600,9 +600,10 @@ const CompanyInformationForm = () => {
                   style={{
                     width: "100px",
                     height: "100px",
+                    borderRadius: "10px",
                     objectFit: "cover",
                   }}
-                  className=" border rounded shadow-sm"
+                  className=" border shadow-sm"
                 />
               </div>
               <div className="mb-2">

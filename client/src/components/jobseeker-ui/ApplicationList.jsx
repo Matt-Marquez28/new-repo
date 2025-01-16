@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 const ApplicationList = () => {
   const navigate = useNavigate();
   const triggerToast = useToast();
-  const [applications, setApplications] = useState([]); // Store all applications
-  const [filter, setFilter] = useState("all"); // State for selected filter
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [applications, setApplications] = useState([]); 
+  const [filter, setFilter] = useState("all"); 
+  const [searchTerm, setSearchTerm] = useState(""); 
 
   useEffect(() => {
     getAllApplications();

@@ -167,7 +167,7 @@ const checkAndExpireJobVacancies = async (now) => {
 };
 
 // Schedule the cron job to run daily at midnight
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
   const now = new Date();
