@@ -1,0 +1,50 @@
+/* Apply minimalist styling to all scrollbars globally */
+* {
+    scrollbar-width: thin; /* Minimalist width for Firefox */
+    scrollbar-color: #66b3ff #f0faff; /* Lighter blue for thumb and track */
+}
+
+*::-webkit-scrollbar {
+    width: 8px; /* Minimal width */
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f0faff; /* Very light blue track */
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #66b3ff; /* Lighter medium blue thumb */
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #3399ff; /* Slightly darker blue thumb on hover */
+}
+
+.pt-serif-regular {
+    font-family: "PT Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .pt-serif-bold {
+    font-family: "PT Serif", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .pt-serif-regular-italic {
+    font-family: "PT Serif", serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .pt-serif-bold-italic {
+    font-family: "PT Serif", serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  
