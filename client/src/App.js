@@ -42,15 +42,18 @@ import ResetPassword from "./components/shared-pages/ResetPassword";
 import ChangePasswordPage from "./components/admin-pages/ChangePasswordPage";
 import ApplicationDetail from "./components/jobseeker-pages/ApplicationDetail";
 import { useUser } from "./contexts/user.context";
+import { SocketProvider } from "./contexts/socket.context";
 
 function App() {
   return (
     <UserProvider>
-      <ToastProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
-      </ToastProvider>
+      <SocketProvider>
+        <ToastProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </ToastProvider>
+      </SocketProvider>
     </UserProvider>
   );
 }

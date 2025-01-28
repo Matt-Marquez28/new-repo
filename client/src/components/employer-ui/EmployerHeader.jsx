@@ -65,6 +65,19 @@ export const EmployerHeader = () => {
     </Popover>
   );
 
+  const notificationsPopover = (
+    <Popover id="notifications-popover">
+      <Popover.Header as="h5">Notifications</Popover.Header>
+      <Popover.Body>
+        <ul className="list-unstyled mb-0">
+          <li>New job application received</li>
+          <li>Profile update request pending</li>
+          <li>System maintenance scheduled</li>
+        </ul>
+      </Popover.Body>
+    </Popover>
+  );
+
   return (
     <Navbar expand={expand} className="bg-body-tertiary m-0 border-bottom">
       <Container fluid>
@@ -102,9 +115,7 @@ export const EmployerHeader = () => {
                 title={
                   <>
                     <i className="bi bi-suitcase-lg-fill text-primary"></i>{" "}
-                    {/* Icon with primary color */}
                     <span className="text-primary"> Job Vacancy</span>{" "}
-                    {/* Title with primary color */}
                   </>
                 }
                 id={`offcanvasNavbarDropdown-expand-${expand}`}
@@ -127,12 +138,24 @@ export const EmployerHeader = () => {
               </Nav.Link>
             </Nav>
             <div className="d-flex align-items-center gap-3">
+              <OverlayTrigger
+                trigger="click"
+                placement="bottom"
+                overlay={notificationsPopover}
+                rootClose
+              >
+                <Button variant="light" className="p-2 bg-white shadow-sm">
+                  <i className="bi bi-bell-fill text-warning"></i>
+                </Button>
+              </OverlayTrigger>
+
               <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
                 <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
                 <span className="">
                   Office Hours: Mon - Fri 7:00 AM - 5:00 PM
                 </span>
               </Link>
+
               <OverlayTrigger
                 trigger="click"
                 placement="bottom"

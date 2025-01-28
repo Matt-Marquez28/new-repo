@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
@@ -17,6 +16,7 @@ import defaultProfile from "./default-profile.png";
 const AdminHeader = () => {
   const triggerToast = useToast();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       const res = await axios.post(
@@ -62,7 +62,22 @@ const AdminHeader = () => {
       </Popover.Body>
     </Popover>
   );
+
+  const notificationsPopover = (
+    <Popover id="notifications-popover">
+      <Popover.Header as="h5">Notifications</Popover.Header>
+      <Popover.Body>
+        <ul className="list-unstyled mb-0">
+          <li>New job application received</li>
+          <li>Profile update request pending</li>
+          <li>System maintenance scheduled</li>
+        </ul>
+      </Popover.Body>
+    </Popover>
+  );
+
   const expand = "md";
+
   return (
     <Navbar expand={expand} className="bg-body-tertiary m-0 border-bottom">
       <Container fluid>
@@ -96,19 +111,36 @@ const AdminHeader = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="justify-content-center align-items-center flex-grow-1 pe-3">
-              
-
-              <Nav.Link as={Link} to="/admin/dashboard" className="px-3 text-primary">
-              <i class="bi bi-house-door-fill"></i> Home
+              <Nav.Link
+                as={Link}
+                to="/admin/dashboard"
+                className="px-3 text-primary"
+              >
+                <i className="bi bi-house-door-fill"></i> Home
               </Nav.Link>
             </Nav>
             <div className="d-flex align-items-center gap-3">
+              {/* Notifications Button */}
+              <OverlayTrigger
+                trigger="click"
+                placement="bottom"
+                overlay={notificationsPopover}
+                rootClose
+              >
+                <Button variant="light" className="p-2 bg-white shadow-sm">
+                  <i className="bi bi-bell-fill text-warning"></i>
+                </Button>
+              </OverlayTrigger>
+
+              {/* Office Hours Link */}
               <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
                 <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
                 <span className="">
                   Office Hours: Mon - Fri 7:00 AM - 5:00 PM
                 </span>
               </Link>
+
+              {/* Account Dropdown */}
               <OverlayTrigger
                 trigger="click"
                 placement="bottom"
@@ -117,9 +149,9 @@ const AdminHeader = () => {
               >
                 <div>
                   <img
-                    src={defaultProfile} // Replace with the path to your image
+                    src={defaultProfile} 
                     alt="Dropdown"
-                    style={{ width: "55px", height: "55px" }} // Adjust the size of the image
+                    style={{ width: "55px", height: "55px" }} 
                   />
                 </div>
               </OverlayTrigger>

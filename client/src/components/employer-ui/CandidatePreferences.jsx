@@ -112,12 +112,16 @@ const CandidatePreferences = () => {
       <div className="row mb-4">
         {/* Specializations */}
         <div className="col-md-4 mb-3">
-          <label>Specializations:</label>
+          <label>
+            <h5 className="text-primary">
+              <i className="bi bi-gear-wide-connected"></i> Specializations
+            </h5>
+          </label>
           {specializations.map((specialization, index) => (
             <div key={index} className="input-group mb-2">
               <input
                 type="text"
-                className="form-control"
+                className="form-control text-secondary"
                 value={specialization}
                 onChange={(e) =>
                   handleArrayChange(setSpecializations, index, e.target.value)
@@ -145,12 +149,16 @@ const CandidatePreferences = () => {
 
         {/* Skills */}
         <div className="col-md-4 mb-3">
-          <label>Skills:</label>
+          <label>
+            <h5 className="text-primary">
+              <i className="bi bi-tools"></i> Skills
+            </h5>
+          </label>
           {skills.map((skill, index) => (
             <div key={index} className="input-group mb-2">
               <input
                 type="text"
-                className="form-control"
+                className="form-control text-secondary"
                 value={skill}
                 onChange={(e) =>
                   handleArrayChange(setSkills, index, e.target.value)
@@ -177,11 +185,15 @@ const CandidatePreferences = () => {
         </div>
 
         <div className="col-md-4 mb-3">
-          <label>Education Levels:</label>
+          <label>
+            <h5 className="text-primary">
+              <i className="bi bi-mortarboard-fill"></i> Educational Levels
+            </h5>
+          </label>
           {educationalLevels.map((level, index) => (
             <div key={index} className="input-group mb-2">
               <select
-                className="form-select"
+                className="form-select text-secondary"
                 value={level}
                 onChange={(e) =>
                   handleArrayChange(setEducationLevels, index, e.target.value)

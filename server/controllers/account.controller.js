@@ -361,6 +361,7 @@ export const getAllSystemUsers = async (req, res) => {
   }
 };
 
+// delete system user
 export const deleteSystemUser = async (req, res) => {
   try {
     const { accountId } = req.params; // Assuming the ID is passed as a route parameter
@@ -545,6 +546,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+// verify reset token
 export const verifyResetToken = async (req, res) => {
   const { resetToken } = req.body; // Extract the token from the request body
 
@@ -578,6 +580,7 @@ export const verifyResetToken = async (req, res) => {
   }
 };
 
+// reset the password
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 

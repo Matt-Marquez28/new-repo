@@ -33,6 +33,7 @@ export const JobSeekerHeader = () => {
       triggerToast(error?.response?.data?.message, "primary");
     }
   };
+
   const expand = "md";
 
   const accountPopover = (
@@ -57,6 +58,19 @@ export const JobSeekerHeader = () => {
               <i className="bi bi-box-arrow-left text-danger"></i> Logout
             </Button>
           </li>
+        </ul>
+      </Popover.Body>
+    </Popover>
+  );
+
+  const notificationsPopover = (
+    <Popover id="notifications-popover">
+      <Popover.Header as="h5">Notifications</Popover.Header>
+      <Popover.Body>
+        <ul className="list-unstyled mb-0">
+          <li>New job application received</li>
+          <li>Profile update request pending</li>
+          <li>System maintenance scheduled</li>
         </ul>
       </Popover.Body>
     </Popover>
@@ -103,12 +117,24 @@ export const JobSeekerHeader = () => {
               </Nav.Link>
             </Nav>
             <div className="d-flex align-items-center gap-3">
+              <OverlayTrigger
+                trigger="click"
+                placement="bottom"
+                overlay={notificationsPopover}
+                rootClose
+              >
+                <Button variant="light" className="p-2 bg-white shadow-sm">
+                  <i className="bi bi-bell-fill text-warning"></i>
+                </Button>
+              </OverlayTrigger>
+
               <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
                 <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
                 <span className="">
                   Office Hours: Mon - Fri 7:00 AM - 5:00 PM
                 </span>
               </Link>
+
               <OverlayTrigger
                 trigger="click"
                 placement="bottom"

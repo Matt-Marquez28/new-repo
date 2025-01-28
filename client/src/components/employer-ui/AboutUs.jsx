@@ -2,24 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { COMPANY_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const AboutUs = () => {
   const triggerToast = useToast();
   const [aboutUs, setAboutUs] = useState(null);
-  const [formData, setFormData] = useState({
-    mission: "",
-    vision: "",
-    goals: "",
-    values: "",
-    facebook: "",
-    instagram: "",
-    twitter: "",
-    companyWebsite: "",
-  });
 
+  // Fetch company data on mount
   useEffect(() => {
     getCompanyData();
-  }, []); // Run once on mount
+  }, []);
 
   const getCompanyData = async () => {
     try {
@@ -28,7 +21,8 @@ const AboutUs = () => {
       });
       if (res.data?.companyData) {
         setAboutUs(res.data.companyData.aboutUs);
-        setFormData({
+        // Set initial values for Formik
+        formik.setValues({
           mission: res.data.companyData.aboutUs?.mission || "",
           vision: res.data.companyData.aboutUs?.vision || "",
           goals: res.data.companyData.aboutUs?.goals || "",
@@ -44,35 +38,59 @@ const AboutUs = () => {
     }
   };
 
-  // handle change
-  const handleChange = (event) => {
-    const { id, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [id]: value,
-    }));
-  };
-
-  // handle submit
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the form from submitting the traditional way
-    console.log(formData);
-
-    try {
-      const res = await axios.put(
-        `${COMPANY_API_END_POINT}/update-about-us`,
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
-      triggerToast(res?.data?.message, "primary");
-      getCompanyData();
-    } catch (error) {
-      console.log(error);
-      triggerToast(error?.response?.data?.message, "danger");
-    }
-  };
+  // Formik setup
+  const formik = useFormik({
+    initialValues: {
+      mission: "",
+      vision: "",
+      goals: "",
+      values: "",
+      facebook: "",
+      instagram: "",
+      twitter: "",
+      companyWebsite: "",
+    },
+    validationSchema: Yup.object({
+      facebook: Yup.string()
+        .url("Must be a valid URL")
+        .test(
+          "is-facebook",
+          "URL must be from Facebook (e.g., https://facebook.com/...)",
+          (value) => !value || value.includes("facebook.com")
+        ),
+      instagram: Yup.string()
+        .url("Must be a valid URL")
+        .test(
+          "is-instagram",
+          "URL must be from Instagram (e.g., https://instagram.com/...)",
+          (value) => !value || value.includes("instagram.com")
+        ),
+      twitter: Yup.string()
+        .url("Must be a valid URL")
+        .test(
+          "is-twitter",
+          "URL must be from Twitter (e.g., https://twitter.com/...)",
+          (value) => !value || value.includes("twitter.com")
+        ),
+      companyWebsite: Yup.string().url("Must be a valid URL"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.put(
+          `${COMPANY_API_END_POINT}/update-about-us`,
+          values,
+          {
+            withCredentials: true,
+          }
+        );
+        triggerToast(res?.data?.message, "success");
+        getCompanyData();
+      } catch (error) {
+        console.log(error);
+        triggerToast(error?.response?.data?.message, "danger");
+      }
+    },
+  });
 
   return (
     <div className="container">
@@ -90,65 +108,76 @@ const AboutUs = () => {
           <hr className="border-2 border-primary" />
         </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="mission">
-            <h5 className="text-primary">Mission</h5>
-          </label>
-          <textarea
-            id="mission"
-            className="form-control"
-            rows="4"
-            placeholder="Enter your mission statement here"
-            value={formData.mission}
-            onChange={handleChange}
-          ></textarea>
-        </div>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="row">
+          {/* Mission and Vision in the first column */}
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="mission">
+                <h5 className="text-primary">
+                  <i className="bi bi-bullseye me-2"></i> Mission
+                </h5>
+              </label>
+              <textarea
+                id="mission"
+                className="form-control text-secondary"
+                rows="6"
+                placeholder="Enter your mission statement here"
+                {...formik.getFieldProps("mission")}
+              ></textarea>
+            </div>
 
-        <div className="mb-3">
-          <label htmlFor="vision">
-            <h5 className="text-primary">Vision</h5>
-          </label>
-          <textarea
-            id="vision"
-            className="form-control"
-            rows="4"
-            placeholder="Enter your vision statement here"
-            value={formData.vision}
-            onChange={handleChange}
-          ></textarea>
-        </div>
+            <div className="mb-3">
+              <label htmlFor="vision">
+                <h5 className="text-primary">
+                  <i className="bi bi-eye-fill me-2"></i> Vision
+                </h5>
+              </label>
+              <textarea
+                id="vision"
+                className="form-control text-secondary"
+                rows="6"
+                placeholder="Enter your vision statement here"
+                {...formik.getFieldProps("vision")}
+              ></textarea>
+            </div>
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="goals">
-            <h5 className="text-primary">Goals</h5>
-          </label>
-          <textarea
-            id="goals"
-            className="form-control"
-            rows="4"
-            placeholder="Enter your goal statement here"
-            value={formData.goals}
-            onChange={handleChange}
-          ></textarea>
-        </div>
+          {/* Goals and Values in the second column */}
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="goals">
+                <h5 className="text-primary">
+                  <i className="bi bi-flag-fill me-2"></i> Goals
+                </h5>
+              </label>
+              <textarea
+                id="goals"
+                className="form-control text-secondary"
+                rows="6"
+                placeholder="Enter your goal statement here"
+                {...formik.getFieldProps("goals")}
+              ></textarea>
+            </div>
 
-        <div className="mb-3">
-          <label htmlFor="values">
-            <h5 className="text-primary">Values</h5>
-          </label>
-          <textarea
-            id="values"
-            className="form-control"
-            rows="4"
-            placeholder="Enter your value statement here"
-            value={formData.values}
-            onChange={handleChange}
-          ></textarea>
+            <div className="mb-3">
+              <label htmlFor="values">
+                <h5 className="text-primary">
+                  <i className="bi bi-heart-fill me-2"></i> Values
+                </h5>
+              </label>
+              <textarea
+                id="values"
+                className="form-control text-secondary"
+                rows="6"
+                placeholder="Enter your value statement here"
+                {...formik.getFieldProps("values")}
+              ></textarea>
+            </div>
+          </div>
         </div>
 
         {/* Social Links Inputs */}
-        {/* Section Title: Company Information */}
         <div className="row align-items-center my-3">
           <div className="col">
             <hr className="border-2 border-primary" />
@@ -173,11 +202,19 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="facebook"
-                className="form-control"
+                className={`form-control text-secondary ${
+                  formik.touched.facebook && formik.errors.facebook
+                    ? "is-invalid"
+                    : ""
+                }`}
                 placeholder="Facebook URL"
-                value={formData.facebook}
-                onChange={handleChange}
+                {...formik.getFieldProps("facebook")}
               />
+              {formik.touched.facebook && formik.errors.facebook ? (
+                <div className="invalid-feedback">
+                  {formik.errors.facebook}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -190,11 +227,19 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="instagram"
-                className="form-control"
+                className={`form-control text-secondary ${
+                  formik.touched.instagram && formik.errors.instagram
+                    ? "is-invalid"
+                    : ""
+                }`}
                 placeholder="Instagram URL"
-                value={formData.instagram}
-                onChange={handleChange}
+                {...formik.getFieldProps("instagram")}
               />
+              {formik.touched.instagram && formik.errors.instagram ? (
+                <div className="invalid-feedback">
+                  {formik.errors.instagram}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -207,11 +252,17 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="twitter"
-                className="form-control"
+                className={`form-control text-secondary ${
+                  formik.touched.twitter && formik.errors.twitter
+                    ? "is-invalid"
+                    : ""
+                }`}
                 placeholder="Twitter URL"
-                value={formData.twitter}
-                onChange={handleChange}
+                {...formik.getFieldProps("twitter")}
               />
+              {formik.touched.twitter && formik.errors.twitter ? (
+                <div className="invalid-feedback">{formik.errors.twitter}</div>
+              ) : null}
             </div>
           </div>
 
@@ -224,11 +275,19 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="companyWebsite"
-                className="form-control"
+                className={`form-control text-secondary ${
+                  formik.touched.companyWebsite && formik.errors.companyWebsite
+                    ? "is-invalid"
+                    : ""
+                }`}
                 placeholder="Company Website URL"
-                value={formData.companyWebsite}
-                onChange={handleChange}
+                {...formik.getFieldProps("companyWebsite")}
               />
+              {formik.touched.companyWebsite && formik.errors.companyWebsite ? (
+                <div className="invalid-feedback">
+                  {formik.errors.companyWebsite}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

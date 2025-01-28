@@ -72,13 +72,17 @@ const RecommendedJobVacancies = () => {
 
   return (
     <div>
-      <h5 className="text-primary text-center">
-        <i className="bi bi-hand-thumbs-up-fill"></i> Recommended Jobs{" "}
-        {`[${jobVacancies?.length}]`}
-      </h5>
-      <p className="card-text text-center">
-        Recommended jobs based on your profile.
-      </p>
+      <div className="my-3">
+        <h5 className="text-primary text-center fw-semibold mb-1">
+          <i className="bi bi-hand-thumbs-up-fill"></i> Recommended Jobs{" "}
+          <span className="badge bg-primary rounded">
+            {jobVacancies?.length}
+          </span>
+        </h5>
+        <p className="text-muted text-center m-0">
+          Recommended jobs based on your profile.
+        </p>
+      </div>
       <div className="d-flex justify-content-center"></div>
 
       <div ref={containerRef} style={{ maxHeight: "500px", overflow: "auto" }}>

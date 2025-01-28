@@ -9,23 +9,31 @@ import jobVacancyRoute from "./routes/jobVacancy.route.js";
 import applicationRoute from "./routes/application.route.js";
 import jobSeekerRoute from "./routes/jobSeeker.route.js";
 import auditTrailRoute from "./routes/auditTrail.route.js";
-import sgMail from "@sendgrid/mail";
-import http from "http";
-import { Server as SocketIOServer } from "socket.io";
+import http from "http"; // Import HTTP module
+import { Server } from "socket.io"; // Import Socket.IO
 import cron from "node-cron";
-import JobVacancy from "./models/jobVacancy.model.js";
 import CompanyDocuments from "./models/companyDocuments.model.js";
+import JobVacancy from "./models/jobVacancy.model.js";
 import Company from "./models/company.model.js";
-import pdf from "pdf-creator-node"; // PDF generation library
+
+// Load environment variables
+dotenv.config();
 
 // Express app setup
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Load environment variables
-dotenv.config();
-const httpServer = http.createServer(app);
-const io = new SocketIOServer(httpServer);
+// Create an HTTP server for Socket.IO
+const server = http.createServer(app);
+
+// Set up Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // Allow your frontend's origin
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Middlewares
 app.use(express.json());
@@ -45,8 +53,43 @@ app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/jobseeker", jobSeekerRoute);
 app.use("/api/v1/audit-trail", auditTrailRoute);
 
+// track connected users in sockets
+const userSocketMap = {};
+
+// Socket.IO connection event
+io.on("connection", (socket) => {
+  console.log("A user is connected", socket.id);
+
+  const userId = socket.handshake.query.userId;
+  if (userId && userId !== "undefined") {
+    userSocketMap[userId] = socket.id;
+  }
+
+  console.log("User socket data", userSocketMap);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected", socket.id);
+    if (userId && userId !== "undefined") {
+      delete userSocketMap[userId];
+    }
+    console.log("User socket data", userSocketMap);
+  });
+
+  socket.on("sendMessage", ({ senderId, receiverId, message }) => {
+    const receiverSocketId = userSocketMap[receiverId];
+    console.log("receiver Id", receiverId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("receiverMessage", {
+        senderId,
+        message,
+      });
+    }
+  });
+});
+
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectDB();
   console.log(`Server running at PORT: ${PORT}`);
 });
