@@ -9,6 +9,7 @@ import jobVacancyRoute from "./routes/jobVacancy.route.js";
 import applicationRoute from "./routes/application.route.js";
 import jobSeekerRoute from "./routes/jobSeeker.route.js";
 import auditTrailRoute from "./routes/auditTrail.route.js";
+import notificationRoute from "./routes/notification.route.js";
 import http from "http"; // Import HTTP module
 import { Server } from "socket.io"; // Import Socket.IO
 import cron from "node-cron";
@@ -52,6 +53,7 @@ app.use("/api/v1/job-vacancy", jobVacancyRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/jobseeker", jobSeekerRoute);
 app.use("/api/v1/audit-trail", auditTrailRoute);
+app.use("/api/v1/notification", notificationRoute);
 
 // track connected users in sockets
 const userSocketMap = {};

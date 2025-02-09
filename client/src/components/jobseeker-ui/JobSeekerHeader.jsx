@@ -123,7 +123,11 @@ export const JobSeekerHeader = () => {
                 overlay={notificationsPopover}
                 rootClose
               >
-                <Button variant="light" className="p-2 bg-white shadow-sm">
+                <Button
+                  variant="light"
+                  className="bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2"
+                  style={{ width: "40px", height: "40px" }}
+                >
                   <i className="bi bi-bell-fill text-warning"></i>
                 </Button>
               </OverlayTrigger>

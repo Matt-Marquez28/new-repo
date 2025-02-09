@@ -4,74 +4,9 @@ import Interview from "../models/interview.model.js";
 import mongoose from "mongoose";
 import JobSeeker from "../models/jobseeker.model.js";
 import { sendEmail } from "../utils/email.js";
+import { createNotification } from "../utils/notification.js";
 
-// export const applyJobVacancy = async (req, res) => {
-//   try {
-//     const { jobVacancyId } = req.params;
-//     const jobSeekerId = req.jobSeekerId;
-
-//     // Check if the job vacancy still exists and populate only the emailAddress field
-//     const jobVacancy = await JobVacancy.findById(jobVacancyId).populate({
-//       path: "accountId", // Field to populate
-//       select: "emailAddress", // Only select the emailAddress field
-//     });
-
-//     if (!jobVacancy) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Job vacancy not found" });
-//     }
-
-//     // Check if the job seeker has already applied
-//     const existingApplication = await Application.findOne({
-//       jobSeekerId,
-//       jobVacancyId,
-//     });
-//     if (existingApplication) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "You have already applied to this job",
-//       });
-//     }
-
-//     // Create a new application object
-//     const newApplication = new Application({
-//       jobSeekerId,
-//       jobVacancyId,
-//     });
-
-//     // Save the application to the database
-//     await newApplication.save();
-
-//     // Push the job seeker's ID to the jobVacancy's applicants array
-//     jobVacancy.applicants.push(jobSeekerId);
-
-//     // Save the updated job vacancy
-//     await jobVacancy.save();
-
-//     // Send an email notification to the job poster (accountId.emailAddress)
-//     const emailContent = {
-//       to: jobVacancy.accountId.emailAddress, // Access the emailAddress from the populated accountId
-//       subject: "New Job Application Received",
-//       text: `You have received a new application for the job vacancy: ${jobVacancy.jobTitle}.`,
-//       html: `<p>You have received a new application for the job vacancy: <strong>${jobVacancy.jobTitle}</strong>.</p>`,
-//     };
-
-//     console.log(jobVacancy?.accountId?.emailAddress);
-
-//     await sendEmail(emailContent);
-
-//     // Return a success response
-//     res.status(201).json({
-//       success: true,
-//       message: "Successfully applied to the job vacancy",
-//     });
-//   } catch (error) {
-//     console.error("Error in applyJobVacancy:", error);
-//     res.status(500).json({ success: false, message: "Internal server error!" });
-//   }
-// };
-
+// apply job vacancy
 export const applyJobVacancy = async (req, res) => {
   try {
     const { jobVacancyId } = req.params;
@@ -171,6 +106,15 @@ export const applyJobVacancy = async (req, res) => {
     } else {
       console.warn("No email address found for the employer.");
     }
+
+    // notify the employer
+    try {
+      await createNotification({
+        accountId: jobVacancy?.accountId,
+        title: "New Job Application Received",
+        message: "test notification!",
+      });
+    } catch (error) {}
 
     // Return a success response
     res.status(201).json({
