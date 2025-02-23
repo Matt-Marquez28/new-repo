@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
 });
 
 // Start the server
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   connectDB();
   console.log(`Server running at PORT: ${PORT}`);
 });
