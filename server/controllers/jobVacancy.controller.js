@@ -1,5 +1,5 @@
 import JobVacancy from "../models/jobVacancy.model.js";
-import JobSeeker from "../models/jobseeker.model.js";
+import JobSeeker from "../models/jobSeeker.model.js";
 import Company from "../models/company.model.js";
 import { auditTrail } from "../utils/auditTrail.js";
 import JobInvitation from "../models/jobInvitation.model.js";

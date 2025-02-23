@@ -1,4 +1,4 @@
-import JobSeeker from "../models/jobseeker.model.js";
+import JobSeeker from "../models/jobSeeker.model.js";
 import JobSeekerDocuments from "../models/jobSeekerDocuments.js";
 import mongoose from "mongoose";
 import getDataUri from "../utils/datauri.js";

@@ -1,5 +1,5 @@
 import { Account } from "../models/account.model.js";
-import JobSeeker from "../models/jobseeker.model.js";
+import JobSeeker from "../models/jobSeeker.model.js";
 import Company from "../models/company.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";

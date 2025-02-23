@@ -2,7 +2,7 @@ import Application from "../models/application.model.js";
 import JobVacancy from "../models/jobVacancy.model.js";
 import Interview from "../models/interview.model.js";
 import mongoose from "mongoose";
-import JobSeeker from "../models/jobseeker.model.js";
+import JobSeeker from "../models/jobSeeker.model.js";
 import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
 
