@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://your-frontend-domain.com"],
+  origin: ["http://localhost:3000", "https://peso-8oly.onrender.com"],
   credentials: true,
 };
 app.use(cors(corsOptions));
