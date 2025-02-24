@@ -40,11 +40,12 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-const corsOption = {
-  origin: "http://localhost:3000",
+
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://your-frontend-domain.com"],
   credentials: true,
 };
-app.use(cors(corsOption));
+app.use(cors(corsOptions));
 
 // API routes
 app.use("/api/v1/account", accountRoute);
