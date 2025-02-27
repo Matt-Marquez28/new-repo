@@ -47,4 +47,20 @@
     font-style: italic;
   }
 
+  body {
+    font-size: 16px; /* Default size */
+  }
+  
+  @media (max-width: 768px) { /* Targeting smaller screens */
+    body {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) { /* Even smaller screens */
+    body {
+      font-size: 12px;
+    }
+  }
+
   
