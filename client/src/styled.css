@@ -55,10 +55,16 @@
     body {
       font-size: 14px;
     }
+    p {
+      font-size: 14px;
+    }
   }
   
   @media (max-width: 480px) { /* Even smaller screens */
     body {
+      font-size: 12px;
+    }
+    p {
       font-size: 12px;
     }
   }
