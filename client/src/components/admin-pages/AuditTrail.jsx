@@ -22,8 +22,8 @@ const AuditTrail = () => {
 
   return (
     <div className="container">
-      <h5 className="text-primary pt-serif-bold">Audit Trail</h5>
-      <table className="table table-hover mt-4">
+      <h4 className="text-primary">Audit Trail</h4>
+      <table className="table table-hover table-striped mt-4">
         <thead>
           <tr>
             <th scope="col" className="small text-muted align-middle">

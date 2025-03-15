@@ -104,7 +104,7 @@ const JobVacancyVerification = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary pt-serif-bold mb-3 mx-1">
+      <h4 className="text-primary mb-3 mx-1">
         <i className="bi bi-clipboard-check-fill"></i> Job Vacancy Verification
       </h4>
       <section className="mb-3">
@@ -176,7 +176,7 @@ const JobVacancyVerification = () => {
 
       {/* Table Container with Scrollable Body */}
       <div style={{ maxHeight: "380px", overflowY: "auto" }}>
-        <table className="table table-hover mt-2">
+        <table className="table table-hover table-striped mt-2">
           <thead
             style={{
               position: "sticky",

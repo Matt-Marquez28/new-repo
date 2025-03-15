@@ -28,7 +28,7 @@ const JobVacancyPage = () => {
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i className="bi bi-arrow-90deg-left"></i>
         </button>
-        <h5 className="my-2 pt-serif-bold text-primary">
+        <h5 className="my-2 text-primary">
           Job Vacancy Management
         </h5>
       </div>

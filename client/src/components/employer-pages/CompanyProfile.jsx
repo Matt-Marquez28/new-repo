@@ -31,10 +31,10 @@ const CompanyProfile = () => {
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i className="bi bi-arrow-90deg-left"></i>
         </button>
-        <h5 className="my-2 pt-serif-bold text-primary">Company Profile</h5>
+        <h5 className="my-2 text-primary">Company Profile</h5>
       </div>
 
-      <div className="alert alert-info" role="alert">
+      <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> Complete each section to
         showcase your brand and job opportunities. A well-detailed profile can
         attract top talent and help job seekers learn more about your company.

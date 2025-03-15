@@ -43,6 +43,9 @@ import ChangePasswordPage from "./components/admin-pages/ChangePasswordPage";
 import ApplicationDetail from "./components/jobseeker-pages/ApplicationDetail";
 import { useUser } from "./contexts/user.context";
 import { SocketProvider } from "./contexts/socket.context";
+import UserOption from "./components/admin-pages/UserOption";
+import RegularUser from "./components/admin-pages/RegularUser";
+import RegularUsers from "./components/admin-pages/RegularUsers";
 
 function App() {
   return (
@@ -144,7 +147,15 @@ const AppRoutes = () => {
           path="dashboard/accredited-companies"
           element={<AccreditedCompanies />}
         />
-        <Route path="user-management" element={<UserManagementPage />} />
+        <Route
+          path="user-management/system-users"
+          element={<UserManagementPage />}
+        />
+        <Route
+          path="user-management/regular-users"
+          element={<RegularUsers />}
+        />
+        <Route path="user-management/user-option" element={<UserOption />} />
         <Route
           path="dashboard/hired-applicants"
           element={<HiredApplicants />}

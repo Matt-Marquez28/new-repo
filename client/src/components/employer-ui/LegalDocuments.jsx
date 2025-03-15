@@ -158,7 +158,7 @@ const LegalDocuments = () => {
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
-        <div className="alert alert-info" role="alert">
+        <div className="alert alert-warning" role="alert">
           Accepted formats: JPG, PNG, PDF, Maximum file size: 5MB, Ensure the
           documents is clearly visible and not expired.
         </div>

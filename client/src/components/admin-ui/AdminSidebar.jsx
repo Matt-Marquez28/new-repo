@@ -126,7 +126,7 @@ const AdminSidebar = () => {
           <li className="nav-item">
             <NavLink
               exact
-              to="user-management"
+              to="user-management/user-option"
               className="nav-link"
               style={({ isActive }) => ({
                 ...(isActive ? activeLinkStyle : {}),

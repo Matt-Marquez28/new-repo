@@ -1,5 +1,6 @@
 import AuditTrail from "../models/auditTrail.model.js";
 
+// get all audit trails
 export const getAllAuditTrail = async (req, res) => {
   try {
     // Fetch all audit trail entries, optionally populating the accountId field

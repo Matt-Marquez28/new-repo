@@ -41,12 +41,16 @@ const accountSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["jobseeker", "employer", "admin", "staff"], // Example roles
+      enum: ["jobseeker", "employer", "admin", "staff"], 
     },
     status: {
       type: String,
       enum: ["temporary", "verified"],
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

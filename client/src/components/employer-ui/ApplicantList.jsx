@@ -144,7 +144,7 @@ const ApplicantList = () => {
       {/* Table UI */}
       <div style={{ maxHeight: "400px", overflowY: "auto" }}>
         <table
-          className="table table-hover text-start mt-2"
+          className="table table-hover table-striped text-start mt-2"
           style={{ tableLayout: "fixed", width: "100%" }}
         >
           {/* Table Header */}

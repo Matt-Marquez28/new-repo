@@ -13,7 +13,7 @@ import { Account } from "../models/account.model.js";
 import { sendEmail } from "../utils/email.js";
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 
-dotenv.config();
+// dotenv.config();
 
 export const upsertCompany = async (req, res) => {
   try {
@@ -1139,6 +1139,7 @@ export const updateCandidatePreferences = async (req, res) => {
   }
 };
 
+// get all accredited companies
 export const getAllAccreditedCompanies = async (req, res) => {
   try {
     const accreditedCompanies = await Companies.find({
@@ -1164,6 +1165,7 @@ export const getAccreditedCompanies = async (req, res) => {
   }
 };
 
+// get renewals
 export const getRenewals = async (req, res) => {
   try {
     const companies = await Company.find({ isRenewal: true });

@@ -11,6 +11,6 @@ const router = express.Router();
 // routes for notifications
 router.get("/get-all-notifications", isAuthenticated, getAllNotifications);
 router.put("/mark-as-read/:id", markAsRead);
-router.delete("/delete-notification/:id", deleteNotification);
+router.delete("/delete-notification/:notificationId", deleteNotification);
 
 export default router;

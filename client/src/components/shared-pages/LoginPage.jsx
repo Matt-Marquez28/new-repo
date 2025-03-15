@@ -50,7 +50,7 @@ const LoginPage = () => {
           navigate("/jobseeker/dashboard", { replace: true });
 
           // trigger success popover
-          triggerToast(res?.data?.message, "success");
+          triggerToast(res?.data?.message, "primary");
         }
 
         // if account role is an employer
@@ -65,7 +65,7 @@ const LoginPage = () => {
           navigate("/employer/dashboard", { replace: true });
 
           // trigger success popover
-          triggerToast(res?.data?.message, "success");
+          triggerToast(res?.data?.message, "primary");
         }
       } catch (error) {
         console.log(error);

@@ -351,7 +351,7 @@ export const verifyOTP = async (req, res) => {
   }
 };
 
-// get all system users controller
+// get all system users controller (admin, staff)
 export const getAllSystemUsers = async (req, res) => {
   try {
     const users = await Account.find({ role: "staff" }).sort({ createdAt: -1 });
@@ -451,8 +451,8 @@ export const refreshUserData = async (req, res) => {
       const account = await Account.findById(accountId).select("-password");
       if (!account) {
         return res
-         .status(404)
-         .json({ success: false, message: "Account not found" });
+          .status(404)
+          .json({ success: false, message: "Account not found" });
       }
       userData.accountData = account;
     }
@@ -689,3 +689,92 @@ export const changePassword = async (req, res) => {
     });
   }
 };
+
+// get all users
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await Account.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error!" });
+  }
+};
+
+// toggle block user
+export const toggleBlockUser = async (req, res) => {
+  const { accountId } = req.params;
+
+  console.log("Received request to toggle block status for:", accountId);
+
+  try {
+    // Find account
+    const account = await Account.findById(accountId);
+    if (!account) {
+      console.log("Account not found:", accountId);
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found." });
+    }
+
+    // Toggle block status
+    account.isBlocked = !account.isBlocked;
+    await account.save();
+    console.log(
+      `User ${account.isBlocked ? "blocked" : "unblocked"} successfully`
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `User has been ${
+        account.isBlocked ? "blocked" : "unblocked"
+      } successfully.`,
+      user: {
+        _id: account._id,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        emailAddress: account.emailAddress,
+        isBlocked: account.isBlocked,
+      },
+    });
+  } catch (error) {
+    console.error("Error toggling block status:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+// delete user
+export const deleteUser = async (req, res) => {
+  const { accountId } = req.params;
+
+  console.log("Received request to delete user:", accountId);
+
+  try {
+    // Find and delete the user
+    const account = await Account.findByIdAndDelete(accountId);
+
+    if (!account) {
+      console.log("Account not found:", accountId);
+      return res.status(404).json({ success: false, message: "Account not found." });
+    }
+
+    console.log(`User ${account.emailAddress} deleted successfully`);
+
+    return res.status(200).json({
+      success: true,
+      message: "User has been deleted successfully.",
+      deletedUser: {
+        _id: account._id,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        emailAddress: account.emailAddress,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+

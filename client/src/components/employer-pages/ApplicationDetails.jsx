@@ -99,8 +99,8 @@ const ApplicationDetails = () => {
           >
             <i className="bi bi-arrow-90deg-left"></i>
           </button>
-          <h5 className="my-2 pt-serif-bold text-primary">
-            Candidate Application for {application?.jobVacancyId?.jobTitle}
+          <h5 className="my-2 text-primary">
+            Application for {application?.jobVacancyId?.jobTitle}
           </h5>
         </div>
       </div>

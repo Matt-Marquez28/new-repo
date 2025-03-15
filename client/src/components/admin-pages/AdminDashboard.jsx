@@ -7,7 +7,7 @@ import Footer from "../shared-ui/Footer";
 const AdminDashboard = () => {
   return (
     <div className="container">
-      <h4 className="text-primary pt-serif-bold mb-3 mx-1">
+      <h4 className="text-primary mb-3 mx-1">
         <i className="bi bi-speedometer"></i> Admin Dashboard
       </h4>
 

@@ -17,6 +17,7 @@ import {
   scheduleToPreviousInteview,
 } from "../controllers/application.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+import { checkBlocked } from "../middlewares/checkBlocked.js";
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ const router = express.Router();
 router.post(
   "/apply-job-vacancy/:jobVacancyId",
   isAuthenticated,
+  checkBlocked,
   applyJobVacancy
 );
 

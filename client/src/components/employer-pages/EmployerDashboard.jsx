@@ -67,7 +67,7 @@ const EmployerDashboard = () => {
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center">
-        <h5 className="my-3 pt-serif-bold text-primary">
+        <h5 className="my-3 text-primary">
           <i className="bi bi-speedometer"></i> Employer Dashboard
         </h5>
         <div className="d-flex align-items-center">
@@ -83,7 +83,7 @@ const EmployerDashboard = () => {
         </div>
       </div>
 
-      <div className="alert alert-info" role="alert">
+      <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> You’re all set! Complete your{" "}
         <Link className="text-decoration-none" to="/employer/company-profile">
           Company Profile
@@ -193,7 +193,7 @@ const EmployerDashboard = () => {
               </h6>
               <button
                 type="button"
-                className="btn btn-sm btn-outline-light text-secondary"
+                className="btn btn-outline-primary btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 mx-auto mt-4"
               >
                 <i className="bi bi-pencil-square"></i> Edit
               </button>
@@ -238,7 +238,7 @@ const EmployerDashboard = () => {
               <div className="d-flex justify-content-center">
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-light text-secondary"
+                  className="btn btn-outline-primary btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 mx-auto mt-4"
                 >
                   <i className="bi bi-pencil-square"></i> Edit
                 </button>

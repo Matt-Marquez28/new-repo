@@ -13,6 +13,9 @@ import {
   verifyResetToken,
   resetPassword,
   changePassword,
+  getAllUsers,
+  toggleBlockUser,
+  deleteUser,
 } from "../controllers/account.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
@@ -34,4 +37,8 @@ router.post("/forgot-password", forgotPassword);
 router.post("/verify-reset-token", verifyResetToken);
 router.post("/reset-password", resetPassword);
 router.post("/change-password", isAuthenticated, changePassword);
+router.get("/get-all-users", isAuthenticated, getAllUsers);
+router.put("/toggle-block-user/:accountId", isAuthenticated, toggleBlockUser);
+router.delete("/delete-user/:accountId", isAuthenticated, deleteUser);
+
 export default router;
