@@ -37,10 +37,10 @@ const JobSeekerProfile = () => {
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i className="bi bi-arrow-90deg-left"></i>
         </button>
-        <h5 className="my-2 pt-serif-bold text-primary">Job Seeker Profile</h5>
+        <h5 className="my-2 text-primary">Job Seeker Profile</h5>
       </div>
 
-      <div className="alert alert-info" role="alert">
+      <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> Welcome to your profile
         setup! Complete each section to strengthen your job applications.
         Filling out your profile can help employers find you faster.

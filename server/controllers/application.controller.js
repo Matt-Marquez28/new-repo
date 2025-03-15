@@ -107,14 +107,18 @@ export const applyJobVacancy = async (req, res) => {
       console.warn("No email address found for the employer.");
     }
 
-    // notify the employer
+    // Notify the employer
     try {
       await createNotification({
-        accountId: jobVacancy?.accountId,
+        to: jobVacancy.accountId, // Employer ID
+        from: jobSeeker._id, // Job Seeker ID
         title: "New Job Application Received",
-        message: "test notification!",
+        message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} has applied for the ${jobVacancy?.jobTitle} position at ${jobVacancy?.companyId?.companyInformation?.businessName}. Review the application now.`,
+        type: "info",
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     // Return a success response
     res.status(201).json({

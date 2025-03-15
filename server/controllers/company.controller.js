@@ -326,6 +326,122 @@ export const getCompanyDataById = async (req, res) => {
   }
 };
 
+// export const uploadCompanyDocuments = async (req, res) => {
+//   try {
+//     const companyId = req.companyId;
+
+//     if (!companyId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Company ID is required",
+//       });
+//     }
+
+//     const { typeOfBusiness } = req.body;
+
+//     const requiredFiles = {
+//       "sole proprietorship": ["mayorsPermit", "dti", "birRegistration"],
+//       partnership: ["mayorsPermit", "dti", "birRegistration"],
+//       corporation: ["mayorsPermit", "birRegistration"],
+//       cooperative: ["mayorsPermit", "dti", "birRegistration"],
+//     };
+
+//     if (!requiredFiles[typeOfBusiness]) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Invalid business type: ${typeOfBusiness}`,
+//       });
+//     }
+
+//     const uploadFileSafely = async (file, folder) => {
+//       if (file) {
+//         return await cloudinary.uploader.upload(file.path, { folder });
+//       }
+//       throw new Error(`File is missing`);
+//     };
+
+//     const uploads = {};
+//     for (const fileKey of Object.keys(req.files)) {
+//       try {
+//         const uploadResult = await uploadFileSafely(
+//           req.files[fileKey][0],
+//           `company_documents/${fileKey}`
+//         );
+//         uploads[fileKey] = {
+//           url: uploadResult.secure_url,
+//           originalName:
+//             req.body[`${fileKey}OriginalName`] ||
+//             req.files[fileKey][0].originalname,
+//         };
+//       } catch (error) {
+//         console.warn(`Failed to upload ${fileKey}:`, error.message);
+//       }
+//     }
+
+//     const missingFiles = requiredFiles[typeOfBusiness].filter(
+//       (fileKey) => !uploads[fileKey]
+//     );
+//     if (missingFiles.length) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Missing required uploads: ${missingFiles.join(", ")}`,
+//       });
+//     }
+
+//     const existingDocument = await CompanyDocuments.findOne({ companyId });
+
+//     if (existingDocument) {
+//       const isRenewal =
+//         existingDocument.status === "verified" ||
+//         existingDocument.status === "expired";
+
+//       Object.assign(existingDocument, uploads, {
+//         isRenewal,
+//         status: "pending",
+//       });
+//       const updatedDocument = await existingDocument.save();
+
+//       await Company.updateOne({ _id: companyId }, { isRenewal });
+
+//       return res.status(200).json({
+//         success: true,
+//         message: "Documents successfully updated!",
+//         updatedDocument,
+//       });
+//     }
+
+//     const newCompanyDocuments = new CompanyDocuments({
+//       companyId,
+//       ...uploads,
+//       isRenewal: false,
+//       status: "pending",
+//     });
+
+//     const savedDocument = await newCompanyDocuments.save();
+
+//     await Company.updateOne(
+//       { _id: companyId },
+//       { status: "pending", isRenewal: false }
+//     );
+
+//     return res.status(201).json({
+//       success: true,
+//       message: "Documents successfully uploaded!",
+//       savedDocument,
+//     });
+//   } catch (error) {
+//     console.error("Full error details:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error!",
+//     });
+//   }
+// };
+
+
+
+// get all company documents
+
 export const uploadCompanyDocuments = async (req, res) => {
   try {
     const companyId = req.companyId;
@@ -360,6 +476,7 @@ export const uploadCompanyDocuments = async (req, res) => {
       throw new Error(`File is missing`);
     };
 
+    // Store new uploads
     const uploads = {};
     for (const fileKey of Object.keys(req.files)) {
       try {
@@ -378,16 +495,6 @@ export const uploadCompanyDocuments = async (req, res) => {
       }
     }
 
-    const missingFiles = requiredFiles[typeOfBusiness].filter(
-      (fileKey) => !uploads[fileKey]
-    );
-    if (missingFiles.length) {
-      return res.status(400).json({
-        success: false,
-        message: `Missing required uploads: ${missingFiles.join(", ")}`,
-      });
-    }
-
     const existingDocument = await CompanyDocuments.findOne({ companyId });
 
     if (existingDocument) {
@@ -395,21 +502,24 @@ export const uploadCompanyDocuments = async (req, res) => {
         existingDocument.status === "verified" ||
         existingDocument.status === "expired";
 
+      // **Update only the specific file fields, keeping the rest unchanged**
       Object.assign(existingDocument, uploads, {
         isRenewal,
         status: "pending",
       });
+
       const updatedDocument = await existingDocument.save();
 
       await Company.updateOne({ _id: companyId }, { isRenewal });
 
       return res.status(200).json({
         success: true,
-        message: "Documents successfully updated!",
+        message: "Selected documents successfully updated!",
         updatedDocument,
       });
     }
 
+    // **If no document exists, create a new one**
     const newCompanyDocuments = new CompanyDocuments({
       companyId,
       ...uploads,
@@ -438,7 +548,7 @@ export const uploadCompanyDocuments = async (req, res) => {
   }
 };
 
-// get all company documents
+
 export const getAllCompanyDocuments = async (req, res) => {
   try {
     const { status } = req.query;
@@ -558,15 +668,16 @@ export const updateExpirationDates = async (req, res) => {
       return res.status(404).json({ message: "Company documents not found." });
     }
 
+    let hasUpdates = false; // Flag to track if updates were made
+
     // Loop through updates and apply changes
     updates.forEach(({ documentType, expirationDate }) => {
       if (companyDocuments[documentType]) {
-        // Parse and validate the expiration date
         const validDate = new Date(expirationDate);
 
         if (!isNaN(validDate.getTime())) {
-          // Directly store the validated date without converting to local timezone
           companyDocuments[documentType].expiresAt = validDate;
+          hasUpdates = true;
         } else {
           console.warn(
             `Invalid expiration date for document type: ${documentType}`
@@ -577,14 +688,24 @@ export const updateExpirationDates = async (req, res) => {
       }
     });
 
+    if (!hasUpdates) {
+      return res.status(400).json({
+        message: "No valid updates were made.",
+      });
+    }
+
     companyDocuments.status = "verified";
     companyDocuments.gracePeriod = "false";
+    companyDocuments.isRenewal = "false";
 
-    // Save the updated document
+    // Save updated documents
     const savedDocument = await companyDocuments.save();
     if (!savedDocument) {
       throw new Error("Failed to save the document.");
     }
+
+    // **Also update the Company's `isRenewal` to `true`**
+    await Company.updateOne({ _id: companyId }, { isRenewal: false });
 
     return res.status(200).json({
       message: "Documents updated successfully.",
@@ -595,6 +716,7 @@ export const updateExpirationDates = async (req, res) => {
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
 
 // decline company
 export const declineCompany = async (req, res) => {

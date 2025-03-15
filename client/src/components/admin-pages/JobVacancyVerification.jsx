@@ -222,7 +222,7 @@ const JobVacancyVerification = () => {
             {filteredJobVacancies.length > 0 ? (
               filteredJobVacancies.map((jobVacancy, index) => (
                 <tr key={jobVacancy?._id}>
-                  <td scope="row" className="small align-middle text-muted">
+                  <td scope="row" className="small align-middle text-muted fw-semibold">
                     {jobVacancy?.jobTitle}
                   </td>
                   <td className="small text-muted align-middle">

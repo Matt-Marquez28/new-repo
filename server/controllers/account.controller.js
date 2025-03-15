@@ -693,13 +693,28 @@ export const changePassword = async (req, res) => {
 // get all users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await Account.find().sort({ createdAt: -1 });
+    const { role, search } = req.query;
+    let query = { role: { $nin: ["staff", "admin"] } };
+
+    // Apply role filter if provided
+    if (role && role !== "all") {
+      query.role = role;
+    }
+
+    // Apply search filter if provided
+    if (search) {
+      query.firstName = { $regex: search, $options: "i" }; // Case-insensitive search
+    }
+
+    const users = await Account.find(query).sort({ createdAt: -1 });
+
     res.status(200).json({ success: true, users });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ success: false, message: "Internal server error!" });
   }
 };
+
 
 // toggle block user
 export const toggleBlockUser = async (req, res) => {
@@ -757,7 +772,9 @@ export const deleteUser = async (req, res) => {
 
     if (!account) {
       console.log("Account not found:", accountId);
-      return res.status(404).json({ success: false, message: "Account not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found." });
     }
 
     console.log(`User ${account.emailAddress} deleted successfully`);
@@ -774,7 +791,8 @@ export const deleteUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error deleting user:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
-

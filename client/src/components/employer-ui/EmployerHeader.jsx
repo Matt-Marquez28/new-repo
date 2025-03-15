@@ -138,20 +138,21 @@ export const EmployerHeader = () => {
               </Nav.Link>
             </Nav>
             <div className="d-flex align-items-center gap-3">
-              <OverlayTrigger
+              {/* <OverlayTrigger
                 trigger="click"
                 placement="bottom"
                 overlay={notificationsPopover}
                 rootClose
+              > */}
+              <Button
+                onClick={() => navigate("/employer/notification")}
+                variant="light"
+                className="bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2"
+                style={{ width: "40px", height: "40px" }}
               >
-                <Button
-                  variant="light"
-                  className="bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2"
-                  style={{ width: "40px", height: "40px" }}
-                >
-                  <i className="bi bi-bell-fill text-secondary"></i>
-                </Button>
-              </OverlayTrigger>
+                <i className="bi bi-bell-fill text-secondary"></i>
+              </Button>
+              {/* </OverlayTrigger> */}
 
               <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
                 <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>

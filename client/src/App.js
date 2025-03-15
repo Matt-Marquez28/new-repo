@@ -44,8 +44,8 @@ import ApplicationDetail from "./components/jobseeker-pages/ApplicationDetail";
 import { useUser } from "./contexts/user.context";
 import { SocketProvider } from "./contexts/socket.context";
 import UserOption from "./components/admin-pages/UserOption";
-import RegularUser from "./components/admin-pages/RegularUser";
 import RegularUsers from "./components/admin-pages/RegularUsers";
+import Notification from "./components/shared-pages/Notification";
 
 function App() {
   return (
@@ -120,6 +120,7 @@ const AppRoutes = () => {
           element={<JobSeekerDetails />}
         />
         <Route path="dashboard" element={<EmployerDashboard />} />
+        <Route path="notification" element={<Notification />} />
         <Route path="company-profile" element={<CompanyProfile />} />
         <Route path="job-vacancy" element={<JobVacancyPage />} />
         <Route

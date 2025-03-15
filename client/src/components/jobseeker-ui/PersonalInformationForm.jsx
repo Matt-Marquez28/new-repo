@@ -591,7 +591,7 @@ const PersonalInformationForm = () => {
             </div>
 
             <div className="col-md-6">
-              <div className="alert alert-info" role="alert">
+              <div className="alert alert-warning" role="alert">
                 <strong>Profile Picture Guidelines:</strong>
                 <ul className="mb-0">
                   <li>Accepted formats: JPG, PNG, JPEG</li>

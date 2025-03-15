@@ -1,3 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mukta+Malar:wght@200;300;400;500;600;700;800&display=swap');
+
+/* Apply Mukta Malar to all headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Mukta Malar', sans-serif;
+}
+
+/* Apply Inter to everything else */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+
+
 /* Apply minimalist styling to all scrollbars globally */
 * {
   scrollbar-width: thin; /* Minimalist width for Firefox */

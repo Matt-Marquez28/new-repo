@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema(
   {
-    accountId: {
+    to: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Account",
+      required: true,
+    },
+    from: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Account",
       required: true,

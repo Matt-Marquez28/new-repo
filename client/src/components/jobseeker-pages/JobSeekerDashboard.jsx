@@ -44,10 +44,10 @@ const JobSeekerDashboard = () => {
 
   return (
     <div className="container">
-      <h5 className="my-3 pt-serif-bold text-primary">
+      <h5 className="my-3 text-primary">
         <i className="bi bi-speedometer"></i> Job Seeker Dashboard
       </h5>
-      <div className="alert alert-info" role="alert">
+      <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> You’re all set! Complete your{" "}
         <Link className="text-decoration-none" to="/jobseeker/profile">
           profile
