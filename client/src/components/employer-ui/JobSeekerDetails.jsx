@@ -506,7 +506,7 @@ const JobSeekerDetails = () => {
                   key={index}
                   action
                   className="d-flex justify-content-between align-items-center p-3"
-                  onClick={() => handleSelectJob(job)}
+                  
                 >
                   <span className="fw-semibold" style={{ color: "#555555" }}>
                     {job.jobTitle}

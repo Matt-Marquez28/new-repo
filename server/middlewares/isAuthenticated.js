@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import Company from "../models/company.model.js";
 
 export const isAuthenticated = async (req, res, next) => {
   try {
     // check token in cookies
     const token = req.cookies?.token;
+    console.log(`TOKEN =>${token}`);
 
     if (!token) {
       return res.status(400).json({

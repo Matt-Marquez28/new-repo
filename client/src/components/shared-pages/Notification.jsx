@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import moment from "moment";
 import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
@@ -7,9 +8,11 @@ import { Spinner, Badge, Row, Col, Button } from "react-bootstrap";
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     fetchNotifications();
+    markAllAsRead();
   }, []);
 
   const fetchNotifications = async () => {
@@ -38,28 +41,27 @@ const Notification = () => {
     }
   };
 
-  const markAsRead = async (id) => {
+  const markAllAsRead = async () => {
     try {
-      await axios.put(
-        `${NOTIFICATION_API_END_POINT}/mark-as-read/${id}`,
+      const res = await axios.put(
+        `${NOTIFICATION_API_END_POINT}/mark-all-as-read`,
         {},
         { withCredentials: true }
       );
-      setNotifications(
-        notifications.map((n) =>
-          n._id === id ? { ...n, isRead: true } : n
-        )
-      );
+      console.log(res?.data?.message);
     } catch (error) {
-      console.error("Error marking notification as read:", error);
+      console.error("Error marking all notifications as read:", error);
     }
   };
 
   const clearAllNotifications = async () => {
     try {
-      await axios.delete(`${NOTIFICATION_API_END_POINT}/clear-all-notifications`, {
-        withCredentials: true,
-      });
+      await axios.delete(
+        `${NOTIFICATION_API_END_POINT}/clear-all-notifications`,
+        {
+          withCredentials: true,
+        }
+      );
       setNotifications([]);
     } catch (error) {
       console.error("Error clearing notifications:", error);
@@ -109,9 +111,15 @@ const Notification = () => {
             {notifications.map((notification, index) => (
               <div
                 key={notification._id}
-                className={`p-3 ${index !== notifications.length - 1 ? "border-bottom" : ""} ${!notification.isRead ? "bg-white shadow-sm" : ""}`}
-                onClick={() => markAsRead(notification._id)}
+                className={`p-3 ${
+                  index !== notifications.length - 1 ? "border-bottom" : ""
+                } ${!notification.isRead ? "bg-white shadow-sm" : ""}`}
                 style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (notification.link) {
+                    navigate(notification.link); // Navigate if a link exists
+                  }
+                }}
               >
                 <Row className="align-items-start g-3">
                   <Col xs="auto">
@@ -157,7 +165,10 @@ const Notification = () => {
                       </Col>
                     </Row>
 
-                    <p className="mb-2 text-secondary" style={{ fontSize: "0.85rem" }}>
+                    <p
+                      className="mb-2 text-secondary"
+                      style={{ fontSize: "0.85rem" }}
+                    >
                       {notification.message}
                     </p>
 
@@ -165,7 +176,7 @@ const Notification = () => {
                       <button
                         className="btn btn-sm btn-outline-danger border"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering markAsRead
+                          e.stopPropagation(); // Prevent triggering onClick for navigation
                           handleRemoveNotification(notification._id);
                         }}
                       >

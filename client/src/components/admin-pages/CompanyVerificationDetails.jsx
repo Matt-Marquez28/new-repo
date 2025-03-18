@@ -71,7 +71,11 @@ const CompanyVerificationDetails = () => {
     try {
       setIsSubmitting(true);
       const res = await axios.patch(
-        `${COMPANY_API_END_POINT}/accredit-company/${companyId}`
+        `${COMPANY_API_END_POINT}/accredit-company/${companyId}`,
+        {},
+        {
+          withCredentials: true,
+        }
       );
       getCompanyDataById();
       triggerToast(res?.data?.message, "success");
@@ -91,6 +95,9 @@ const CompanyVerificationDetails = () => {
         `${COMPANY_API_END_POINT}/decline-company/${companyId}`,
         {
           remarks: declineReason,
+        },
+        {
+          withCredentials: true,
         }
       );
       getCompanyDataById();

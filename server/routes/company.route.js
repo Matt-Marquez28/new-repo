@@ -72,10 +72,10 @@ router.post("/update-expiration-dates", updateExpirationDates);
 // router.put("/decline-company-document", declineCompanyDocument);
 
 // accredit company
-router.patch("/accredit-company/:companyId", accreditCompany);
+router.patch("/accredit-company/:companyId", isAuthenticated, accreditCompany);
 
 // decline company
-router.patch("/decline-company/:companyId", declineCompany);
+router.patch("/decline-company/:companyId", isAuthenticated, declineCompany);
 
 router.patch("/update-candidate-preferences", isAuthenticated, updateCandidatePreferences);
 

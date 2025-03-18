@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -13,10 +13,28 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ACCOUNT_API_END_POINT } from "../../utils/constants";
 import defaultProfile from "./default-profile.png";
+import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
 
 export const EmployerHeader = () => {
   const triggerToast = useToast();
   const navigate = useNavigate();
+  const [hasUnread, setHasUnread] = useState(false);
+
+  useEffect(() => {
+    checkUnreadNotifications();
+  }, []);
+
+  const checkUnreadNotifications = async () => {
+    try {
+      const res = await axios.get(`${NOTIFICATION_API_END_POINT}/has-unread`, {
+        withCredentials: true,
+      });
+      setHasUnread(res.data.hasUnread);
+      console.log(res.data.hasUnread);
+    } catch (error) {
+      console.error("Error checking unread notifications:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -145,13 +163,66 @@ export const EmployerHeader = () => {
                 rootClose
               > */}
               <Button
-                onClick={() => navigate("/employer/notification")}
+                onClick={() => {
+                  setHasUnread(false); // Mark notifications as read
+                  navigate("/employer/notification"); // Redirect
+                }}
                 variant="light"
-                className="bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2"
+                className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative ${
+                  hasUnread ? "pulse-animation" : ""
+                }`}
                 style={{ width: "40px", height: "40px" }}
               >
-                <i className="bi bi-bell-fill text-secondary"></i>
+                {/* ✅ Red Bell when unread */}
+                <i
+                  className={`bi bi-bell-fill ${
+                    hasUnread ? "text-danger swing-animation" : "text-secondary"
+                  }`}
+                ></i>
+
+                <style jsx>{`
+                  /* 🔴 Pulse Ring Effect */
+                  @keyframes pulse-ring {
+                    0% {
+                      box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+                    }
+                    50% {
+                      box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+                    }
+                    100% {
+                      box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+                    }
+                  }
+
+                  .pulse-animation {
+                    animation: pulse-ring 2s ease-in-out infinite;
+                  }
+
+                  /* 🔔 Swinging Bell */
+                  @keyframes swing {
+                    0% {
+                      transform: rotate(0deg);
+                    }
+                    25% {
+                      transform: rotate(-10deg);
+                    }
+                    50% {
+                      transform: rotate(10deg);
+                    }
+                    75% {
+                      transform: rotate(-5deg);
+                    }
+                    100% {
+                      transform: rotate(0deg);
+                    }
+                  }
+
+                  .swing-animation {
+                    animation: swing 2s ease-in-out infinite;
+                  }
+                `}</style>
               </Button>
+
               {/* </OverlayTrigger> */}
 
               <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">

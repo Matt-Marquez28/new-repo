@@ -49,3 +49,44 @@ export const deleteNotification = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// mark all as read
+export const markAllAsRead = async (req, res) => {
+  try {
+    const accountId = req.accountId; // Ensure your auth middleware correctly sets this
+
+    if (!accountId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Account ID is missing" });
+    }
+
+    await Notification.updateMany(
+      { to: accountId, isRead: false }, // Ensure "to" matches the correct field in your DB
+      { $set: { isRead: true } }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "All notifications marked as read" });
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Check if there are any unread notifications
+export const hasUnreadNotifications = async (req, res) => {
+  try {
+    const accountId = req.accountId; // Ensure authentication middleware is used
+    const hasUnread = await Notification.exists({
+      to: accountId,
+      isRead: false,
+    });
+
+    res.status(200).json({ hasUnread: !!hasUnread });
+  } catch (error) {
+    console.error("Error checking unread notifications:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

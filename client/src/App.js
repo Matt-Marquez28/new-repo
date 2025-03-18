@@ -87,6 +87,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<Navigate to="/jobseeker/dashboard" />} />
+        <Route path="notification" element={<Notification />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
         <Route
@@ -144,6 +145,7 @@ const AppRoutes = () => {
       >
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="notification" element={<Notification />} />
         <Route
           path="dashboard/accredited-companies"
           element={<AccreditedCompanies />}

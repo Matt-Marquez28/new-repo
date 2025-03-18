@@ -115,6 +115,7 @@ export const applyJobVacancy = async (req, res) => {
         title: "New Job Application Received",
         message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} has applied for the ${jobVacancy?.jobTitle} position at ${jobVacancy?.companyId?.companyInformation?.businessName}. Review the application now.`,
         type: "info",
+        link: `/employer/application-details/${newApplication._id}`,
       });
     } catch (error) {
       console.error("Error creating notification:", error);
@@ -313,7 +314,7 @@ export const scheduleInterview = async (req, res) => {
         select: "jobTitle companyId", // Select jobTitle and companyId
         populate: {
           path: "companyId",
-          select: "companyInformation", // Populate company information
+          select: "companyInformation accountId", // Populate company information
         },
       })
       .populate({
@@ -480,6 +481,20 @@ export const scheduleInterview = async (req, res) => {
 
     // Send the email notification
     await sendEmail(emailContent);
+
+    // Create notification for the job seeker
+    try {
+      await createNotification({
+        to: application?.jobSeekerId?.accountId, // Receiver (Job Seeker's Account ID)
+        from: application?.jobVacancyId?.companyId?.accountId, // Sender (Company's Account ID)
+        title: "Interview Scheduled",
+        message: `Your interview for the ${jobTitle} position at ${companyName} has been scheduled on ${interviewDate} at ${interviewTime}.`,
+        type: "info",
+        link: `/jobseeker/application-details/${application._id}`, // Link to interview details
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     // Respond with the saved interview and updated application details
     res.status(201).json({
@@ -701,7 +716,7 @@ export const hireApplicant = async (req, res) => {
         select: "jobTitle companyId",
         populate: {
           path: "companyId",
-          select: "companyInformation",
+          select: "companyInformation accountId",
         },
       })
       .populate({
@@ -716,12 +731,6 @@ export const hireApplicant = async (req, res) => {
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
-
-    // if (application.status !== "interview completed") {
-    //   return res.status(400).json({
-    //     message: "Application can only be hired if the interview is completed",
-    //   });
-    // }
 
     if (!remarks) {
       return res
@@ -773,6 +782,20 @@ export const hireApplicant = async (req, res) => {
 
     // Send the email notification
     await sendEmail(emailContent);
+
+    // Send notification to job seeker
+    try {
+      await createNotification({
+        to: application?.jobSeekerId?.accountId, // Receiver (Job Seeker's Account ID)
+        from: application?.jobVacancyId?.companyId?.accountId, // Sender (Company ID)
+        title: "Congratulations! You've Been Hired",
+        message: `You have been hired for the ${jobTitle} position at ${companyName}.`,
+        type: "success",
+        link: `/jobseeker/application-details/${application._id}`,
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     // Respond with success
     res.status(200).json({
@@ -827,7 +850,7 @@ export const declineApplicant = async (req, res) => {
         select: "jobTitle companyId",
         populate: {
           path: "companyId",
-          select: "companyInformation",
+          select: "companyInformation accountId",
         },
       })
       .populate({
@@ -842,12 +865,6 @@ export const declineApplicant = async (req, res) => {
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
-
-    // if (application.status !== "interview completed") {
-    //   return res.status(400).json({
-    //     message: "Application can only be declined if the interview is completed",
-    //   });
-    // }
 
     if (!remarks) {
       return res.status(400).json({
@@ -897,6 +914,20 @@ export const declineApplicant = async (req, res) => {
 
     // Send the email notification
     await sendEmail(emailContent);
+
+    // Send in-app notification to job seeker
+    try {
+      await createNotification({
+        to: application?.jobSeekerId?.accountId, // Receiver (Job Seeker's Account ID)
+        from: application?.jobVacancyId?.companyId?.accountId, // Sender (Company ID)
+        title: "Application Declined",
+        message: `Unfortunately, your application for the ${jobTitle} position at ${companyName} has been declined.`,
+        type: "error",
+        link: `/jobseeker/application-details/${application._id}`,
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     // Respond with success
     res.status(200).json({

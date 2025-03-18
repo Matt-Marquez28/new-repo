@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 import { Account } from "../models/account.model.js";
 import { sendEmail } from "../utils/email.js";
 import { v4 as uuidv4 } from "uuid"; // Import uuid
+import { createNotification } from "../utils/notification.js";
 
 // dotenv.config();
 
@@ -360,6 +361,7 @@ export const getCompanyDataById = async (req, res) => {
 //       throw new Error(`File is missing`);
 //     };
 
+//     // Store new uploads
 //     const uploads = {};
 //     for (const fileKey of Object.keys(req.files)) {
 //       try {
@@ -378,15 +380,16 @@ export const getCompanyDataById = async (req, res) => {
 //       }
 //     }
 
-//     const missingFiles = requiredFiles[typeOfBusiness].filter(
-//       (fileKey) => !uploads[fileKey]
-//     );
-//     if (missingFiles.length) {
-//       return res.status(400).json({
+//     // Retrieve the accountId associated with this company
+//     const company = await Company.findById(companyId);
+//     if (!company) {
+//       return res.status(404).json({
 //         success: false,
-//         message: `Missing required uploads: ${missingFiles.join(", ")}`,
+//         message: "Company not found",
 //       });
 //     }
+
+//     const accountId = company.accountId; // Get accountId from Company
 
 //     const existingDocument = await CompanyDocuments.findOne({ companyId });
 
@@ -395,21 +398,24 @@ export const getCompanyDataById = async (req, res) => {
 //         existingDocument.status === "verified" ||
 //         existingDocument.status === "expired";
 
+//       // **Update only the specific file fields, keeping the rest unchanged**
 //       Object.assign(existingDocument, uploads, {
 //         isRenewal,
 //         status: "pending",
 //       });
+
 //       const updatedDocument = await existingDocument.save();
 
 //       await Company.updateOne({ _id: companyId }, { isRenewal });
 
 //       return res.status(200).json({
 //         success: true,
-//         message: "Documents successfully updated!",
+//         message: "Selected documents successfully updated!",
 //         updatedDocument,
 //       });
 //     }
 
+//     // **If no document exists, create a new one**
 //     const newCompanyDocuments = new CompanyDocuments({
 //       companyId,
 //       ...uploads,
@@ -424,6 +430,29 @@ export const getCompanyDataById = async (req, res) => {
 //       { status: "pending", isRenewal: false }
 //     );
 
+//     // **Send Notification to All System Users (Admin & Staff)**
+//     try {
+//       const systemUsers = await Account.find({
+//         role: { $in: ["admin", "staff"] },
+//       }); // Fetch all admins and staff
+//       console.log("System users found:", systemUsers.length);
+
+//       for (const account of systemUsers) {
+//         console.log(`Sending notification to: ${account._id}`);
+
+//         await createNotification({
+//           to: account._id, // Notify each admin and staff individually
+//           from: accountId, // Company’s account ID (not companyId)
+//           title: "Company Documents Updated",
+//           message: `A company has updated their verification documents. Please review them for approval.`,
+//           type: "info",
+//           link: `/admin/company-verification/${companyId}`,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error creating notifications for system users:", error);
+//     }
+
 //     return res.status(201).json({
 //       success: true,
 //       message: "Documents successfully uploaded!",
@@ -437,10 +466,6 @@ export const getCompanyDataById = async (req, res) => {
 //     });
 //   }
 // };
-
-
-
-// get all company documents
 
 export const uploadCompanyDocuments = async (req, res) => {
   try {
@@ -495,6 +520,20 @@ export const uploadCompanyDocuments = async (req, res) => {
       }
     }
 
+    // Retrieve the accountId associated with this company
+    const company = await Company.findById(companyId);
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+
+    const accountId = company.accountId; // Get accountId from Company
+
+    let message;
+    let savedDocument;
+
     const existingDocument = await CompanyDocuments.findOne({ companyId });
 
     if (existingDocument) {
@@ -508,35 +547,58 @@ export const uploadCompanyDocuments = async (req, res) => {
         status: "pending",
       });
 
-      const updatedDocument = await existingDocument.save();
+      savedDocument = await existingDocument.save();
 
       await Company.updateOne({ _id: companyId }, { isRenewal });
 
-      return res.status(200).json({
-        success: true,
-        message: "Selected documents successfully updated!",
-        updatedDocument,
+      message = "Selected documents successfully updated!";
+    } else {
+      // **If no document exists, create a new one**
+      savedDocument = new CompanyDocuments({
+        companyId,
+        ...uploads,
+        isRenewal: false,
+        status: "pending",
       });
+
+      await savedDocument.save();
+
+      await Company.updateOne(
+        { _id: companyId },
+        { status: "pending", isRenewal: false }
+      );
+
+      message = "Documents successfully uploaded!";
     }
 
-    // **If no document exists, create a new one**
-    const newCompanyDocuments = new CompanyDocuments({
-      companyId,
-      ...uploads,
-      isRenewal: false,
-      status: "pending",
-    });
+    // **Send Notification to All System Users (Admin & Staff)**
+    try {
+      const systemUsers = await Account.find({
+        role: { $in: ["admin", "staff"] },
+      });
 
-    const savedDocument = await newCompanyDocuments.save();
+      console.log("System users found:", systemUsers.length);
 
-    await Company.updateOne(
-      { _id: companyId },
-      { status: "pending", isRenewal: false }
-    );
+      for (const account of systemUsers) {
+        console.log(`Sending notification to: ${account._id}`);
 
-    return res.status(201).json({
+        await createNotification({
+          to: account._id, // Notify each admin and staff individually
+          from: accountId, // Company’s account ID (not companyId)
+          title: "Company Documents Updated",
+          message: `A company has updated their verification documents. Please review them for approval.`,
+          type: "info",
+          link: `/admin/company-verification/${companyId}`,
+        });
+      }
+      console.log("Notifications sent successfully.");
+    } catch (error) {
+      console.error("Error creating notifications for system users:", error);
+    }
+
+    return res.status(200).json({
       success: true,
-      message: "Documents successfully uploaded!",
+      message,
       savedDocument,
     });
   } catch (error) {
@@ -547,7 +609,6 @@ export const uploadCompanyDocuments = async (req, res) => {
     });
   }
 };
-
 
 export const getAllCompanyDocuments = async (req, res) => {
   try {
@@ -717,11 +778,11 @@ export const updateExpirationDates = async (req, res) => {
   }
 };
 
-
 // decline company
 export const declineCompany = async (req, res) => {
   const { companyId } = req.params;
   const { remarks } = req.body;
+  const accountId = req.accountId;
 
   try {
     // Find the company and populate the account field to get the email
@@ -806,6 +867,19 @@ export const declineCompany = async (req, res) => {
     // Send email using the sendEmail function
     await sendEmail(emailContent);
 
+    // Notify the employer
+    try {
+      await createNotification({
+        to: company?.accountId?._id, // Employer ID
+        from: accountId, // admin / staff ID
+        title: "Company Accreditation Declined",
+        message: `Your company, ${company?.companyInformation?.businessName}, has been declined.`,
+        type: "error",
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
+
     res
       .status(200)
       .json({ message: "Company declined and notified successfully" });
@@ -818,6 +892,8 @@ export const declineCompany = async (req, res) => {
 // accredit company
 export const accreditCompany = async (req, res) => {
   const { companyId } = req.params;
+  const accountId = req.accountId;
+  console.log(`ADMINISTRATOR ID = ${accountId}`);
 
   try {
     // Check if company document is verified
@@ -1202,6 +1278,20 @@ export const accreditCompany = async (req, res) => {
 
     // Send the email notification with the PDF attachment
     await sendEmail(emailContent);
+
+    // Notify the employer
+    try {
+      console.log(`ACCOUNT ID = ${company?.accountId?._id}`);
+      await createNotification({
+        to: company?.accountId?._id, // Employer ID
+        from: accountId, // admin / staff ID
+        title: "Company Accredited",
+        message: `Your company, ${company?.companyInformation?.businessName}, has been successfully accredited.`,
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     res.status(200).send({
       message:

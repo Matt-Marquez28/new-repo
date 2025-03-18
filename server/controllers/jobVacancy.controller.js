@@ -4,6 +4,7 @@ import Company from "../models/company.model.js";
 import { auditTrail } from "../utils/auditTrail.js";
 import JobInvitation from "../models/jobInvitation.model.js";
 import { sendEmail } from "../utils/email.js";
+import { createNotification } from "../utils/notification.js";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -887,13 +888,13 @@ export const sendJobInvitation = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields." });
     }
 
-    // Check if the job vacancy exists and belongs to the company, with full population of fields
+    // Check if the job vacancy exists
     const jobVacancy = await JobVacancy.findOne({
       _id: jobVacancyId,
       companyId: companyId,
     }).populate({
-      path: "companyId", // Populate the companyId with full company data
-      select: "companyInformation", // Include company information in the population
+      path: "companyId",
+      select: "companyInformation accountId",
     });
 
     if (!jobVacancy) {
@@ -902,98 +903,95 @@ export const sendJobInvitation = async (req, res) => {
       });
     }
 
-    // Check if the job seeker exists, with full population of fields
-    const jobSeeker = await JobSeeker.findById(jobSeekerId)
-      .populate({
-        path: "accountId",
-        select: "emailAddress personalInformation", // Ensure accountId and personalInformation are populated
-      })
-      .populate("personalInformation");
+    // Check if the job seeker exists
+    const jobSeeker = await JobSeeker.findById(jobSeekerId).populate({
+      path: "accountId",
+      select: "emailAddress personalInformation",
+    });
 
     if (!jobSeeker) {
       return res.status(404).json({ message: "Job seeker not found." });
     }
 
-    // Use findOneAndUpdate with upsert
-    const invitation = await JobInvitation.findOneAndUpdate(
-      {
-        jobSeekerId,
-        jobVacancyId,
-      },
-      {
-        $setOnInsert: {
-          jobSeekerId,
-          jobVacancyId,
-          companyId,
-        },
-      },
-      {
-        new: true,
-        upsert: true,
-        runValidators: true,
-      }
-    );
+    // **Check if the job invitation already exists**
+    const existingInvitation = await JobInvitation.findOne({
+      jobSeekerId,
+      jobVacancyId,
+    });
 
-    if (!invitation._id) {
+    if (existingInvitation) {
       return res.status(400).json({
         message: `Job seeker is already invited to the job title: ${jobVacancy.jobTitle}.`,
       });
     }
 
-    // Ensure necessary fields are populated before using them
+    // **Insert only if no existing record**
+    const invitation = await JobInvitation.create({
+      jobSeekerId,
+      jobVacancyId,
+      companyId,
+    });
+
+    // Send Email
     const email = jobSeeker?.accountId?.emailAddress;
-    const companyName =
-      jobVacancy?.companyId?.companyInformation?.businessName || "Company Name";
+    const companyName = jobVacancy?.companyId?.companyInformation?.businessName || "Company Name";
     const jobTitle = jobVacancy?.jobTitle || "Job Title";
 
     const emailContent = {
-      to: email, // Email of the job seeker
+      to: email,
       subject: `Job Invitation for ${jobTitle} at ${companyName}`,
       text: `Dear ${jobSeeker?.personalInformation?.firstName},
-    
-    You have been invited to apply for the job position: ${jobTitle} at ${companyName}.
-    
-    Company Name: ${companyName}
-    
-    For more details, visit our portal.
-    
-    Best regards,
-    PESO City Government of Taguig`,
-      html: `
-        <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
-          <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
-            <h1 style="margin: 0;">PESO City Government of Taguig</h1>
-          </div>
-          <h2 style="color: #2C3E50; text-align: center;">You're Invited to Apply!</h2>
-          <p>Dear ${jobSeeker?.personalInformation?.firstName},</p>
-          <p>We are pleased to invite you to apply for the following job position:</p>
-          <ul style="list-style: none; padding: 0;">
-            <li><strong>Job Title:</strong> ${jobTitle}</li>
-            <li><strong>Company Name:</strong> ${companyName}</li>
-          </ul>
-          <p>If you are interested, please click the button below for more details or to submit your application:</p>
-          <p style="text-align: center;">
-            <a href="https://yourjobportal.com" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Job Details</a>
-          </p>
-          <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
-            © 2025 | City Government of Taguig 
-          </p>
-        </div>
-      `,
+      
+      You have been invited to apply for the job position: ${jobTitle} at ${companyName}.
+      
+      Company Name: ${companyName}
+      
+      For more details, visit our portal.
+      
+      Best regards,
+      PESO City Government of Taguig`,
+      html: `<div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; padding: 20px;">
+        <h2 style="color: #2C3E50;">You're Invited to Apply!</h2>
+        <p>Dear ${jobSeeker?.personalInformation?.firstName},</p>
+        <p>We are pleased to invite you to apply for the following job position:</p>
+        <ul>
+          <li><strong>Job Title:</strong> ${jobTitle}</li>
+          <li><strong>Company Name:</strong> ${companyName}</li>
+        </ul>
+        <p><a href="https://yourjobportal.com" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Job Details</a></p>
+        <p>© 2025 | City Government of Taguig</p>
+      </div>`,
     };
 
     await sendEmail(emailContent);
+
+    // **Create Notification**
+    try {
+      await createNotification({
+        to: jobSeeker.accountId,
+        from: jobVacancy.companyId.accountId,
+        title: "New Job Invitation Received",
+        message: `You have been invited to apply for the ${jobTitle} position at ${companyName}.`,
+        type: "info",
+        link: `/jobseeker/job-vacancy-details/${invitation.jobVacancyId}`,
+
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     // Respond with success
     res.status(201).json({
       message: "Job invitation sent successfully.",
       invitation,
     });
+
   } catch (error) {
     console.error("Error sending job invitation:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
 
 // get all employers job invitations
 export const getAllEmployerJobInvitations = async (req, res) => {
