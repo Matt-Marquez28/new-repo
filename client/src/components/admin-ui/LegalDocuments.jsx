@@ -7,10 +7,13 @@ import axios from "axios";
 import { COMPANY_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
 
-const LegalDocuments = ({ companyId, onExpirationUpdate, getCompanyDocument}) => {
+const LegalDocuments = ({
+  companyId,
+  onExpirationUpdate,
+  getCompanyDocument,
+}) => {
   const triggerToast = useToast();
   const documents = companyId;
-  
 
   const formatISOToDate = (isoString) => {
     if (!isoString) return "";
@@ -185,11 +188,7 @@ const LegalDocuments = ({ companyId, onExpirationUpdate, getCompanyDocument}) =>
         </div>
 
         <div className="text-end mt-4">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={!formik.isValid}
-          >
+          <button type="submit" className="btn btn-primary">
             <i className="bi bi-upload"></i> Update Expiration Dates
           </button>
         </div>

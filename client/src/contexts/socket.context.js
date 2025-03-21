@@ -21,6 +21,7 @@ export const SocketProvider = ({ children }) => {
         query: {
           userId: user.accountData._id,
         },
+        transports: ["websocket", "polling"], // Ensures fallback
       });
       setSocket(socketInstance);
 

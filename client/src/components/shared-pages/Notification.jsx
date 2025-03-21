@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
 import { Spinner, Badge, Row, Col, Button } from "react-bootstrap";
+import { useSocketContext } from "../../contexts/socket.context";
+import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Initialize navigate
+  const [socket] = useSocketContext(); // ✅ Get socket instance from context
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNotifications();
     markAllAsRead();
-  }, []);
+
+    if (!socket) return;
+
+    socket.on("notification", (newNotification) => {
+      setNotifications((prevNotifications) => [
+        newNotification,
+        ...prevNotifications,
+      ]);
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, [socket]);
 
   const fetchNotifications = async () => {
     try {
@@ -35,7 +50,7 @@ const Notification = () => {
         `${NOTIFICATION_API_END_POINT}/delete-notification/${id}`,
         { withCredentials: true }
       );
-      setNotifications(notifications.filter((n) => n._id !== id));
+      setNotifications((prev) => prev.filter((n) => n._id !== id));
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
@@ -43,12 +58,11 @@ const Notification = () => {
 
   const markAllAsRead = async () => {
     try {
-      const res = await axios.put(
+      await axios.put(
         `${NOTIFICATION_API_END_POINT}/mark-all-as-read`,
         {},
         { withCredentials: true }
       );
-      console.log(res?.data?.message);
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
     }
@@ -58,9 +72,7 @@ const Notification = () => {
     try {
       await axios.delete(
         `${NOTIFICATION_API_END_POINT}/clear-all-notifications`,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       setNotifications([]);
     } catch (error) {
@@ -117,7 +129,7 @@ const Notification = () => {
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   if (notification.link) {
-                    navigate(notification.link); // Navigate if a link exists
+                    navigate(notification.link);
                   }
                 }}
               >
@@ -176,7 +188,7 @@ const Notification = () => {
                       <button
                         className="btn btn-sm btn-outline-danger border"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering onClick for navigation
+                          e.stopPropagation();
                           handleRemoveNotification(notification._id);
                         }}
                       >

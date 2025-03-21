@@ -16,6 +16,8 @@ import cron from "node-cron";
 import CompanyDocuments from "./models/companyDocuments.model.js";
 import JobVacancy from "./models/jobVacancy.model.js";
 import Company from "./models/company.model.js";
+import { createNotification } from "./utils/notification.js";
+import { sendEmail } from "./utils/email.js";
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +36,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+  transports: ["websocket", "polling"],
 });
 
 // Middlewares
@@ -61,41 +64,76 @@ const userSocketMap = {};
 
 // Socket.IO connection event
 io.on("connection", (socket) => {
-  console.log("A user is connected", socket.id);
+  console.log("A user connected:", socket.id);
 
+  // Get userId from the frontend (Socket handshake query)
   const userId = socket.handshake.query.userId;
   if (userId && userId !== "undefined") {
-    userSocketMap[userId] = socket.id;
+    userSocketMap[userId] = socket.id; // ✅ Store user socket ID
   }
 
-  console.log("User socket data", userSocketMap);
+  console.log("Updated active users:", userSocketMap); // ✅ Debugging
 
   socket.on("disconnect", () => {
-    console.log("User disconnected", socket.id);
+    console.log("User disconnected:", socket.id);
     if (userId && userId !== "undefined") {
-      delete userSocketMap[userId];
+      delete userSocketMap[userId]; // ✅ Remove user on disconnect
     }
-    console.log("User socket data", userSocketMap);
-  });
-
-  socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-    const receiverSocketId = userSocketMap[receiverId];
-    console.log("receiver Id", receiverId);
-
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("receiverMessage", {
-        senderId,
-        message,
-      });
-    }
+    console.log("Updated active users after disconnect:", userSocketMap);
   });
 });
+
 
 // Start the server
 server.listen(PORT, "0.0.0.0", () => {
   connectDB();
   console.log(`Server running at PORT: ${PORT}`);
 });
+
+// const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
+//   try {
+//     // Find documents that are within the grace period (expire within the next 30 days)
+//     const gracePeriodDocuments = await CompanyDocuments.find({
+//       $or: [
+//         { "dti.expiresAt": { $gt: now, $lte: gracePeriodDate } },
+//         { "mayorsPermit.expiresAt": { $gt: now, $lte: gracePeriodDate } },
+//         { "birRegistration.expiresAt": { $gt: now, $lte: gracePeriodDate } },
+//         { "secCertificate.expiresAt": { $gt: now, $lte: gracePeriodDate } },
+//         {
+//           "pagibigRegistration.expiresAt": { $gt: now, $lte: gracePeriodDate },
+//         },
+//         {
+//           "philhealthRegistration.expiresAt": {
+//             $gt: now,
+//             $lte: gracePeriodDate,
+//           },
+//         },
+//         { "sss.expiresAt": { $gt: now, $lte: gracePeriodDate } },
+//       ],
+//       status: { $ne: "expired" },
+//     });
+
+//     // Update the gracePeriod flag of documents
+//     if (gracePeriodDocuments.length > 0) {
+//       await CompanyDocuments.updateMany(
+//         {
+//           _id: { $in: gracePeriodDocuments.map((doc) => doc._id) },
+//         },
+//         {
+//           $set: { gracePeriod: true },
+//         }
+//       );
+
+//       console.log(
+//         `Marked ${gracePeriodDocuments.length} documents as within the grace period.`
+//       );
+//     } else {
+//       console.log("No documents found within the grace period.");
+//     }
+//   } catch (error) {
+//     console.error("Error while marking grace period documents:", error);
+//   }
+// };
 
 const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
   try {
@@ -118,27 +156,90 @@ const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
         { "sss.expiresAt": { $gt: now, $lte: gracePeriodDate } },
       ],
       status: { $ne: "expired" },
+    }).populate({
+      path: "companyId",
+      populate: { path: "accountId", model: "Account" }, // Populate account details
     });
 
-    // Update the gracePeriod flag of documents
     if (gracePeriodDocuments.length > 0) {
-      await CompanyDocuments.updateMany(
-        {
-          _id: { $in: gracePeriodDocuments.map((doc) => doc._id) },
-        },
-        {
-          $set: { gracePeriod: true },
-        }
+      const affectedAccounts = gracePeriodDocuments.map(
+        (doc) => doc.companyId.accountId
+      );
+      const affectedEmails = gracePeriodDocuments.map(
+        (doc) => doc.companyId.accountId.emailAddress
       );
 
+      console.log("Affected Account IDs:", affectedAccounts);
+      console.log("Affected Emails:", affectedEmails);
+
+      // Update documents to mark as within grace period
+      await CompanyDocuments.updateMany(
+        { _id: { $in: gracePeriodDocuments.map((doc) => doc._id) } },
+        { $set: { gracePeriod: true } }
+      );
+
+      // Send notifications & emails
+      for (let i = 0; i < affectedAccounts.length; i++) {
+        const businessName =
+          gracePeriodDocuments[i]?.companyId?.companyInformation
+            ?.businessName || "Your Company";
+        const expirationDate = gracePeriodDate.toDateString();
+        const employerId = affectedAccounts[i];
+        const employerEmail = affectedEmails[i];
+
+        const notificationMessage = `Your company "${businessName}" has documents expiring soon. Please renew them before ${expirationDate} to avoid accreditation issues.`;
+
+        try {
+          // In-app notification
+          await createNotification({
+            to: employerId,
+            from: "67506d8638ae7596d5cff29f", // System notification
+            title: "Important: Document Expiring Soon",
+            message: notificationMessage,
+            type: "warning",
+          });
+
+          console.log(`Notification sent to ${employerId}`);
+
+          // Email notification
+          if (employerEmail) {
+            await sendEmail({
+              to: employerEmail,
+              subject: "Important: Your Documents Are Expiring Soon",
+              text: notificationMessage,
+              html: `
+                <p>Hello,</p>
+                <p>Your company <strong>${businessName}</strong> has documents expiring soon.</p>
+                <p>Please renew them before <strong>${expirationDate}</strong> to avoid accreditation issues.</p>
+                <p>Thank you.</p>
+              `,
+            });
+
+            console.log(`Email sent to ${employerEmail}`);
+          } else {
+            console.warn(
+              `No email found for employer ${employerId}, skipping email notification.`
+            );
+          }
+        } catch (error) {
+          console.error(
+            `Error sending notification/email to ${employerId}:`,
+            error
+          );
+        }
+      }
+
       console.log(
-        `Marked ${gracePeriodDocuments.length} documents as within the grace period.`
+        `✔ Marked ${gracePeriodDocuments.length} documents as within the grace period. Notifications and emails sent.`
       );
     } else {
-      console.log("No documents found within the grace period.");
+      console.log("❌ No documents found within the grace period.");
     }
   } catch (error) {
-    console.error("Error while marking grace period documents:", error);
+    console.error(
+      "❌ Error while marking grace period documents and sending notifications/emails:",
+      error
+    );
   }
 };
 
@@ -156,63 +257,211 @@ const checkAndExpireDocuments = async (now) => {
         { "sss.expiresAt": { $lte: now } },
       ],
       status: { $ne: "expired" },
+    }).populate({
+      path: "companyId",
+      populate: { path: "accountId", model: "Account" }, // Populate account details
     });
 
-    // Update status of expired documents and corresponding companies
     if (expiredDocuments.length > 0) {
-      const expiredCompanyIds = expiredDocuments.map((doc) => doc.companyId);
-
-      await CompanyDocuments.updateMany(
-        {
-          _id: { $in: expiredDocuments.map((doc) => doc._id) },
-        },
-        {
-          status: "expired",
-        }
+      const expiredCompanyIds = expiredDocuments.map(
+        (doc) => doc.companyId._id
+      );
+      const affectedAccounts = expiredDocuments.map(
+        (doc) => doc.companyId.accountId
+      );
+      const affectedEmails = expiredDocuments.map(
+        (doc) => doc.companyId.accountId.emailAddress
       );
 
+      // Mark documents as expired
+      await CompanyDocuments.updateMany(
+        { _id: { $in: expiredDocuments.map((doc) => doc._id) } },
+        { status: "expired" }
+      );
+
+      // Revoke company accreditation
       await Company.updateMany(
-        {
-          _id: { $in: expiredCompanyIds },
-        },
+        { _id: { $in: expiredCompanyIds } },
         {
           $set: {
-            status: "revoked", // Revoke the company status
-            accreditation: null, // Remove the accreditation field
-            accreditationId: null, // Remove the accreditation field
-            accreditationDate: null, // Remove the accreditation field
+            status: "revoked",
+            accreditation: null,
+            accreditationId: null,
+            accreditationDate: null,
           },
         }
       );
 
+      // Send notifications & emails
+      for (let i = 0; i < affectedAccounts.length; i++) {
+        const businessName =
+          expiredDocuments[i]?.companyId?.companyInformation?.businessName ||
+          "Your Company";
+        const employerId = affectedAccounts[i];
+        const employerEmail = affectedEmails[i];
+
+        const notificationMessage = `Your company "${businessName}" has had its accreditation revoked due to expired documents. Please update your documents to regain accreditation.`;
+
+        try {
+          // In-app notification
+          await createNotification({
+            to: employerId,
+            from: "67506d8638ae7596d5cff29f", // System notification
+            title: "Accreditation Revoked Due to Expired Documents",
+            message: notificationMessage,
+            type: "warning",
+          });
+
+          console.log(`Notification sent to ${employerId}`);
+
+          // Email notification
+          if (employerEmail) {
+            await sendEmail({
+              to: employerEmail,
+              subject: "Accreditation Revoked Due to Expired Documents",
+              text: notificationMessage,
+              html: `
+                <p>Hello,</p>
+                <p>Your company <strong>${businessName}</strong> has had its accreditation revoked due to expired documents.</p>
+                <p>Please update your documents as soon as possible to regain accreditation.</p>
+                <p>Thank you.</p>
+              `,
+            });
+
+            console.log(`Email sent to ${employerEmail}`);
+          } else {
+            console.warn(
+              `No email found for employer ${employerId}, skipping email notification.`
+            );
+          }
+        } catch (error) {
+          console.error(
+            `Error sending notification/email to ${employerId}:`,
+            error
+          );
+        }
+      }
+
       console.log(
-        `Marked ${expiredDocuments.length} documents and ${expiredCompanyIds.length} companies as "expired".`
+        `✔ Marked ${expiredDocuments.length} documents and ${expiredCompanyIds.length} companies as "expired". Notifications and emails sent.`
       );
     } else {
       console.log("No expired documents or companies found.");
     }
   } catch (error) {
     console.error(
-      "Error while updating expired documents and companies:",
+      "Error while updating expired documents, companies, and sending notifications/emails:",
       error
     );
   }
 };
 
+// const checkAndExpireJobVacancies = async (now) => {
+//   try {
+//     const result = await JobVacancy.updateMany(
+//       { applicationDeadline: { $lt: now }, status: { $ne: "expired" } },
+//       { $set: { status: "expired" } }
+//     );
+
+//     console.log(`${result.modifiedCount} job vacancies marked as expired.`);
+//   } catch (error) {
+//     console.error("Error updating expired job vacancies:", error);
+//   }
+// };
+
+// Schedule the cron job to run daily at midnight
+
 const checkAndExpireJobVacancies = async (now) => {
   try {
-    const result = await JobVacancy.updateMany(
-      { applicationDeadline: { $lt: now }, status: { $ne: "expired" } },
-      { $set: { status: "expired" } }
-    );
+    // Find job vacancies that have expired
+    const expiredJobVacancies = await JobVacancy.find({
+      applicationDeadline: { $lt: now },
+      status: { $ne: "expired" },
+    }).populate({
+      path: "companyId",
+      populate: { path: "accountId", model: "Account" }, // Populate employer details
+    });
 
-    console.log(`${result.modifiedCount} job vacancies marked as expired.`);
+    if (expiredJobVacancies.length > 0) {
+      const affectedEmployers = expiredJobVacancies.map(
+        (job) => job.companyId.accountId
+      );
+      const affectedEmails = expiredJobVacancies.map(
+        (job) => job.companyId.accountId.emailAddress
+      );
+
+      // Mark job vacancies as expired
+      const result = await JobVacancy.updateMany(
+        { _id: { $in: expiredJobVacancies.map((job) => job._id) } },
+        { $set: { status: "expired" } }
+      );
+
+      // Send notifications & emails
+      for (let i = 0; i < affectedEmployers.length; i++) {
+        const businessName =
+          expiredJobVacancies[i]?.companyId?.companyInformation?.businessName ||
+          "Your Company";
+        const jobTitle =
+          expiredJobVacancies[i]?.title || "One of your job vacancies";
+        const employerId = affectedEmployers[i];
+        const employerEmail = affectedEmails[i];
+
+        const notificationMessage = `Your job vacancy "${jobTitle}" at "${businessName}" has expired. Please post a new job if you wish to continue hiring.`;
+
+        try {
+          // In-app notification
+          await createNotification({
+            to: employerId,
+            from: "67506d8638ae7596d5cff29f", // System notification
+            title: "Job Vacancy Expired",
+            message: notificationMessage,
+            type: "info",
+          });
+
+          console.log(`Notification sent to ${employerId}`);
+
+          // Email notification
+          if (employerEmail) {
+            await sendEmail({
+              to: employerEmail,
+              subject: "Your Job Vacancy Has Expired",
+              text: notificationMessage,
+              html: `
+                <p>Hello,</p>
+                <p>Your job vacancy <strong>"${jobTitle}"</strong> at <strong>"${businessName}"</strong> has expired.</p>
+                <p>If you wish to continue hiring, please post a new job listing.</p>
+                <p>Thank you.</p>
+              `,
+            });
+
+            console.log(`Email sent to ${employerEmail}`);
+          } else {
+            console.warn(
+              `No email found for employer ${employerId}, skipping email notification.`
+            );
+          }
+        } catch (error) {
+          console.error(
+            `Error sending notification/email to ${employerId}:`,
+            error
+          );
+        }
+      }
+
+      console.log(
+        `✔ Marked ${result.modifiedCount} job vacancies as "expired". Notifications and emails sent.`
+      );
+    } else {
+      console.log("No expired job vacancies found.");
+    }
   } catch (error) {
-    console.error("Error updating expired job vacancies:", error);
+    console.error(
+      "❌ Error updating expired job vacancies and sending notifications/emails:",
+      error
+    );
   }
 };
 
-// Schedule the cron job to run daily at midnight
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
@@ -220,7 +469,9 @@ cron.schedule("0 0 * * *", async () => {
   const gracePeriodDate = new Date(now);
   gracePeriodDate.setDate(now.getDate() + 30);
 
-  await checkAndMarkGracePeriodDocuments(now, gracePeriodDate);
-  await checkAndExpireDocuments(now);
+  // await checkAndMarkGracePeriodDocuments(now, gracePeriodDate);
+  // await checkAndExpireDocuments(now);
   await checkAndExpireJobVacancies(now);
 });
+
+export { io, userSocketMap };
