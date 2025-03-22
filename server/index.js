@@ -32,7 +32,7 @@ const server = http.createServer(app);
 // Set up Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Allow your frontend's origin
+    origin: ["http://localhost:3000", "https://new-repo-client.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   },
