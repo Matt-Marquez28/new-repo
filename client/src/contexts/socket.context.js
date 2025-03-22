@@ -17,7 +17,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       // Initialize socket connection when user is available
-      const socketInstance = io("http://localhost:8080", {
+      const socketInstance = io("https://new-repo-client.onrender.com", {
         query: {
           userId: user.accountData._id,
         },
