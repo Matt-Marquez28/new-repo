@@ -28,41 +28,28 @@ const CompanyStatisticsCard = () => {
   return (
     <div className="col-md-6 mb-4">
       <div
-        className="card h-100 rounded border-0 shadow-sm"
+        className="card h-70 rounded border-0 shadow-sm"
         style={{
           backgroundColor: "#ffffff",
           padding: "1rem",
-        
         }}
       >
         <div className="card-body">
           {/* Header Section */}
-          <div className="d-flex justify-content-between align-items-center mb-1">
-            <div className="d-flex align-items-center">
-              <div
-                className="text-white rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  fontSize: "1.5rem",
-                  backgroundColor: "#007bff",
-                }}
-              >
-                <i className="fas fa-building"></i>
-              </div>
-              <h4
-                className="card-title mb-0 ms-3 fw-bold"
-                style={{ color: "#555555" }}
-              >
-                Accredited Companies
-              </h4>
-            </div>
-          </div>
 
           {/* Main Statistics */}
-          <h2 className="display-4 fw-bold" style={{ color: "#007bff" }}>
-            {stats.accredited}
-          </h2>
+          <div className="d-flex justify-content-start align-items-center mb-1">
+            <h2 className="display-4 fw-bold" style={{ color: "#007bff" }}>
+              {stats.accredited}
+            </h2>
+            <h4
+              className="card-title mb-0 ms-3 fw-bold"
+              style={{ color: "#555555" }}
+            >
+              Accredited Companies
+            </h4>
+          </div>
+
           <p className="text-muted small">
             Total accredited companies out of{" "}
             <span className="fw-bold" style={{ color: "#333" }}>

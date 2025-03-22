@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "../shared-ui/Header";
 import Footer from "../shared-ui/Footer";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ACCOUNT_API_END_POINT } from "../../utils/constants";
-import { useToast } from "../../contexts/toast.context";
+import { Modal, Button } from "react-bootstrap"; // Import Bootstrap Modal
 
 const SignupPage = () => {
-  const triggerToast = useToast();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false); // Track agreement checkbox
+
   const formik = useFormik({
     initialValues: {
       role: "",
@@ -46,7 +46,10 @@ const SignupPage = () => {
         .required("Please confirm your password."),
     }),
     onSubmit: async (values) => {
-      // Navigate to the verification page with state
+      if (!isAgreed) {
+        alert("You must agree to the Terms and Conditions before signing up.");
+        return;
+      }
       navigate("/verification", { state: { signupData: values } });
     },
   });
@@ -58,13 +61,14 @@ const SignupPage = () => {
         <div className="col-md-6 col-lg-5">
           <main className="form-signin w-100 m-auto">
             <form
-              className="row g-2 needs-validation border p-3 rounded shadow shadow-sm my-3"
+              className="row g-2 needs-validation border p-3 rounded shadow my-3"
               onSubmit={formik.handleSubmit}
             >
-              <h3 className="text-center fw-normal fw-bold text-primary">
+              <h3 className="text-center fw-bold text-primary">
                 Create your account
               </h3>
               <hr className="mb-4" />
+
               {/* First Name */}
               <div className="col-6">
                 <label htmlFor="firstName" className="form-label">
@@ -199,88 +203,57 @@ const SignupPage = () => {
                   )}
               </div>
 
-              {/* Role Selection */}
+              {/* Terms and Conditions */}
               <div className="col-12">
-                <label className="form-label">Role:</label>
-                <div className="d-flex align-items-center">
-                  <div className="form-check me-3">
-                    <input
-                      className={`form-check-input ${
-                        formik.errors.role && formik.touched.role
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      type="radio"
-                      name="role"
-                      id="jobseeker"
-                      value="jobseeker"
-                      onChange={formik.handleChange}
-                      checked={formik.values.role === "jobseeker"}
-                    />
-                    <label className="form-check-label" htmlFor="jobseeker">
-                      Jobseeker
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className={`form-check-input ${
-                        formik.errors.role && formik.touched.role
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      type="radio"
-                      name="role"
-                      id="employer"
-                      value="employer"
-                      onChange={formik.handleChange}
-                      checked={formik.values.role === "employer"}
-                    />
-                    <label className="form-check-label" htmlFor="employer">
-                      Employer
-                    </label>
-                  </div>
-                </div>
-                {formik.errors.role && formik.touched.role && (
-                  <div className="invalid-feedback d-block">
-                    {formik.errors.role}
-                  </div>
-                )}
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  checked={isAgreed}
+                  onChange={(e) => setIsAgreed(e.target.checked)}
+                />
+                <label htmlFor="agreeTerms" className="ms-2">
+                  I agree to the{" "}
+                  <span
+                    className="text-primary text-decoration-underline"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowModal(true)}
+                  >
+                    Terms and Conditions
+                  </span>
+                </label>
               </div>
 
               {/* Submit Button */}
-              <div className="col-12 mt-5">
+              <div className="col-12 mt-3">
                 <button
                   type="submit"
                   className="btn btn-primary w-100"
-                  disabled={formik.isSubmitting}
+                  disabled={!isAgreed}
                 >
-                  {formik.isSubmitting ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Signing Up...
-                    </>
-                  ) : (
-                    "Sign Up"
-                  )}
+                  Sign Up
                 </button>
               </div>
-
-              {/* Link to Login */}
-              <small className="text-secondary">
-                Already have an account?{" "}
-                <Link className="text-decoration-none" to="/login">
-                  Login
-                </Link>
-              </small>
             </form>
           </main>
         </div>
       </div>
+
       <Footer />
+
+      {/* Terms and Conditions Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Terms and Conditions</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Here are the terms and conditions...</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

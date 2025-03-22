@@ -530,12 +530,15 @@ export const uploadCompanyDocuments = async (req, res) => {
     }
 
     const accountId = company.accountId; // Get accountId from Company
+    const companyName =
+      company.companyInformation?.businessName || "Unknown Company"; // Get company name
 
     let message;
     let savedDocument;
 
     const existingDocument = await CompanyDocuments.findOne({ companyId });
 
+    // for existing documents
     if (existingDocument) {
       const isRenewal =
         existingDocument.status === "verified" ||
@@ -543,13 +546,13 @@ export const uploadCompanyDocuments = async (req, res) => {
 
       // **Update only the specific file fields, keeping the rest unchanged**
       Object.assign(existingDocument, uploads, {
-        isRenewal,
+        isRenewal: true,
         status: "pending",
       });
 
       savedDocument = await existingDocument.save();
 
-      await Company.updateOne({ _id: companyId }, { isRenewal });
+      await Company.updateOne({ _id: companyId }, { isRenewal: true });
 
       message = "Selected documents successfully updated!";
     } else {
@@ -586,7 +589,7 @@ export const uploadCompanyDocuments = async (req, res) => {
           to: account._id, // Notify each admin and staff individually
           from: accountId, // Company’s account ID (not companyId)
           title: "Company Documents Updated",
-          message: `A company has updated their verification documents. Please review them for approval.`,
+          message: `${companyName} has updated their verification documents. Please review them for approval.`,
           type: "info",
           link: `/admin/company-verification/${companyId}`,
         });

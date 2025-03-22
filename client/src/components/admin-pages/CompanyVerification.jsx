@@ -209,13 +209,13 @@ const CompanyVerification = () => {
       </div>
 
       {/* Filters UI */}
-      <div className="d-flex justify-content-center gap-3 mb-2">
+      <div className="d-flex justify-content-start gap-3 mb-2">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by: </h6>
+       
           <div>
             <select
               id="filter"
-              className="form-select text-secondary"
+              className="form-select"
               value={filter.status || (filter.isRenewal ? "renewal" : "all")}
               onChange={handleFilterChange}
             >
@@ -229,12 +229,10 @@ const CompanyVerification = () => {
           </div>
         </div>
 
-        <button className="btn btn-light text-info">
+        <button className="btn btn-light">
           <i className="bi bi-arrow-counterclockwise"></i> Renewals{" "}
           <span
-            className={`badge ${
-              stats?.renewal > 0 ? "bg-danger" : "bg-secondary"
-            }`}
+            className="badge bg-primary"
           >
             {stats?.renewal}
           </span>

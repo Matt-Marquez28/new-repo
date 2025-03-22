@@ -224,12 +224,12 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                       {jobVacancy?.jobTitle}
                     </h4>
                     {/* short details */}
-                    <div className="my-3">
+                    <div className="my-4">
                       <div className="row gap-2 justify-content-center">
                         {/* First Row */}
                         <div className="col-12 col-md-5 d-flex justify-content-center">
                           {/* Applicants Button */}
-                          <button className="btn btn-outline-info d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
+                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
                             <i className="bi bi-people-fill fs-6"></i>
                             <span>
                               {jobVacancy?.applicants.length || 0} Applicants
@@ -239,7 +239,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
                         <div className="col-12 col-md-5 d-flex justify-content-center">
                           {/* Vacancies Button */}
-                          <button className="btn btn-outline-info d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
+                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
                             <i className="bi bi-clipboard-check-fill fs-6"></i>
                             <span>{jobVacancy?.vacancies || 1} Vacancies</span>
                           </button>
@@ -248,7 +248,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         {/* Second Row */}
                         <div className="col-12 col-md-5 d-flex justify-content-center">
                           {/* Salary Range Button */}
-                          <button className="btn btn-outline-info d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
+                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
                             <i className="bi bi-cash-coin fs-6"></i>
                             <span>
                               {`₱ ${jobVacancy?.salaryMin.toLocaleString()} - ${jobVacancy?.salaryMax.toLocaleString()} ${
@@ -262,7 +262,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
                         <div className="col-12 col-md-5 d-flex justify-content-center">
                           {/* Employment Type Button */}
-                          <button className="btn btn-outline-info d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
+                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
                             <i className="bi bi-briefcase-fill fs-6"></i>
                             <span>{jobVacancy?.employmentType}</span>
                           </button>
@@ -278,13 +278,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                       </p>
                     </div>
                     <div>
-                      <p
-                        className={`${
-                          jobVacancy?.status === "expired"
-                            ? "text-danger"
-                            : "text-secondary"
-                        } small m-0`}
-                      >
+                      <p className="small m-0 text-secondary">
                         <i className="bi bi-clipboard2-x-fill"></i> Deadline on{" "}
                         {formatDate(jobVacancy?.applicationDeadline)}
                       </p>

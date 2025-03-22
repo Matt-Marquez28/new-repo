@@ -4,12 +4,15 @@ import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { Dropdown } from "react-bootstrap";
 import { useToast } from "../../contexts/toast.context";
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import { useSocketContext } from "../../contexts/socket.context";
 
 const JobInvitationList = () => {
   const navigate = useNavigate();
   const triggerToast = useToast();
   const [invitations, setInvitations] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [socket] = useSocketContext();
 
   useEffect(() => {
     getAllEmployerJobInvitations();
@@ -28,6 +31,18 @@ const JobInvitationList = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("newInvitation", ({ message }) => {
+        getAllEmployerJobInvitations(); // Refresh applicants when new one arrives
+      });
+
+      return () => {
+        socket.off("newInvitation"); // Proper cleanup to avoid duplicate listeners
+      };
+    }
+  }, [socket]); // Runs only when socket changes
 
   // Dropdown content for action buttons
   const dropdownContent = (jobVacancyId, invitationId) => (

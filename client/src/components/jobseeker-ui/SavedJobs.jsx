@@ -112,18 +112,17 @@ const SavedJobs = () => {
       </div>
 
       {/* Filters UI */}
-      <div className="d-flex justify-content-center gap-3">
+      <div className="d-flex justify-content-start gap-3">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by: </h6>
           <div>
             <select
               id="filter"
-              className="form-select text-info"
+              className="form-select"
               value={filter}
               onChange={handleFilterChange}
             >
               <option value="all">All</option>
-              <option value="ongoing">Ongoing</option>
+              <option value="ongoing">On-going</option>
               <option value="expired">Expired</option>
             </select>
           </div>
@@ -146,7 +145,6 @@ const SavedJobs = () => {
             }}
           >
             <tr>
-              
               <th
                 scope="col"
                 className="small text-muted align-middle"

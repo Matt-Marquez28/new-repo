@@ -469,8 +469,8 @@ cron.schedule("0 0 * * *", async () => {
   const gracePeriodDate = new Date(now);
   gracePeriodDate.setDate(now.getDate() + 30);
 
-  // await checkAndMarkGracePeriodDocuments(now, gracePeriodDate);
-  // await checkAndExpireDocuments(now);
+  await checkAndMarkGracePeriodDocuments(now, gracePeriodDate);
+  await checkAndExpireDocuments(now);
   await checkAndExpireJobVacancies(now);
 });
 

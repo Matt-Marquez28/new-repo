@@ -193,7 +193,8 @@ const EmployerDashboard = () => {
               </h6>
               <button
                 type="button"
-                className="btn btn-outline-primary btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 mx-auto mt-4"
+                className="btn btn-sm btn-outline-light text-secondary"
+              
               >
                 <i className="bi bi-pencil-square"></i> Edit
               </button>
@@ -235,10 +236,11 @@ const EmployerDashboard = () => {
                     "not specified"}
                 </p>
               </div>
+              {/* Edit Button */}
               <div className="d-flex justify-content-center">
                 <button
                   type="button"
-                  className="btn btn-outline-primary btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 mx-auto mt-4"
+                  className="btn btn-sm btn-outline-light text-secondary"
                 >
                   <i className="bi bi-pencil-square"></i> Edit
                 </button>

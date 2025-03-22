@@ -5,6 +5,7 @@ import { auditTrail } from "../utils/auditTrail.js";
 import JobInvitation from "../models/jobInvitation.model.js";
 import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
+import { io, userSocketMap } from "../index.js";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -367,7 +368,6 @@ export const getAllSavedJobVacancies = async (req, res) => {
   }
 };
 
-
 export const getRecommendedJobVacancies = async (req, res) => {
   const {
     jobPositions,
@@ -697,7 +697,9 @@ export const approveJobVacancy = async (req, res) => {
       subject: `Job Vacancy Approved: ${jobVacancy?.jobTitle}`,
       text: `Dear ${jobVacancy?.companyName || "Company"},
       
-    We are pleased to inform you that your job vacancy titled "${jobVacancy?.jobTitle}" has been approved and is now published on our platform.
+    We are pleased to inform you that your job vacancy titled "${
+      jobVacancy?.jobTitle
+    }" has been approved and is now published on our platform.
     
     You can view the approved listing and manage applications by logging into your account.
     
@@ -713,9 +715,13 @@ export const approveJobVacancy = async (req, res) => {
         
           <h2 style="color: #2C3E50; text-align: center; margin-top: 20px; font-size: 22px;">Job Vacancy Approved</h2>
         
-          <p style="font-size: 16px;">Dear ${jobVacancy?.companyId?.companyInformation?.businessName || "Company"},</p>
+          <p style="font-size: 16px;">Dear ${
+            jobVacancy?.companyId?.companyInformation?.businessName || "Company"
+          },</p>
         
-          <p style="font-size: 16px;">We are pleased to inform you that your job vacancy titled "<strong>${jobVacancy?.jobTitle}</strong>" has been approved and is now published on our platform.</p>
+          <p style="font-size: 16px;">We are pleased to inform you that your job vacancy titled "<strong>${
+            jobVacancy?.jobTitle
+          }</strong>" has been approved and is now published on our platform.</p>
         
           <p style="font-size: 16px;">You can view the approved listing and manage applications by logging into your account.</p>
         
@@ -734,7 +740,7 @@ export const approveJobVacancy = async (req, res) => {
         </div>
       `,
     };
-    
+
     await sendEmail(emailContent);
 
     res.status(200).json({ message: "Job vacancy approved", jobVacancy });
@@ -757,7 +763,7 @@ export const declineJobVacancy = async (req, res) => {
     ).populate({
       path: "accountId",
       select: "emailAddress",
-    })
+    });
 
     if (!jobVacancy) {
       return res.status(404).json({ message: "Job vacancy not found" });
@@ -771,7 +777,9 @@ export const declineJobVacancy = async (req, res) => {
       subject: `Job Vacancy Declined: ${jobVacancy?.jobTitle}`,
       text: `Dear ${jobVacancy?.companyInformation?.businessName || "Company"},
       
-    We regret to inform you that your job vacancy titled "${jobVacancy?.jobTitle}" has been declined. Below is the reason provided:
+    We regret to inform you that your job vacancy titled "${
+      jobVacancy?.jobTitle
+    }" has been declined. Below is the reason provided:
     
     Reason: ${jobVacancy?.remarks || "No specific reason provided."}
     
@@ -789,12 +797,18 @@ export const declineJobVacancy = async (req, res) => {
           
           <h2 style="color: #2C3E50; text-align: center; margin-top: 20px; font-size: 22px;">Job Vacancy Declined</h2>
           
-          <p style="font-size: 16px;">Dear ${jobVacancy?.companyInformation?.businessName || "Company"},</p>
+          <p style="font-size: 16px;">Dear ${
+            jobVacancy?.companyInformation?.businessName || "Company"
+          },</p>
           
-          <p style="font-size: 16px;">We regret to inform you that your job vacancy titled "<strong>${jobVacancy?.jobTitle}</strong>" has been declined for the following reason:</p>
+          <p style="font-size: 16px;">We regret to inform you that your job vacancy titled "<strong>${
+            jobVacancy?.jobTitle
+          }</strong>" has been declined for the following reason:</p>
           
           <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-left: 5px solid #f44336; border-radius: 5px; margin: 15px 0;">
-            <strong>Reason:</strong> ${jobVacancy?.remarks || "No specific reason provided."}
+            <strong>Reason:</strong> ${
+              jobVacancy?.remarks || "No specific reason provided."
+            }
           </div>
           
           <p style="font-size: 16px;">If you wish to address the issue or make updates, you may update your job vacancy and resubmit it for review. We encourage you to ensure all details are accurate and comply with the required standards.</p>
@@ -814,13 +828,14 @@ export const declineJobVacancy = async (req, res) => {
         </div>
       `,
     };
-    
 
     // Send decline email
     await sendEmail({
       to: jobVacancy.accountId.emailAddress,
       subject: `Job Vacancy Declined: ${jobVacancy.title}`,
-      text: `Dear ${jobVacancy.companyName || "Company"},\n\nWe regret to inform you...`, // Use the dynamic text
+      text: `Dear ${
+        jobVacancy.companyName || "Company"
+      },\n\nWe regret to inform you...`, // Use the dynamic text
       html: emailContent.html, // Use the HTML content
     });
 
@@ -934,7 +949,8 @@ export const sendJobInvitation = async (req, res) => {
 
     // Send Email
     const email = jobSeeker?.accountId?.emailAddress;
-    const companyName = jobVacancy?.companyId?.companyInformation?.businessName || "Company Name";
+    const companyName =
+      jobVacancy?.companyId?.companyInformation?.businessName || "Company Name";
     const jobTitle = jobVacancy?.jobTitle || "Job Title";
 
     const emailContent = {
@@ -974,10 +990,22 @@ export const sendJobInvitation = async (req, res) => {
         message: `You have been invited to apply for the ${jobTitle} position at ${companyName}.`,
         type: "info",
         link: `/jobseeker/job-vacancy-details/${invitation.jobVacancyId}`,
-
       });
     } catch (error) {
       console.error("Error creating notification:", error);
+    }
+
+    // Emit real-time notification to the job seeker
+    const socketId = userSocketMap[jobSeeker.accountId._id];
+
+    if (socketId) {
+      io.to(socketId).emit("newInvitation", {
+        message: `You have received a new job invitation for the position: ${jobVacancy?.jobTitle} at ${companyName}.`,
+      });
+    } else {
+      console.log(
+        "Job seeker is offline; the job invitation notification is saved in the database."
+      );
     }
 
     // Respond with success
@@ -985,13 +1013,11 @@ export const sendJobInvitation = async (req, res) => {
       message: "Job invitation sent successfully.",
       invitation,
     });
-
   } catch (error) {
     console.error("Error sending job invitation:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
-
 
 // get all employers job invitations
 export const getAllEmployerJobInvitations = async (req, res) => {

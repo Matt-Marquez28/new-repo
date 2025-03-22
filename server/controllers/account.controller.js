@@ -701,9 +701,12 @@ export const getAllUsers = async (req, res) => {
       query.role = role;
     }
 
-    // Apply search filter if provided
+    // Apply search filter if provided (searching by firstName OR emailAddress)
     if (search) {
-      query.firstName = { $regex: search, $options: "i" }; // Case-insensitive search
+      query.$or = [
+        { firstName: { $regex: search, $options: "i" } }, // Search by first name
+        { emailAddress: { $regex: search, $options: "i" } }, // Search by email
+      ];
     }
 
     const users = await Account.find(query).sort({ createdAt: -1 });
@@ -714,7 +717,6 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error!" });
   }
 };
-
 
 // toggle block user
 export const toggleBlockUser = async (req, res) => {

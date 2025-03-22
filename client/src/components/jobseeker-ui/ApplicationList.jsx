@@ -131,13 +131,12 @@ const ApplicationList = () => {
       </div>
 
       {/* Filters UI */}
-      <div className="d-flex justify-content-center gap-3">
+      <div className="d-flex justify-content-start gap-3">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by: </h6>
           <div>
             <select
               id="filter"
-              className="form-select text-info"
+              className="form-select"
               value={filter}
               onChange={handleFilterChange}
             >
@@ -149,12 +148,10 @@ const ApplicationList = () => {
             </select>
           </div>
         </div>
-        <button className="btn btn-light text-info">
+        <button className="btn btn-light">
           <i className="bi bi-calendar-event-fill"></i> Interview Scheduled{" "}
           <span
-            className={`badge ${
-              interviewScheduledCount > 0 ? "bg-danger" : "bg-secondary"
-            }`}
+            className="badge bg-primary"
           >
             {interviewScheduledCount}
           </span>

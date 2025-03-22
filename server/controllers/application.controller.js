@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import JobSeeker from "../models/jobSeeker.model.js";
 import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
+import { io, userSocketMap } from "../index.js";
 
 // apply job vacancy
 export const applyJobVacancy = async (req, res) => {
@@ -119,6 +120,19 @@ export const applyJobVacancy = async (req, res) => {
       });
     } catch (error) {
       console.error("Error creating notification:", error);
+    }
+
+    // ✅ Emit real-time notification to the employer
+    const employerSocketId = userSocketMap[jobVacancy.accountId._id];
+
+    if (employerSocketId) {
+      io.to(employerSocketId).emit("newApplication", {
+        message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} applied for ${jobVacancy?.jobTitle}.`,
+      });
+    } else {
+      console.log(
+        "Employer is offline new application is saved in the database"
+      );
     }
 
     // Return a success response

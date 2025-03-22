@@ -19,7 +19,10 @@ const RegularUsers = () => {
     setLoading(true);
     try {
       const res = await axios.get(`${ACCOUNT_API_END_POINT}/get-all-users`, {
-        params: { role: filter !== "all" ? filter : undefined, search: searchTerm || undefined },
+        params: {
+          role: filter !== "all" ? filter : undefined,
+          search: searchTerm || undefined,
+        },
         withCredentials: true,
       });
       setUsers(res?.data?.users || []);
@@ -60,9 +63,8 @@ const RegularUsers = () => {
       {/* Filters & Search UI */}
       <div className="d-flex justify-content-between">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by Role: </h6>
           <select
-            className="form-select text-secondary"
+            className="form-select"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           >
@@ -81,7 +83,11 @@ const RegularUsers = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
-            <button className="btn btn-primary" type="button" onClick={getAllUsers}>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={getAllUsers}
+            >
               <i className="bi bi-search"></i> Search
             </button>
           </div>
@@ -115,7 +121,9 @@ const RegularUsers = () => {
                     <td className="small text-muted align-middle">
                       {user.emailAddress}
                     </td>
-                    <td className="small text-muted align-middle">{user.role}</td>
+                    <td className="small text-muted align-middle">
+                      {user.role}
+                    </td>
                     <td>
                       <span
                         className={`badge ${

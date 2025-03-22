@@ -28,11 +28,11 @@ export const EmployerHeader = () => {
       socket.on("notification", (notification) => {
         console.log("🔔 New Notification:", notification);
         setHasUnread(true);
-        triggerToast(`📢 ${notification.title}: ${notification.message}`, "info");
+        triggerToast(`📢 ${notification.title}: ${notification.message}`, "primary");
       });
 
       return () => {
-        socket.off("notification"); // ✅ Clean up event listener on unmount
+        socket.off("notification"); // Clean up event listener on unmount
       };
     }
   }, [socket]);
@@ -52,10 +52,10 @@ export const EmployerHeader = () => {
     try {
       const res = await axios.post(`${ACCOUNT_API_END_POINT}/logout`, {}, { withCredentials: true });
       localStorage.clear();
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
       navigate("/");
     } catch (error) {
-      triggerToast(error?.response?.data?.message, "primary");
+      triggerToast(error?.response?.data?.message, "danger");
     }
   };
 

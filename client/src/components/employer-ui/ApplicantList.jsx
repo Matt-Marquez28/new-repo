@@ -3,7 +3,7 @@ import { Dropdown } from "react-bootstrap";
 import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useSocketContext } from "../../contexts/socket.context";
 const ApplicantList = () => {
   // states
   const [applicants, setApplicants] = useState([]);
@@ -12,11 +12,25 @@ const ApplicantList = () => {
 
   // constants
   const navigate = useNavigate();
+  const [socket] = useSocketContext();
 
-  // useEffect to run the getEmployerApplicants function
+  // Fetch applicants when filter changes
   useEffect(() => {
-    getAllEmployerApplicants();
+    getAllEmployerApplicants(); // Runs when `filter` changes
   }, [filter]);
+
+  // Listen for real-time applications via socket
+  useEffect(() => {
+    if (socket) {
+      socket.on("newApplication", ({ message }) => {
+        getAllEmployerApplicants(); // Refresh applicants when new one arrives
+      });
+
+      return () => {
+        socket.off("newApplication"); // Proper cleanup to avoid duplicate listeners
+      };
+    }
+  }, [socket]); // Runs only when socket changes
 
   // function to get all employer applicants
   const getAllEmployerApplicants = async () => {
@@ -110,13 +124,12 @@ const ApplicantList = () => {
       </div>
 
       {/* filters UI */}
-      <div className="d-flex justify-content-center gap-3">
+      <div className="d-flex justify-content-start gap-3">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by: </h6>
           <div>
             <select
               id="filter"
-              className="form-select text-info"
+              className="form-select"
               value={filter}
               onChange={handleFilterChange}
             >
@@ -129,11 +142,11 @@ const ApplicantList = () => {
           </div>
         </div>
 
-        <button className="btn btn-light text-info">
+        <button className="btn btn-light">
           <i className="bi bi-calendar-event-fill"></i> Interview Scheduled{" "}
           <span
             className={`badge ${
-              interviewScheduledCount > 0 ? "bg-danger" : "bg-secondary"
+              interviewScheduledCount > 0 ? "bg-primary" : "bg-primary"
             }`}
           >
             {interviewScheduledCount}

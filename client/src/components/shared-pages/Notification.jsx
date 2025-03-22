@@ -9,7 +9,7 @@ import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [socket] = useSocketContext(); // ✅ Get socket instance from context
+  const [socket] = useSocketContext(); 
   const navigate = useNavigate();
 
   useEffect(() => {

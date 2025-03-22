@@ -26,7 +26,7 @@ export const JobSeekerHeader = () => {
       socket.on("notification", (notification) => {
         console.log("🔔 New Notification:", notification);
         setHasUnread(true);
-        triggerToast(`📢 ${notification.title}: ${notification.message}`, "info");
+        triggerToast(`📢 ${notification.title}: ${notification.message}`, "primary");
       });
 
       return () => {
@@ -50,10 +50,10 @@ export const JobSeekerHeader = () => {
     try {
       const res = await axios.post(`${ACCOUNT_API_END_POINT}/logout`, {}, { withCredentials: true });
       localStorage.clear();
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
       navigate("/");
     } catch (error) {
-      triggerToast(error?.response?.data?.message, "primary");
+      triggerToast(error?.response?.data?.message, "danger");
     }
   };
 
@@ -153,7 +153,7 @@ export const JobSeekerHeader = () => {
         }
 
         .pulse-animation {
-          animation: pulse-ring 2s ease-in-out infinite;
+          animation: pulse-ring 1s ease-in-out infinite;
         }
 
         @keyframes swing {
@@ -165,7 +165,7 @@ export const JobSeekerHeader = () => {
         }
 
         .swing-animation {
-          animation: swing 2s ease-in-out infinite;
+          animation: swing 1s ease-in-out infinite;
         }
       `}</style>
     </Navbar>
