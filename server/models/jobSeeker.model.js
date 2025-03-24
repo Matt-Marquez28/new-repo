@@ -20,12 +20,10 @@ const jobSeekerSchema = new mongoose.Schema(
       },
       middleName: {
         type: String,
-        required: true,
         trim: true,
       },
       suffix: {
         type: String,
-        required: true,
         trim: true,
       },
       gender: {
@@ -182,39 +180,32 @@ const jobSeekerSchema = new mongoose.Schema(
     jobPreferences: {
       jobPositions: {
         type: [String],
-        required: true,
         default: [""], // Default to an array with one empty string
       },
       locations: {
         type: [String],
-        required: true,
         default: [""], // Default to an array with one empty string
       },
       salaryType: {
         type: String,
         enum: ["hourly", "monthly"],
-        required: true,
         default: "", // Default to an array with one empty string
       },
       salaryMin: {
         type: Number,
-        required: true,
         default: 0, // Default to 0 salary
       },
       salaryMax: {
         type: Number,
-        required: true,
         default: 0, // Default to 0 salary
       },
       employmentType: {
         type: String,
         enum: ["permanent", "part-time", "temporary", "contractual"],
-        required: true,
         default: "permanent", // Default to "permanent"
       },
       industries: {
         type: [String],
-        required: true,
         default: [""], // Default to an array with one empty string
       },
     },

@@ -37,7 +37,6 @@ const ChangePasswordPage = () => {
 
         if (res.data.success) {
           triggerToast(res?.data?.message, "success");
-          navigate("/admin/settings", { replace: true });
         }
       } catch (error) {
         console.log(error);

@@ -48,6 +48,7 @@ router.get("/get-application/:applicationId", getApplication);
 router.post(
   "/schedule-interview/:applicationId",
   isAuthenticated,
+  checkBlocked,
   scheduleInterview
 );
 
@@ -65,9 +66,14 @@ router.patch(
 
 router.get("/get-interview-titles", isAuthenticated, getInterviewTitles);
 
-router.patch("/mark-interview-completed/:applicationId", isAuthenticated, markInterviewAsCompleted);
+router.patch(
+  "/mark-interview-completed/:applicationId",
+  isAuthenticated,
+  checkBlocked,
+  markInterviewAsCompleted
+);
 
-router.post("/hire-applicant/:applicationId", hireApplicant);
+router.post("/hire-applicant/:applicationId", isAuthenticated, checkBlocked, hireApplicant);
 
 router.post("/decline-applicant/:applicationId", declineApplicant);
 

@@ -7,10 +7,9 @@ import { useUser } from "../../contexts/user.context";
 const CandidatePreferences = () => {
   const { setUser } = useUser();
   const triggerToast = useToast();
-  const [candidatePreferences, setCandidatePreferences] = useState(null);
-  const [educationalLevels, setEducationLevels] = useState([""]);
-  const [skills, setSkills] = useState([""]);
-  const [specializations, setSpecializations] = useState([""]);
+  const [educationalLevels, setEducationLevels] = useState([""]); // Initialize with one empty field
+  const [skills, setSkills] = useState([""]); // Initialize with one empty field
+  const [specializations, setSpecializations] = useState([""]); // Initialize with one empty field
 
   useEffect(() => {
     getCompanyData();
@@ -25,11 +24,11 @@ const CandidatePreferences = () => {
 
       // Set the retrieved candidate preferences to the corresponding state variables
       const { candidatePreferences } = res.data.companyData || {};
-      if (candidatePreferences) {
-        setEducationLevels(candidatePreferences.educationalLevels || [""]);
-        setSkills(candidatePreferences.skills || [""]);
-        setSpecializations(candidatePreferences.specializations || [""]);
-      }
+
+      // Ensure at least one field exists for each category
+      setEducationLevels(candidatePreferences?.educationalLevels?.length > 0 ? candidatePreferences.educationalLevels : [""]);
+      setSkills(candidatePreferences?.skills?.length > 0 ? candidatePreferences.skills : [""]);
+      setSpecializations(candidatePreferences?.specializations?.length > 0 ? candidatePreferences.specializations : [""]);
     } catch (error) {
       console.log(error);
     }
@@ -59,13 +58,9 @@ const CandidatePreferences = () => {
 
     // Prepare the data for submission
     const payload = {
-      educationalLevels: educationalLevels.filter(
-        (field) => field.trim() !== ""
-      ),
+      educationalLevels: educationalLevels.filter((field) => field.trim() !== ""),
       skills: skills.filter((skill) => skill.trim() !== ""),
-      specializations: specializations.filter(
-        (specialization) => specialization.trim() !== ""
-      ),
+      specializations: specializations.filter((specialization) => specialization.trim() !== ""),
     };
 
     console.log("Submitting Preferences:", payload);
@@ -84,10 +79,9 @@ const CandidatePreferences = () => {
         },
       }));
 
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
     } catch (error) {
       console.error("Error updating preferences:", error);
-      // Handle error (show an error message to the user, etc.)
       triggerToast(error.response.data.message, "danger");
     }
   };
@@ -108,9 +102,8 @@ const CandidatePreferences = () => {
         </div>
       </div>
 
-      {/* Education Levels */}
+      {/* Specializations */}
       <div className="row mb-4">
-        {/* Specializations */}
         <div className="col-md-4 mb-3">
           <label>
             <h5 className="text-primary">
@@ -121,7 +114,7 @@ const CandidatePreferences = () => {
             <div key={index} className="input-group mb-2">
               <input
                 type="text"
-                className="form-control text-secondary"
+                className="form-control"
                 value={specialization}
                 onChange={(e) =>
                   handleArrayChange(setSpecializations, index, e.target.value)
@@ -158,7 +151,7 @@ const CandidatePreferences = () => {
             <div key={index} className="input-group mb-2">
               <input
                 type="text"
-                className="form-control text-secondary"
+                className="form-control"
                 value={skill}
                 onChange={(e) =>
                   handleArrayChange(setSkills, index, e.target.value)
@@ -184,6 +177,7 @@ const CandidatePreferences = () => {
           </button>
         </div>
 
+        {/* Educational Levels */}
         <div className="col-md-4 mb-3">
           <label>
             <h5 className="text-primary">
@@ -193,7 +187,7 @@ const CandidatePreferences = () => {
           {educationalLevels.map((level, index) => (
             <div key={index} className="input-group mb-2">
               <select
-                className="form-select text-secondary"
+                className="form-select"
                 value={level}
                 onChange={(e) =>
                   handleArrayChange(setEducationLevels, index, e.target.value)

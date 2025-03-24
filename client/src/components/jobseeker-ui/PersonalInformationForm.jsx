@@ -12,7 +12,6 @@ const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   middleName: Yup.string().optional(),
-  suffix: Yup.string(),
   gender: Yup.string().required("Gender is required"),
   civilStatus: Yup.string().required("Civil status is required"),
   birthDate: Yup.date().required("Birth date is required"),

@@ -69,6 +69,29 @@ const SignupPage = () => {
               </h3>
               <hr className="mb-4" />
 
+              {/* Role Selection */}
+              <div className="col-12">
+                <label htmlFor="role" className="form-label">
+                  Role:
+                </label>
+                <select
+                  id="role"
+                  className={`form-control ${
+                    formik.errors.role && formik.touched.role
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("role")}
+                >
+                  <option value="">Select your role</option>
+                  <option value="jobseeker">Job Seeker</option>
+                  <option value="employer">Employer</option>
+                </select>
+                {formik.errors.role && formik.touched.role && (
+                  <div className="invalid-feedback">{formik.errors.role}</div>
+                )}
+              </div>
+
               {/* First Name */}
               <div className="col-6">
                 <label htmlFor="firstName" className="form-label">

@@ -38,8 +38,12 @@ const JobVacancyVerificationDetails = () => {
 
   const handleConfirmApproval = async () => {
     try {
-      await axios.patch(
-        `${JOB_VACANCY_API_END_POINT}/approve-job-vacancy/${jobVacancyId}`
+      const res = await axios.patch(
+        `${JOB_VACANCY_API_END_POINT}/approve-job-vacancy/${jobVacancyId}`,
+        {},
+        {
+          withCredentials: true,
+        }
       );
       console.log(`Approval action confirmed for job vacancy ${jobVacancyId}`);
       handleCloseApproveModal();

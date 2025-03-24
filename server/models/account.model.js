@@ -41,7 +41,7 @@ const accountSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["jobseeker", "employer", "admin", "staff"], 
+      enum: ["jobseeker", "employer", "admin", "staff"],
     },
     status: {
       type: String,
@@ -50,7 +50,8 @@ const accountSchema = new mongoose.Schema(
     isBlocked: {
       type: Boolean,
       default: false,
-    }
+    },
+    lastActive: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

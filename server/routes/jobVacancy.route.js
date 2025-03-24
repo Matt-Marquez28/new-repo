@@ -48,7 +48,11 @@ router.get(
 );
 router.post("/get-recommended-job-vacancies", getRecommendedJobVacancies);
 router.get("/get-all-job-vacancies-admin", getAllJobVacanciesAdmin);
-router.patch("/approve-job-vacancy/:jobVacancyId", approveJobVacancy);
+router.patch(
+  "/approve-job-vacancy/:jobVacancyId",
+  isAuthenticated,
+  approveJobVacancy
+);
 router.patch(
   "/decline-job-vacancy/:jobVacancyId",
   isAuthenticated,

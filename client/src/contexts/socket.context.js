@@ -17,7 +17,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       // Initialize socket connection when user is available
-      const socketInstance = io("https://peso-8oly.onrender.com", {
+      const socketInstance = io("http://localhost:8080", {
         query: {
           userId: user.accountData._id,
         },

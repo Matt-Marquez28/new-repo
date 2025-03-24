@@ -73,10 +73,31 @@ export const EmployerHeader = () => {
               height="50"
               className="me-2"
             />
-            <h5 className="pt-serif-bold" style={{ color: "#555555" }}>PESO City of Taguig</h5>
+            {/* Hide text on small screens */}
+            <h5 className="pt-serif-bold d-none d-md-block" style={{ color: "#555555" }}>PESO City of Taguig</h5>
           </Link>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+
+        {/* Notification Button (Visible on all screens) */}
+        <div className="d-flex align-items-center">
+          {/* Notification Button on Small Screens (Near Hamburger) */}
+          <Button
+            onClick={() => {
+              setHasUnread(false);
+              navigate("/employer/notification");
+            }}
+            variant="light"
+            className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative d-md-none ${
+              hasUnread ? "pulse-animation" : ""
+            }`}
+            style={{ width: "40px", height: "40px" }}
+          >
+            <i className={`bi bi-bell-fill ${hasUnread ? "text-danger swing-animation" : "text-secondary"}`}></i>
+          </Button>
+
+          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+        </div>
+
         <Navbar.Offcanvas id={`offcanvasNavbar-expand-${expand}`} aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`} placement="end">
           <Offcanvas.Header closeButton>
             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>Menu</Offcanvas.Title>
@@ -101,13 +122,14 @@ export const EmployerHeader = () => {
             </Nav>
 
             <div className="d-flex align-items-center gap-3">
+              {/* Notification Button on Larger Screens (Next to Office Hours) */}
               <Button
                 onClick={() => {
                   setHasUnread(false);
                   navigate("/employer/notification");
                 }}
                 variant="light"
-                className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative ${
+                className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative d-none d-md-flex ${
                   hasUnread ? "pulse-animation" : ""
                 }`}
                 style={{ width: "40px", height: "40px" }}

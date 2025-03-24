@@ -1284,7 +1284,6 @@ export const accreditCompany = async (req, res) => {
 
     // Notify the employer
     try {
-      console.log(`ACCOUNT ID = ${company?.accountId?._id}`);
       await createNotification({
         to: company?.accountId?._id, // Employer ID
         from: accountId, // admin / staff ID

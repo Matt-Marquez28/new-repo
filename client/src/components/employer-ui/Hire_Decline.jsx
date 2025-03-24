@@ -5,7 +5,7 @@ import axios from "axios";
 import { useToast } from "../../contexts/toast.context";
 import { useParams } from "react-router-dom";
 
-const Hire_Decline = ({getApplication}) => {
+const Hire_Decline = ({ getApplication }) => {
   const { applicationId } = useParams();
   const triggerToast = useToast();
   const [showHireModal, setShowHireModal] = useState(false);
@@ -16,7 +16,10 @@ const Hire_Decline = ({getApplication}) => {
     try {
       const response = await axios.post(
         `${APPLICATION_API_END_POINT}/hire-applicant/${applicationId}`,
-        { remarks }
+        { remarks },
+        {
+          withCredentials: true,
+        }
       );
       triggerToast(response?.data?.message, "success");
       getApplication();

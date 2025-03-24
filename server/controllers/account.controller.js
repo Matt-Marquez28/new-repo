@@ -7,6 +7,10 @@ import { sendEmail } from "../utils/email.js";
 import Token from "../models/token.model.js";
 import crypto from "crypto";
 import ResetToken from "../models/resetToken.model.js";
+import Application from "../models/application.model.js";
+import JobInvitation from "../models/jobInvitation.model.js";
+import JobVacancy from "../models/jobVacancy.model.js";
+import CompanyDocuments from "../models/companyDocuments.model.js";
 
 // signup controller
 export const signup = async (req, res) => {
@@ -147,6 +151,9 @@ export const login = async (req, res) => {
     const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
+
+    // Update lastActive timestamp
+    await Account.findByIdAndUpdate(account._id, { lastActive: new Date() });
 
     // success response
     return res
@@ -765,13 +772,10 @@ export const toggleBlockUser = async (req, res) => {
 // delete user
 export const deleteUser = async (req, res) => {
   const { accountId } = req.params;
-
   console.log("Received request to delete user:", accountId);
 
   try {
-    // Find and delete the user
-    const account = await Account.findByIdAndDelete(accountId);
-
+    const account = await Account.findById(accountId);
     if (!account) {
       console.log("Account not found:", accountId);
       return res
@@ -779,11 +783,88 @@ export const deleteUser = async (req, res) => {
         .json({ success: false, message: "Account not found." });
     }
 
+    console.log(
+      `Account found: ${account.emailAddress}, Role: '${account.role}'`
+    );
+
+    /** --------------------------- DELETE JOBSEEKER RELATED DATA --------------------------- **/
+    if (account.role?.trim().toLowerCase() === "jobseeker") {
+      console.log(`Deleting jobseeker data for account: ${accountId}`);
+
+      // Find and delete the jobseeker profile
+      const jobSeeker = await JobSeeker.findOneAndDelete({ accountId });
+
+      if (jobSeeker) {
+        console.log("JobSeeker found and deleted:", jobSeeker._id);
+
+        // Delete all job applications by the jobseeker
+        const deletedApps = await Application.deleteMany({
+          jobSeekerId: jobSeeker._id,
+        });
+        console.log(`Deleted Applications: ${deletedApps.deletedCount}`);
+
+        // Delete all job invitations sent to the jobseeker
+        const deletedInvitations = await JobInvitation.deleteMany({
+          jobSeekerId: jobSeeker._id,
+        });
+        console.log(
+          `Deleted Job Invitations: ${deletedInvitations.deletedCount}`
+        );
+      } else {
+        console.log(`No JobSeeker profile found for account: ${accountId}`);
+      }
+    } else if (account.role?.trim().toLowerCase() === "employer") {
+
+    /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- **/
+      console.log(`Deleting employer data for account: ${accountId}`);
+
+      // Find the employer's company
+      const company = await Company.findOne({ accountId });
+
+      if (company) {
+        console.log("Company found:", company._id);
+
+        // Step 1: Delete all job vacancies posted by this company
+        const deletedJobs = await JobVacancy.deleteMany({
+          companyId: company._id,
+        });
+        console.log(`Deleted Job Vacancies: ${deletedJobs.deletedCount}`);
+
+        // Step 2: Delete all applications for jobs that belonged to the company
+        const deletedApplications = await Application.deleteMany({
+          jobVacancyId: { $in: company.jobVacancies }, // Use array of jobVacancies
+        });
+        console.log(
+          `Deleted Job Applications: ${deletedApplications.deletedCount}`
+        );
+
+        // Step 3: Delete company documents
+        const deletedDocs = await CompanyDocuments.deleteMany({
+          companyId: company._id,
+        });
+        console.log(`Deleted Company Documents: ${deletedDocs.deletedCount}`);
+
+        // Step 4: Delete the company itself
+        await Company.findByIdAndDelete(company._id);
+        console.log("Company deleted successfully:", company._id);
+      } else {
+        console.log(
+          `No Company profile found for employer account: ${accountId}`
+        );
+      }
+    } else {
+      console.log(
+        `Account is neither jobseeker nor employer. No related data deleted.`
+      );
+    }
+
+    /** --------------------------- DELETE ACCOUNT --------------------------- **/
+    await Account.findByIdAndDelete(accountId);
     console.log(`User ${account.emailAddress} deleted successfully`);
 
     return res.status(200).json({
       success: true,
-      message: "User has been deleted successfully.",
+      message: "User and related data deleted successfully.",
       deletedUser: {
         _id: account._id,
         firstName: account.firstName,

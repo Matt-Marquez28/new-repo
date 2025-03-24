@@ -6,6 +6,7 @@ import JobInvitation from "../models/jobInvitation.model.js";
 import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
 import { io, userSocketMap } from "../index.js";
+import { Account } from "../models/account.model.js";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -74,6 +75,31 @@ export const postJobVacancy = async (req, res) => {
     // Add the new job to the company's jobVacancies array
     company.jobVacancies.push(newJob._id);
     await company.save();
+
+    // **Send Notification to All System Users (Admin & Staff)**
+    try {
+      const systemUsers = await Account.find({
+        role: { $in: ["admin", "staff"] },
+      });
+
+      console.log("System users found:", systemUsers.length);
+
+      for (const account of systemUsers) {
+        console.log(`Sending notification to: ${account._id}`);
+
+        await createNotification({
+          to: account._id, // Notify each admin and staff individually
+          from: accountId, // Company’s account ID (not companyId)
+          title: "New Pending Job Vacancies",
+          message: `${company?.companyInformation?.businessName} has uploaded new job vacancy. Please review them for approval.`,
+          type: "info",
+          link: `/admin/company-verification/${companyId}`,
+        });
+      }
+      console.log("Notifications sent successfully.");
+    } catch (error) {
+      console.error("Error creating notifications for system users:", error);
+    }
 
     // Respond with the created job vacancy
     return res.status(201).json({
@@ -168,7 +194,7 @@ export const searchJobVacancies = async (req, res) => {
     const searchQuery = jobTitle
       ? {
           $search: {
-            index: "jobTitleSearch",
+            index: "job_vacancy_index",
             text: {
               query: jobTitle,
               path: "jobTitle",
@@ -677,6 +703,8 @@ export const getAllJobVacanciesAdmin = async (req, res) => {
 
 // Approve a job vacancy
 export const approveJobVacancy = async (req, res) => {
+  const accountId = req.accountId;
+
   try {
     const { jobVacancyId } = req.params;
     const jobVacancy = await JobVacancy.findByIdAndUpdate(
@@ -742,6 +770,19 @@ export const approveJobVacancy = async (req, res) => {
     };
 
     await sendEmail(emailContent);
+
+    // Notify the employer
+    try {
+      await createNotification({
+        to: jobVacancy?.accountId?._id, // Employer ID
+        from: accountId, // admin / staff ID
+        title: "Job Vacancy Approved",
+        message: `Your job vacancy, ${jobVacancy?.jobTitle}, has been approved.`,
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     res.status(200).json({ message: "Job vacancy approved", jobVacancy });
   } catch (error) {

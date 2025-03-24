@@ -36,10 +36,10 @@ import AuditTrail from "./components/admin-pages/AuditTrail";
 import AccreditedCompanies from "./components/admin-pages/AccreditedCompanies";
 import HiredApplicants from "./components/admin-pages/HiredApplicants";
 import JobSeekerDetails from "./components/employer-ui/JobSeekerDetails";
-import SettingsPage from "./components/admin-pages/SettingsPage";
+import SettingsPage from "./components/shared-pages/SettingsPage";
 import ForgotPasswordPage from "./components/shared-pages/ForgotPasswordPage";
 import ResetPassword from "./components/shared-pages/ResetPassword";
-import ChangePasswordPage from "./components/admin-pages/ChangePasswordPage";
+import ChangePasswordPage from "./components/shared-pages/ChangePasswordPage";
 import ApplicationDetail from "./components/jobseeker-pages/ApplicationDetail";
 import { useUser } from "./contexts/user.context";
 import { SocketProvider } from "./contexts/socket.context";
@@ -87,6 +87,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<Navigate to="/jobseeker/dashboard" />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="notification" element={<Notification />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
