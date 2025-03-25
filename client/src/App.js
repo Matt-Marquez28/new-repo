@@ -88,6 +88,10 @@ const AppRoutes = () => {
       >
         <Route index element={<Navigate to="/jobseeker/dashboard" />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route
+          path="settings/change-password"
+          element={<ChangePasswordPage />}
+        />
         <Route path="notification" element={<Notification />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
@@ -122,6 +126,11 @@ const AppRoutes = () => {
           element={<JobSeekerDetails />}
         />
         <Route path="dashboard" element={<EmployerDashboard />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route
+          path="settings/change-password"
+          element={<ChangePasswordPage />}
+        />
         <Route path="notification" element={<Notification />} />
         <Route path="company-profile" element={<CompanyProfile />} />
         <Route path="job-vacancy" element={<JobVacancyPage />} />

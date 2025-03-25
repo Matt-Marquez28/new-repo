@@ -137,7 +137,7 @@ export const JobSeekerHeader = () => {
                   <Popover.Body>
                     <ul className="list-unstyled mb-0">
                       <li>
-                        <Button variant="link" className="text-decoration-none w-100 text-dark">
+                        <Button variant="link" onClick={()=>navigate("/jobseeker/settings")} className="text-decoration-none w-100 text-dark">
                           <i className="bi bi-gear-fill text-secondary"></i> Settings
                         </Button>
                       </li>

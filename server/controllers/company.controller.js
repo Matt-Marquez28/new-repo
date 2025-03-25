@@ -13,6 +13,7 @@ import { Account } from "../models/account.model.js";
 import { sendEmail } from "../utils/email.js";
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 import { createNotification } from "../utils/notification.js";
+import Application from "../models/application.model.js";
 
 // dotenv.config();
 
@@ -1389,5 +1390,119 @@ export const getRenewals = async (req, res) => {
     res
       .stattus(500)
       .json({ success: false, message: "Internal server error!" });
+  }
+};
+
+// Helper: Calculate Z-score for normalization
+const calculateZScore = (value, allValues) => {
+  const avg = allValues.reduce((sum, val) => sum + val, 0) / allValues.length;
+  const stdDev = Math.sqrt(
+    allValues.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) /
+      allValues.length
+  );
+  return stdDev !== 0 ? (value - avg) / stdDev : 0;
+};
+
+// Main ranking function
+export const getCompanyRankings = async (req, res) => {
+  try {
+    // Fetch all accredited companies with job vacancies
+    const companies = await Company.find({ status: "accredited" }).populate(
+      "jobVacancies"
+    );
+
+    if (!companies.length) {
+      return res.status(404).json({ message: "No companies found." });
+    }
+
+    // Get metrics for all companies
+    const companyMetrics = await Promise.all(
+      companies.map(async (company) => {
+        const vacancies = company.jobVacancies.length;
+        const vacancyIds = company.jobVacancies.map((v) => v._id);
+
+        // Count applicants and hires
+        const [totalApplicants, hiredApplicants] = await Promise.all([
+          Application.countDocuments({ jobVacancyId: { $in: vacancyIds } }),
+          Application.countDocuments({
+            jobVacancyId: { $in: vacancyIds },
+            status: "hired",
+          }),
+        ]);
+
+        return {
+          companyId: company._id,
+          companyName: company.companyInformation.businessName,
+          vacancies,
+          totalApplicants,
+          hiredApplicants,
+          hireRate: totalApplicants > 0 ? hiredApplicants / totalApplicants : 0,
+          applicantsPerVacancy: vacancies > 0 ? totalApplicants / vacancies : 0,
+        };
+      })
+    );
+
+    // Extract all values for normalization
+    const allVacancies = companyMetrics.map((c) => c.vacancies);
+    const allApplicants = companyMetrics.map((c) => c.totalApplicants);
+    const allHires = companyMetrics.map((c) => c.hiredApplicants);
+
+    // Calculate scores
+    const rankedCompanies = companyMetrics.map((company) => {
+      const normVacancies = calculateZScore(company.vacancies, allVacancies);
+      const normApplicants = calculateZScore(
+        company.totalApplicants,
+        allApplicants
+      );
+      const normHires = calculateZScore(company.hiredApplicants, allHires);
+
+      const score =
+        0.25 * normVacancies +
+        0.25 * normApplicants +
+        0.3 * normHires +
+        0.1 * (company.hireRate * 100) + // Convert to percentage
+        0.1 * company.applicantsPerVacancy;
+
+      return {
+        ...company,
+        score: parseFloat(score.toFixed(2)),
+      };
+    });
+
+    // Sort by score (descending)
+    rankedCompanies.sort((a, b) => b.score - a.score);
+
+    // Prepare data for the frontend
+    const barChartData = {
+      labels: rankedCompanies.slice(0, 10).map((c) => c.companyName),
+      datasets: [
+        {
+          label: "Job Vacancies",
+          data: rankedCompanies.slice(0, 10).map((c) => c.vacancies),
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+        },
+        {
+          label: "Hired Applicants",
+          data: rankedCompanies.slice(0, 10).map((c) => c.hiredApplicants),
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+        },
+        {
+          label: "Hire Rate (%)",
+          data: rankedCompanies
+            .slice(0, 10)
+            .map((c) => (c.hireRate * 100).toFixed(1)),
+          backgroundColor: "rgba(255, 159, 64, 0.6)",
+        },
+      ],
+    };
+
+    res.status(200).json({
+      success: true,
+      rankings: rankedCompanies,
+      barChartData,
+    });
+  } catch (error) {
+    console.error("Ranking error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

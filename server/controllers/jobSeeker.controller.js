@@ -286,50 +286,138 @@ export const addWorkExperience = async (req, res) => {
 };
 
 // add educational background
+// export const addEducationalBackground = async (req, res) => {
+//   try {
+//     // Check if files were uploaded
+//     if (!req.files || Object.keys(req.files).length === 0) {
+//       return res.status(400).send("No files were uploaded.");
+//     }
+
+//     const jobSeekerId = req.jobSeekerId;
+//     const uploadedFiles = [];
+
+//     // Loop through each file field and upload files to Cloudinary
+//     for (const field in req.files) {
+//       for (const file of req.files[field]) {
+//         const filePath = file.path;
+
+//         // Read file buffer
+//         const fileBuffer = await new Promise((resolve, reject) => {
+//           fs.readFile(filePath, (err, data) => {
+//             if (err) {
+//               reject(new Error("Error reading file"));
+//             } else {
+//               resolve(data);
+//             }
+//           });
+//         });
+
+//         // Upload file buffer to Cloudinary
+//         const result = await new Promise((resolve, reject) => {
+//           cloudinary.uploader
+//             .upload_stream({ resource_type: "auto" }, (error, uploadResult) => {
+//               if (error) {
+//                 reject(new Error("Error uploading to Cloudinary"));
+//               } else {
+//                 resolve(uploadResult);
+//               }
+//             })
+//             .end(fileBuffer);
+//         });
+
+//         // Store Cloudinary URL and original filename
+//         uploadedFiles.push({
+//           url: result.url,
+//           originalName: file.originalname,
+//         });
+//       }
+//     }
+
+//     // Find the job seeker
+//     const jobSeeker = await JobSeeker.findById(jobSeekerId);
+//     if (!jobSeeker) {
+//       return res.status(404).send("Job seeker not found.");
+//     }
+
+//     // Ensure that achievements, relevantCoursework, and certifications are arrays
+//     const achievements =
+//       req.body.achievements && typeof req.body.achievements === "string"
+//         ? req.body.achievements.split(",").map((item) => item.trim()) // Split if string and convert to array
+//         : req.body.achievements || []; // Default to empty array if undefined or null
+
+//     const relevantCoursework =
+//       req.body.relevantCoursework &&
+//       typeof req.body.relevantCoursework === "string"
+//         ? req.body.relevantCoursework.split(",").map((item) => item.trim()) // Split if string and convert to array
+//         : req.body.relevantCoursework || []; // Default to empty array if undefined or null
+
+//     const certifications =
+//       req.body.certifications && typeof req.body.certifications === "string"
+//         ? req.body.certifications.split(",").map((item) => item.trim()) // Split if string and convert to array
+//         : req.body.certifications || []; // Default to empty array if undefined or null
+
+//     // Create a new educational background object
+//     const newEducationalBackground = {
+//       degree_or_qualifications: req.body.degree_or_qualifications,
+//       fieldOfStudy: req.body.fieldOfStudy,
+//       institutionName: req.body.institutionName,
+//       location: req.body.location,
+//       startDate: req.body.startDate,
+//       endDate: req.body.endDate,
+//       currentlyStudying: req.body.currentlyStudying,
+//       achievements, // Store as array
+//       relevantCoursework, // Store as array
+//       certifications, // Store as array
+//       proofOfEducationDocuments: uploadedFiles, // Attach uploaded files with original names
+//     };
+
+//     // Push and save the new educational background to the job seeker's profile
+//     jobSeeker.educationalBackground.push(newEducationalBackground);
+//     await jobSeeker.save();
+
+//     res.status(200).json({
+//       message: "Files uploaded and saved successfully",
+//       updatedJobSeeker: jobSeeker,
+//     });
+//   } catch (err) {
+//     console.error("Error:", err);
+//     res
+//       .status(500)
+//       .json({ message: "Error uploading files", error: err.message });
+//   }
+// };
+
 export const addEducationalBackground = async (req, res) => {
   try {
-    // Check if files were uploaded
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("No files were uploaded.");
-    }
-
     const jobSeekerId = req.jobSeekerId;
     const uploadedFiles = [];
+    const body = req.body || {}; // Ensure body exists even if empty
 
-    // Loop through each file field and upload files to Cloudinary
-    for (const field in req.files) {
-      for (const file of req.files[field]) {
-        const filePath = file.path;
+    // Handle file uploads if they exist (now completely optional)
+    if (req.files && Object.keys(req.files).length > 0) {
+      try {
+        for (const field in req.files) {
+          for (const file of req.files[field]) {
+            const filePath = file.path;
+            const fileBuffer = await fs.promises.readFile(filePath);
+            
+            const result = await new Promise((resolve, reject) => {
+              cloudinary.uploader
+                .upload_stream({ resource_type: "auto" }, (error, uploadResult) => {
+                  if (error) reject(error);
+                  else resolve(uploadResult);
+                })
+                .end(fileBuffer);
+            });
 
-        // Read file buffer
-        const fileBuffer = await new Promise((resolve, reject) => {
-          fs.readFile(filePath, (err, data) => {
-            if (err) {
-              reject(new Error("Error reading file"));
-            } else {
-              resolve(data);
-            }
-          });
-        });
-
-        // Upload file buffer to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({ resource_type: "auto" }, (error, uploadResult) => {
-              if (error) {
-                reject(new Error("Error uploading to Cloudinary"));
-              } else {
-                resolve(uploadResult);
-              }
-            })
-            .end(fileBuffer);
-        });
-
-        // Store Cloudinary URL and original filename
-        uploadedFiles.push({
-          url: result.url,
-          originalName: file.originalname,
-        });
+            uploadedFiles.push({
+              url: result.url,
+              originalName: file.originalname,
+            });
+          }
+        }
+      } catch (fileError) {
+        console.error("File upload error (non-critical, continuing):", fileError);
       }
     }
 
@@ -339,51 +427,53 @@ export const addEducationalBackground = async (req, res) => {
       return res.status(404).send("Job seeker not found.");
     }
 
-    // Ensure that achievements, relevantCoursework, and certifications are arrays
-    const achievements =
-      req.body.achievements && typeof req.body.achievements === "string"
-        ? req.body.achievements.split(",").map((item) => item.trim()) // Split if string and convert to array
-        : req.body.achievements || []; // Default to empty array if undefined or null
-
-    const relevantCoursework =
-      req.body.relevantCoursework &&
-      typeof req.body.relevantCoursework === "string"
-        ? req.body.relevantCoursework.split(",").map((item) => item.trim()) // Split if string and convert to array
-        : req.body.relevantCoursework || []; // Default to empty array if undefined or null
-
-    const certifications =
-      req.body.certifications && typeof req.body.certifications === "string"
-        ? req.body.certifications.split(",").map((item) => item.trim()) // Split if string and convert to array
-        : req.body.certifications || []; // Default to empty array if undefined or null
-
-    // Create a new educational background object
-    const newEducationalBackground = {
-      degree_or_qualifications: req.body.degree_or_qualifications,
-      fieldOfStudy: req.body.fieldOfStudy,
-      institutionName: req.body.institutionName,
-      location: req.body.location,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      currentlyStudying: req.body.currentlyStudying,
-      achievements, // Store as array
-      relevantCoursework, // Store as array
-      certifications, // Store as array
-      proofOfEducationDocuments: uploadedFiles, // Attach uploaded files with original names
+    // Helper function to safely parse array fields
+    const parseArrayField = (field) => {
+      if (!field) return [];
+      if (Array.isArray(field)) return field;
+      if (typeof field === 'string') return field.split(',').map(item => item.trim());
+      return [];
     };
 
-    // Push and save the new educational background to the job seeker's profile
+    // Create new educational background with all fields optional
+    const newEducationalBackground = {
+      degree_or_qualifications: body.degree_or_qualifications || null,
+      fieldOfStudy: body.fieldOfStudy || null,
+      institutionName: body.institutionName || null,
+      location: body.location || null,
+      startDate: body.startDate || null,
+      endDate: body.endDate || null,
+      currentlyStudying: Boolean(body.currentlyStudying), // Convert to boolean
+      achievements: parseArrayField(body.achievements),
+      relevantCoursework: parseArrayField(body.relevantCoursework),
+      certifications: parseArrayField(body.certifications),
+      proofOfEducationDocuments: uploadedFiles,
+    };
+
+    // Initialize educationalBackground array if it doesn't exist
+    if (!jobSeeker.educationalBackground) {
+      jobSeeker.educationalBackground = [];
+    }
+
     jobSeeker.educationalBackground.push(newEducationalBackground);
     await jobSeeker.save();
 
     res.status(200).json({
-      message: "Files uploaded and saved successfully",
+      message: "Educational background saved successfully",
       updatedJobSeeker: jobSeeker,
     });
+
   } catch (err) {
-    console.error("Error:", err);
-    res
-      .status(500)
-      .json({ message: "Error uploading files", error: err.message });
+    console.error("Full error details:", {
+      message: err.message,
+      stack: err.stack,
+      body: req.body,
+      files: req.files
+    });
+    res.status(500).json({
+      message: "Error saving educational background",
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    });
   }
 };
 
@@ -885,4 +975,3 @@ export const recommendCandidates = async (req, res) => {
     res.status(500).json({ message: "Failed to recommend candidates." });
   }
 };
-

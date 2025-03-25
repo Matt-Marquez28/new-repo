@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 import { useToast } from "../../contexts/toast.context";
 import Footer from "../shared-ui/Footer";
+import ReportButton from "../shared-ui/ReportButton";
 
 const JobSeekerDetails = () => {
   const triggerToast = useToast();
@@ -108,7 +109,8 @@ const JobSeekerDetails = () => {
             <i className="bi bi-arrow-90deg-left"></i> Back
           </Button>
         </Col>
-        <Col className="text-end">
+        <Col className=" d-flex gap-2 justify-content-end text-end">
+          <ReportButton accountId={jobseekerData?.accountId} />
           <Button
             variant="primary"
             className="text-light"
@@ -506,7 +508,6 @@ const JobSeekerDetails = () => {
                   key={index}
                   action
                   className="d-flex justify-content-between align-items-center p-3"
-                  
                 >
                   <span className="fw-semibold" style={{ color: "#555555" }}>
                     {job.jobTitle}

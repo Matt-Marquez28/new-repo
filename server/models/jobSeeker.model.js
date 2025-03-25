@@ -151,7 +151,6 @@ const jobSeekerSchema = new mongoose.Schema(
         },
         achievements_and_contributions: {
           type: [String],
-          required: true,
           validate: {
             validator: function (v) {
               return v.length > 0 && v.every((item) => item.trim() !== "");
@@ -161,7 +160,6 @@ const jobSeekerSchema = new mongoose.Schema(
         },
         skills_and_tools_used: {
           type: [String],
-          required: true,
           validate: {
             validator: function (v) {
               return v.length > 0 && v.every((item) => item.trim() !== "");

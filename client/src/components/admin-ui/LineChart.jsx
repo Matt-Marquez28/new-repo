@@ -120,7 +120,7 @@ const LineChart = () => {
         className="card-title mb-0 ms-3 fw-bold"
         style={{ color: "#555555" }}
       ></h4>
-      <div style={{ width: "100%", height: "400px" }}>
+      <div style={{ width: "50%", height: "400px" }}>
         <Line data={chartData} options={options} />
       </div>
     </div>

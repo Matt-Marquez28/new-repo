@@ -52,6 +52,7 @@ const accountSchema = new mongoose.Schema(
       default: false,
     },
     lastActive: { type: Date, default: Date.now },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

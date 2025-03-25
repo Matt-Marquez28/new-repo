@@ -11,6 +11,7 @@ import Application from "../models/application.model.js";
 import JobInvitation from "../models/jobInvitation.model.js";
 import JobVacancy from "../models/jobVacancy.model.js";
 import CompanyDocuments from "../models/companyDocuments.model.js";
+import ReportedAccount from "../models/reportedAccount.model.js";
 
 // signup controller
 export const signup = async (req, res) => {
@@ -154,6 +155,12 @@ export const login = async (req, res) => {
 
     // Update lastActive timestamp
     await Account.findByIdAndUpdate(account._id, { lastActive: new Date() });
+
+    // If user had a pending deletion, cancel it
+    if (account.deletedAt) {
+      account.deletedAt = null;
+      await account.save();
+    }
 
     // success response
     return res
@@ -814,8 +821,7 @@ export const deleteUser = async (req, res) => {
         console.log(`No JobSeeker profile found for account: ${accountId}`);
       }
     } else if (account.role?.trim().toLowerCase() === "employer") {
-
-    /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- **/
+      /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- **/
       console.log(`Deleting employer data for account: ${accountId}`);
 
       // Find the employer's company
@@ -877,5 +883,101 @@ export const deleteUser = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
+  }
+};
+
+// mark account for deletion
+export const markForDeletion = async (req, res) => {
+  try {
+    const accountId = req.accountId;
+
+    const deletedAt = new Date();
+    deletedAt.setDate(deletedAt.getDate() + 30);
+
+    const account = await Account.findByIdAndUpdate(
+      accountId,
+      { deletedAt },
+      { new: true }
+    );
+
+    if (!account) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found!" });
+    }
+
+    res.json({
+      success: true,
+      message: "Account marked for deletion",
+      deletedAt,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error!" });
+  }
+};
+
+export const cancelDeletion = async (req, res) => {
+  try {
+    const { accountId } = req.body;
+
+    const account = await Account.findByIdAndUpdate(
+      accountId,
+      { deletionDate: null },
+      { new: true }
+    );
+
+    if (!account) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found!" });
+    }
+
+    res.json({ success: true, message: "Account deletion canceled." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error!" });
+  }
+};
+
+// report account controller
+export const reportAccount = async (req, res) => {
+  const reportedBy = req.accountId;
+  try {
+    const { accountId, reason, details } = req.body;
+
+    if (!accountId || !reportedBy || !reason || !details) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    let report = await ReportedAccount.findOne({ accountId });
+
+    if (report) {
+      // If the account is already reported, add a new report entry
+      report.reports.push({ reportedBy, reason, details });
+    } else {
+      // If no report exists, create a new document
+      report = new ReportedAccount({
+        accountId,
+        reports: [{ reportedBy, reason, details }],
+      });
+    }
+
+    await report.save();
+    res.status(201).json({ message: "Report submitted successfully", report });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+// get reported accounts controller
+export const getReportedAccounts = async (req, res) => {
+  try {
+    const reportedAccounts = await ReportedAccount.find({})
+      .populate("accountId", "firstName lastName emailAddress role")
+      .populate("reports.reportedBy", "firstName emailAddress");
+
+    res.status(200).json({ reportedAccounts });
+  } catch (error) {
+    console.error("Error fetching reported accounts:", error);
+    res.status(500).json({ message: "Server error while fetching reports." });
   }
 };

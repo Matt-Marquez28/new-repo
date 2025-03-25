@@ -17,6 +17,7 @@ import {
   updateCandidatePreferences,
   getAccreditedCompanies,
   getRenewals,
+  getCompanyRankings,
 } from "../controllers/company.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
@@ -82,5 +83,7 @@ router.patch("/update-candidate-preferences", isAuthenticated, updateCandidatePr
 router.get("/get-accredited-companies", getAccreditedCompanies);
 
 router.get("/get-renewals", getRenewals)
+
+router.get("/get-company-rankings", getCompanyRankings);
 
 export default router;

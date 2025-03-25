@@ -83,7 +83,6 @@ io.on("connection", (socket) => {
   });
 });
 
-
 // Start the server
 server.listen(PORT, "0.0.0.0", () => {
   connectDB();
@@ -462,6 +461,66 @@ const checkAndExpireJobVacancies = async (now) => {
   }
 };
 
+const deleteExpiredAccounts = async () => {
+  try {
+    const now = new Date();
+
+    // Find accounts where deletionDate is in the past
+    const accountsToDelete = await Account.find({ deletedAt: { $lte: now } });
+
+    if (accountsToDelete.length === 0) {
+      console.log("No expired accounts to delete.");
+      return;
+    }
+
+    console.log(`Deleting ${accountsToDelete.length} expired accounts...`);
+
+    for (const account of accountsToDelete) {
+      console.log(`Processing account: ${account.emailAddress}`);
+
+      if (account.role?.trim().toLowerCase() === "jobseeker") {
+        console.log(`Deleting jobseeker data for: ${account.emailAddress}`);
+
+        const jobSeeker = await JobSeeker.findOneAndDelete({
+          accountId: account._id,
+        });
+
+        if (jobSeeker) {
+          await Application.deleteMany({ jobSeekerId: jobSeeker._id });
+          await JobInvitation.deleteMany({ jobSeekerId: jobSeeker._id });
+          console.log(
+            `Deleted jobseeker-related data for: ${account.emailAddress}`
+          );
+        }
+      } else if (account.role?.trim().toLowerCase() === "employer") {
+        console.log(`Deleting employer data for: ${account.emailAddress}`);
+
+        const company = await Company.findOne({ accountId: account._id });
+
+        if (company) {
+          await JobVacancy.deleteMany({ companyId: company._id });
+          await Application.deleteMany({
+            jobVacancyId: { $in: company.jobVacancies },
+          });
+          await CompanyDocuments.deleteMany({ companyId: company._id });
+          await Company.findByIdAndDelete(company._id);
+          console.log(
+            `Deleted employer-related data for: ${account.emailAddress}`
+          );
+        }
+      }
+
+      // Finally, delete the account
+      await Account.findByIdAndDelete(account._id);
+      console.log(`Successfully deleted account: ${account.emailAddress}`);
+    }
+
+    console.log("Expired account deletion process completed.");
+  } catch (error) {
+    console.error("Error deleting expired accounts:", error);
+  }
+};
+
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
@@ -472,6 +531,7 @@ cron.schedule("0 0 * * *", async () => {
   await checkAndMarkGracePeriodDocuments(now, gracePeriodDate);
   await checkAndExpireDocuments(now);
   await checkAndExpireJobVacancies(now);
+  await deleteExpiredAccounts();
 });
 
 export { io, userSocketMap };

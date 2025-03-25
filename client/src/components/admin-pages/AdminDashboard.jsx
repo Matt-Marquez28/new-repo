@@ -7,10 +7,6 @@ import Footer from "../shared-ui/Footer";
 const AdminDashboard = () => {
   return (
     <div className="container">
-      <h4 className="text-primary mb-3 mx-1">
-        <i className="bi bi-speedometer"></i> Admin Dashboard
-      </h4>
-
       <div className="row">
         {/* Accredited Companies Card */}
         <CompanyStatisticsCard />
@@ -19,7 +15,7 @@ const AdminDashboard = () => {
         {/* Hired Applicants Card */}
       </div>
       <LineChart />
-      <Footer/>
+      <Footer />
     </div>
   );
 };

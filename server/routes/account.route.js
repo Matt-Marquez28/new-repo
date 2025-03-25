@@ -16,6 +16,9 @@ import {
   getAllUsers,
   toggleBlockUser,
   deleteUser,
+  markForDeletion,
+  reportAccount,
+  getReportedAccounts,
 } from "../controllers/account.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
@@ -40,5 +43,8 @@ router.post("/change-password", isAuthenticated, changePassword);
 router.get("/get-all-users", isAuthenticated, getAllUsers);
 router.put("/toggle-block-user/:accountId", isAuthenticated, toggleBlockUser);
 router.delete("/delete-user/:accountId", isAuthenticated, deleteUser);
+router.put("/mark-for-deletion", isAuthenticated, markForDeletion);
+router.post("/report-account", isAuthenticated, reportAccount);
+router.get("/get-reported-accounts", getReportedAccounts);
 
 export default router;
