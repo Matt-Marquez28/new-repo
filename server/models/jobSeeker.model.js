@@ -141,31 +141,15 @@ const jobSeekerSchema = new mongoose.Schema(
         },
         keyResponsibilities: {
           type: [String],
-          required: true,
-          validate: {
-            validator: function (v) {
-              return v.length > 0 && v.every((item) => item.trim() !== "");
-            },
-            message: "At least one key responsibility is required",
-          },
+          default: undefined,
         },
         achievements_and_contributions: {
           type: [String],
-          validate: {
-            validator: function (v) {
-              return v.length > 0 && v.every((item) => item.trim() !== "");
-            },
-            message: "At least one achievement is required",
-          },
+          default: undefined,
         },
         skills_and_tools_used: {
           type: [String],
-          validate: {
-            validator: function (v) {
-              return v.length > 0 && v.every((item) => item.trim() !== "");
-            },
-            message: "At least one skill or tool is required",
-          },
+          default: undefined,
         },
         proofOfWorkExperienceDocuments: [
           {

@@ -70,7 +70,7 @@ const ApplicationDetails = () => {
           animated: true,
         };
         break;
-        case "declined":
+      case "declined":
         progressProps = {
           variant: "danger",
           now: 100,
@@ -261,7 +261,9 @@ const ApplicationDetails = () => {
               {activeTab === "resume" && (
                 <ApplicantResume jobseekerData={application?.jobSeekerId} />
               )}
-              {activeTab === "hireDecline" && <Hire_Decline  getApplication={getApplication}/>}
+              {activeTab === "hireDecline" && (
+                <Hire_Decline getApplication={getApplication} />
+              )}
             </div>
           </div>
         </div>

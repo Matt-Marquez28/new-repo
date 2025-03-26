@@ -179,59 +179,153 @@ export const updateJobPreferences = async (req, res) => {
 };
 
 // add work experience
+// export const addWorkExperience = async (req, res) => {
+//   try {
+//     // Check if files were uploaded
+//     if (!req.files || Object.keys(req.files).length === 0) {
+//       return res.status(400).send("No files were uploaded.");
+//     }
+
+//     // Retrieve the job seeker (or create new if necessary)
+//     const jobSeekerId = req.jobSeekerId;
+
+//     // Cloudinary upload logic
+//     const uploadedFiles = [];
+
+//     // Loop through each file field and upload files to Cloudinary
+//     for (const field in req.files) {
+//       for (const file of req.files[field]) {
+//         const filePath = file.path; // Path to the uploaded file on disk
+
+//         // Read the file buffer from disk
+//         const fileBuffer = await new Promise((resolve, reject) => {
+//           fs.readFile(filePath, (err, data) => {
+//             if (err) {
+//               reject(new Error("Error reading file"));
+//             } else {
+//               resolve(data);
+//             }
+//           });
+//         });
+
+//         // Upload the file buffer to Cloudinary
+//         const result = await new Promise((resolve, reject) => {
+//           cloudinary.uploader
+//             .upload_stream(
+//               { resource_type: "auto" }, // Automatically detect file type
+//               (error, uploadResult) => {
+//                 if (error) {
+//                   reject(new Error("Error uploading to Cloudinary"));
+//                 } else {
+//                   resolve(uploadResult);
+//                 }
+//               }
+//             )
+//             .end(fileBuffer);
+//         });
+
+//         uploadedFiles.push({
+//           url: result.url,
+//           originalName: file.originalname,
+//         }); // Collect the Cloudinary URLs
+//       }
+//     }
+
+//     // Find the JobSeeker by accountId (or another identifier)
+//     const jobSeeker = await JobSeeker.findOne({
+//       accountId: req.accountId,
+//     });
+//     if (!jobSeeker) {
+//       return res.status(404).json({ message: "JobSeeker not found" });
+//     }
+
+//     // Process fields that should be arrays, like achievements and key responsibilities
+//     const achievementsAndContributions = req.body.achievements_and_contributions
+//       ? req.body.achievements_and_contributions
+//           .split(",")
+//           .map((item) => item.trim())
+//       : []; // Split string and convert to array, trimming whitespace
+//     const keyResponsibilities = req.body.keyResponsibilities
+//       ? req.body.keyResponsibilities.split(",").map((item) => item.trim())
+//       : []; // Split string and convert to array, trimming whitespace
+//     const skillsAndToolsUsed = req.body.skills_and_tools_used
+//       ? req.body.skills_and_tools_used.split(",").map((item) => item.trim())
+//       : []; // Split string and convert to array, trimming whitespace
+
+//     const newWorkExperience = {
+//       jobTitle: req.body.jobTitle,
+//       companyName: req.body.companyName,
+//       location: req.body.location,
+//       startDate: req.body.startDate,
+//       endDate: req.body.endDate,
+//       currentlyWorking: req.body.currentlyWorking,
+//       keyResponsibilities: keyResponsibilities, // Now an array
+//       achievements_and_contributions: achievementsAndContributions, // Now an array
+//       skills_and_tools_used: skillsAndToolsUsed, // Now an array
+//       proofOfWorkExperienceDocuments: uploadedFiles, // Assuming uploadedFiles is defined earlier in the code as the Cloudinary URLs
+//     };
+
+//     // Push the new work experience into the workExperience array
+//     jobSeeker.workExperience.push(newWorkExperience);
+
+//     // Save the updated jobSeeker document
+//     await jobSeeker.save();
+
+//     // Return success response
+//     res.status(201).json({
+//       message: "Work experience added successfully!",
+//       data: newWorkExperience,
+//     });
+//   } catch (error) {
+//     console.error("Error adding work experience:", error);
+//     res.status(500).json({
+//       message: "Error adding work experience. Please try again later.",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const addWorkExperience = async (req, res) => {
   try {
-    // Check if files were uploaded
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("No files were uploaded.");
-    }
-
-    // Retrieve the job seeker (or create new if necessary)
     const jobSeekerId = req.jobSeekerId;
-
-    // Cloudinary upload logic
+    const body = req.body || {};
     const uploadedFiles = [];
 
-    // Loop through each file field and upload files to Cloudinary
-    for (const field in req.files) {
-      for (const file of req.files[field]) {
-        const filePath = file.path; // Path to the uploaded file on disk
+    // Make file uploads optional
+    if (req.files && Object.keys(req.files).length > 0) {
+      try {
+        for (const field in req.files) {
+          for (const file of req.files[field]) {
+            const filePath = file.path;
+            const fileBuffer = await fs.promises.readFile(filePath);
 
-        // Read the file buffer from disk
-        const fileBuffer = await new Promise((resolve, reject) => {
-          fs.readFile(filePath, (err, data) => {
-            if (err) {
-              reject(new Error("Error reading file"));
-            } else {
-              resolve(data);
-            }
-          });
-        });
+            const result = await new Promise((resolve, reject) => {
+              cloudinary.uploader
+                .upload_stream(
+                  { resource_type: "auto" },
+                  (error, uploadResult) => {
+                    if (error) reject(error);
+                    else resolve(uploadResult);
+                  }
+                )
+                .end(fileBuffer);
+            });
 
-        // Upload the file buffer to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream(
-              { resource_type: "auto" }, // Automatically detect file type
-              (error, uploadResult) => {
-                if (error) {
-                  reject(new Error("Error uploading to Cloudinary"));
-                } else {
-                  resolve(uploadResult);
-                }
-              }
-            )
-            .end(fileBuffer);
-        });
-
-        uploadedFiles.push({
-          url: result.url,
-          originalName: file.originalname,
-        }); // Collect the Cloudinary URLs
+            uploadedFiles.push({
+              url: result.url,
+              originalName: file.originalname,
+            });
+          }
+        }
+      } catch (fileError) {
+        console.error(
+          "File upload error (continuing without files):",
+          fileError
+        );
       }
     }
 
-    // Find the JobSeeker by accountId (or another identifier)
+    // Find the job seeker
     const jobSeeker = await JobSeeker.findOne({
       accountId: req.accountId,
     });
@@ -239,48 +333,56 @@ export const addWorkExperience = async (req, res) => {
       return res.status(404).json({ message: "JobSeeker not found" });
     }
 
-    // Process fields that should be arrays, like achievements and key responsibilities
-    const achievementsAndContributions = req.body.achievements_and_contributions
-      ? req.body.achievements_and_contributions
-          .split(",")
-          .map((item) => item.trim())
-      : []; // Split string and convert to array, trimming whitespace
-    const keyResponsibilities = req.body.keyResponsibilities
-      ? req.body.keyResponsibilities.split(",").map((item) => item.trim())
-      : []; // Split string and convert to array, trimming whitespace
-    const skillsAndToolsUsed = req.body.skills_and_tools_used
-      ? req.body.skills_and_tools_used.split(",").map((item) => item.trim())
-      : []; // Split string and convert to array, trimming whitespace
-
-    const newWorkExperience = {
-      jobTitle: req.body.jobTitle,
-      companyName: req.body.companyName,
-      location: req.body.location,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      currentlyWorking: req.body.currentlyWorking,
-      keyResponsibilities: keyResponsibilities, // Now an array
-      achievements_and_contributions: achievementsAndContributions, // Now an array
-      skills_and_tools_used: skillsAndToolsUsed, // Now an array
-      proofOfWorkExperienceDocuments: uploadedFiles, // Assuming uploadedFiles is defined earlier in the code as the Cloudinary URLs
+    // Helper function to safely parse array fields
+    const parseArrayField = (field) => {
+      if (!field) return [];
+      if (Array.isArray(field)) return field;
+      if (typeof field === "string")
+        return field.split(",").map((item) => item.trim());
+      return [];
     };
 
-    // Push the new work experience into the workExperience array
-    jobSeeker.workExperience.push(newWorkExperience);
+    // Create new work experience with all fields optional
+    const newWorkExperience = {
+      jobTitle: body.jobTitle || null,
+      companyName: body.companyName || null,
+      location: body.location || null,
+      startDate: body.startDate || null,
+      endDate: body.endDate || null,
+      currentlyWorking: Boolean(body.currentlyWorking),
+      keyResponsibilities: parseArrayField(body.keyResponsibilities),
+      achievements_and_contributions: parseArrayField(
+        body.achievements_and_contributions
+      ),
+      skills_and_tools_used: parseArrayField(body.skills_and_tools_used),
+      proofOfWorkExperienceDocuments: uploadedFiles,
+    };
 
-    // Save the updated jobSeeker document
+    // Initialize workExperience array if it doesn't exist
+    if (!jobSeeker.workExperience) {
+      jobSeeker.workExperience = [];
+    }
+
+    jobSeeker.workExperience.push(newWorkExperience);
     await jobSeeker.save();
 
-    // Return success response
     res.status(201).json({
       message: "Work experience added successfully!",
       data: newWorkExperience,
     });
   } catch (error) {
-    console.error("Error adding work experience:", error);
+    console.error("Error adding work experience:", {
+      message: error.message,
+      stack: error.stack,
+      body: req.body,
+      files: req.files,
+    });
     res.status(500).json({
-      message: "Error adding work experience. Please try again later.",
-      error: error.message,
+      message: "Error adding work experience",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Internal server error",
     });
   }
 };
@@ -400,13 +502,16 @@ export const addEducationalBackground = async (req, res) => {
           for (const file of req.files[field]) {
             const filePath = file.path;
             const fileBuffer = await fs.promises.readFile(filePath);
-            
+
             const result = await new Promise((resolve, reject) => {
               cloudinary.uploader
-                .upload_stream({ resource_type: "auto" }, (error, uploadResult) => {
-                  if (error) reject(error);
-                  else resolve(uploadResult);
-                })
+                .upload_stream(
+                  { resource_type: "auto" },
+                  (error, uploadResult) => {
+                    if (error) reject(error);
+                    else resolve(uploadResult);
+                  }
+                )
                 .end(fileBuffer);
             });
 
@@ -417,7 +522,10 @@ export const addEducationalBackground = async (req, res) => {
           }
         }
       } catch (fileError) {
-        console.error("File upload error (non-critical, continuing):", fileError);
+        console.error(
+          "File upload error (non-critical, continuing):",
+          fileError
+        );
       }
     }
 
@@ -431,7 +539,8 @@ export const addEducationalBackground = async (req, res) => {
     const parseArrayField = (field) => {
       if (!field) return [];
       if (Array.isArray(field)) return field;
-      if (typeof field === 'string') return field.split(',').map(item => item.trim());
+      if (typeof field === "string")
+        return field.split(",").map((item) => item.trim());
       return [];
     };
 
@@ -462,17 +571,19 @@ export const addEducationalBackground = async (req, res) => {
       message: "Educational background saved successfully",
       updatedJobSeeker: jobSeeker,
     });
-
   } catch (err) {
     console.error("Full error details:", {
       message: err.message,
       stack: err.stack,
       body: req.body,
-      files: req.files
+      files: req.files,
     });
     res.status(500).json({
       message: "Error saving educational background",
-      error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+      error:
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Internal server error",
     });
   }
 };
