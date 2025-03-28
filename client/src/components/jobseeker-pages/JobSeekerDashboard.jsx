@@ -157,58 +157,60 @@ const JobSeekerDashboard = () => {
           </div>
 
           {/* Job Preferences Card */}
-          <div className="card text-start mb-2 shadow-sm text-center">
+          <div className="card text-start mb-4 shadow-sm">
             <div className="card-body">
               <h5 className="card-title mb-3 text-center text-primary">
-                <i className="bi bi-sliders"></i> Preferences
+                <i className="bi bi-sliders"></i> Job Preferences
               </h5>
               <hr />
 
               {/* Preferred Position */}
-              <div className="mb-3">
-                <h6 className="text-secondary my-2">Job Positions</h6>
+              <div className="mb-3 px-3 py-2 bg-light rounded">
+                <h6 className="text-secondary my-2">Preferred Positions</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {jobPreferences?.jobPositions.join(", ") || "N/A"}
+                  {jobPreferences?.jobPositions?.join(", ") || "Not specified"}
                 </p>
               </div>
 
               {/* Preferred Location */}
-              <div className="mb-3">
-                <h6 className="text-secondary my-2">Locations</h6>
+              <div className="mb-3 px-3 py-2 bg-light rounded">
+                <h6 className="text-secondary my-2">Preferred Locations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {jobPreferences?.locations.join(", ") || "N/A"}
+                  {jobPreferences?.locations?.join(", ") || "Not specified"}
                 </p>
               </div>
 
               {/* Preferred Employment Type */}
-              <div className="mb-3">
+              <div className="mb-3 px-3 py-2 bg-light rounded">
                 <h6 className="text-secondary my-2">Employment Type</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {jobPreferences?.employmentType || "N/A"}
+                  {jobPreferences?.employmentType || "Not specified"}
                 </p>
               </div>
 
               {/* Salary Range */}
-              <div className="mb-3">
-                <h6 className="text-secondary">Salary Range</h6>
+              <div className="mb-3 px-3 py-2 bg-light rounded">
+                <h6 className="text-secondary my-2">Salary Expectations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {`₱ ${jobPreferences?.salaryMin?.toLocaleString()} - ${jobPreferences?.salaryMax?.toLocaleString()} ${
-                    jobPreferences?.salaryType === "monthly"
-                      ? "[monthly]"
-                      : "[hourly]"
-                  }`}
+                  {jobPreferences?.salaryMin && jobPreferences?.salaryMax
+                    ? `₱${jobPreferences.salaryMin.toLocaleString()} - ₱${jobPreferences.salaryMax.toLocaleString()} ${
+                        jobPreferences.salaryType === "monthly"
+                          ? "/month"
+                          : "/hour"
+                      }`
+                    : "Not specified"}
                 </p>
               </div>
 

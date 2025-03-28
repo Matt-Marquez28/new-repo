@@ -186,75 +186,127 @@ const RegularUsers = () => {
         </Tab>
 
         {/* Reported Users Tab */}
-        {/* Reported Users Tab */}
         <Tab eventKey="reported" title="Reported Users">
           {loadingReports ? (
-            <Spinner animation="border" className="d-block mx-auto mt-3" />
+            <div className="d-flex justify-content-center py-5">
+              <Spinner animation="border" variant="primary" />
+            </div>
           ) : reportedAccounts.length > 0 ? (
-            <div className="container">
+            <div className="container-fluid px-0">
               {reportedAccounts.map((report) => (
-                <div key={report._id} className="card shadow-sm p-3 mb-4 w-100">
-                  {/* Reported User Info */}
-                  <div className="d-flex justify-content-between align-items-start">
-                    {/* User Details */}
-                    <div>
-                      <h5 className="fw-bold">
-                        {`${report.accountId?.firstName} ${report.accountId?.lastName}` ||
-                          "N/A"}
-                      </h5>
-                      <p className="text-muted mb-1">
-                        {report.accountId?.emailAddress || "N/A"}
-                      </p>
-                      <span className="badge bg-info">
-                        {report.accountId?.role || "N/A"}
-                      </span>
-                    </div>
-
-                    {/* Right Section: Report Count + Buttons */}
-                    <div className="d-flex flex-column align-items-end">
-                      {/* Reports Count */}
-                      <span className="text-danger fs-6 fw-bold mb-2">
-                        {report.reports.length} Reports
-                      </span>
-
-                      {/* Action Buttons */}
-                      <div className="d-flex gap-2">
-                        <button
-                          className="btn btn-warning btn-sm"
-                          onClick={() => handleBlockUser(report.accountId?._id)}
-                        >
-                          {report.accountId?.isBlocked ? "Unblock" : "Block"}
-                        </button>
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() =>
-                            handleDeleteUser(report.accountId?._id)
-                          }
-                        >
-                          Delete
-                        </button>
+                <div
+                  key={report._id}
+                  className="card border-0 bg-light shadow-sm mb-4"
+                >
+                  {/* Card Header */}
+                  <div className="card-header bg-light border-bottom-0 pb-0 d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center">
+                      <div className="me-3">
+                        <span className="badge rounded-pill bg-danger">
+                          {report.reports.length}{" "}
+                          {report.reports.length === 1 ? "Report" : "Reports"}
+                        </span>
+                      </div>
+                      <div>
+                        <h5 className="fw-bold mb-0">
+                          {`${report.accountId?.firstName || ""} ${
+                            report.accountId?.lastName || ""
+                          }`.trim() || "Unknown User"}
+                        </h5>
+                        <small className="text-muted">
+                          {report.accountId?.emailAddress || "No email"}
+                        </small>
                       </div>
                     </div>
+                    <span className="badge bg-white text-dark">
+                      {report.accountId?.role || "Unknown role"}
+                    </span>
                   </div>
 
-                  <hr />
+                  {/* Card Body */}
+                  <div className="card-body pt-3 bg-light">
+                    {/* Reports Accordion */}
+                    <div className="accordion" id={`accordion-${report._id}`}>
+                      {report.reports.map((r, i) => (
+                        <div key={i} className="accordion-item border-0 mb-2">
+                          <h2
+                            className="accordion-header"
+                            id={`heading-${report._id}-${i}`}
+                          >
+                            <button
+                              className="accordion-button collapsed bg-white py-2"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target={`#collapse-${report._id}-${i}`}
+                              aria-expanded="false"
+                              aria-controls={`collapse-${report._id}-${i}`}
+                            >
+                              <div className="d-flex flex-column">
+                                <span className="fw-medium">{r.reason}</span>
+                                <small className="text-muted">
+                                  Reported by{" "}
+                                  {r.reportedBy?.firstName || "Anonymous"} •{" "}
+                                  {new Date(r.createdAt).toLocaleDateString()}
+                                </small>
+                              </div>
+                            </button>
+                          </h2>
+                          <div
+                            id={`collapse-${report._id}-${i}`}
+                            className="accordion-collapse collapse"
+                            aria-labelledby={`heading-${report._id}-${i}`}
+                            data-bs-parent={`#accordion-${report._id}`}
+                          >
+                            <div className="accordion-body bg-white pt-2">
+                              <p className="mb-0 text-muted small">
+                                {r.details}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
 
-                  {/* Reports List */}
-                  <h6 className="fw-semibold">Reports:</h6>
-                  <ul className="list-group">
-                    {report.reports.map((r, i) => (
-                      <li key={i} className="list-group-item">
-                        <b>{r.reason}</b> - Reported by{" "}
-                        {r.reportedBy?.firstName} on{" "}
-                        {new Date(r.createdAt).toLocaleDateString()}
-                      </li>
-                    ))}
-                  </ul>
+                    {/* Action Buttons */}
+                    <div className="d-flex justify-content-end gap-2 border-top pt-3">
+                      <button
+                        className={`btn btn-sm ${
+                          report.accountId?.isBlocked
+                            ? "btn-success"
+                            : "btn-warning"
+                        }`}
+                        onClick={() => handleBlockUser(report.accountId?._id)}
+                      >
+                        <i
+                          className={`bi ${
+                            report.accountId?.isBlocked
+                              ? "bi-unlock"
+                              : "bi-lock"
+                          }`}
+                        ></i>
+                        {report.accountId?.isBlocked
+                          ? " Unblock User"
+                          : " Block User"}
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDeleteUser(report.accountId?._id)}
+                      >
+                        <i className="bi bi-trash"></i> Delete Account
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center mt-3">No reported users</p>
+            <div className="text-center py-5 bg-light rounded p-4">
+              <i className="bi bi-people display-5 text-muted mb-3"></i>
+              <h5 className="text-muted">No reported users found</h5>
+              <p className="text-muted small">
+                When users get reported, they'll appear here
+              </p>
+            </div>
           )}
         </Tab>
       </Tabs>

@@ -194,49 +194,65 @@ const EmployerDashboard = () => {
               <button
                 type="button"
                 className="btn btn-sm btn-outline-light text-secondary"
-              
               >
                 <i className="bi bi-pencil-square"></i> Edit
               </button>
             </div>
           </div>
 
-          <div className="card text-start mb-2 shadow-sm text-center">
-            <div className="card-body">
-              <h5 className="card-title mb-3 text-center text-primary">
-                <i className="bi bi-sliders"></i> Preferences
+          <div className="card mb-4 shadow-sm">
+            <div className="card-header bg-white border-0 py-3">
+              <h5 className="card-title mb-0 d-flex align-items-center justify-content-center text-primary">
+                <i className="bi bi-sliders me-2"></i> Preferences
               </h5>
-              <hr />
-              <div className="mb-3">
+            </div>
+            <div className="card-body pt-0">
+              {/* Specializations */}
+              <div className="mb-3 px-3 py-2 bg-light rounded">
                 <h6 className="text-secondary my-2">Specializations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {candidatePreferences?.specializations.join(", ") ||
-                    "not specified"}
+                  {candidatePreferences?.specializations?.length > 0 ? (
+                    candidatePreferences.specializations.join(", ")
+                  ) : (
+                    <span className="text-muted">not specified</span>
+                  )}
                 </p>
               </div>
-              <div className="mb-3">
+
+              {/* Skills */}
+              <div className="mb-3 px-3 py-2 bg-light rounded">
                 <h6 className="text-secondary my-2">Skills</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {candidatePreferences?.skills.join(", ") || "not specified"}
+                  {candidatePreferences?.skills?.length > 0 ? (
+                    candidatePreferences.skills.join(", ")
+                  ) : (
+                    <span className="text-muted">not specified</span>
+                  )}
                 </p>
               </div>
-              <div className="mb-3">
+
+              {/* Educational Levels */}
+              <div className="mb-3 px-3 py-2 bg-light rounded">
                 <h6 className="text-secondary my-2">Educational Levels</h6>
                 <p
                   className="m-0 text-info fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  {candidatePreferences?.educationalLevels.join(", ") ||
-                    "not specified"}
+                  {candidatePreferences?.educationalLevels?.length > 0 ? (
+                    candidatePreferences.educationalLevels.join(", ")
+                  ) : (
+                    <span className="text-muted">not specified</span>
+                  )}
                 </p>
               </div>
-              {/* Edit Button */}
+
+              {/* Edit Button - Original Style */}
               <div className="d-flex justify-content-center">
                 <button
                   type="button"

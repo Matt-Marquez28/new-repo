@@ -428,3 +428,4 @@ const AccreditedCompanies = () => {
 };
 
 export default AccreditedCompanies;
+

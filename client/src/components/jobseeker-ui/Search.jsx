@@ -271,7 +271,7 @@ const Search = () => {
         ) : (
           jobVacancies.map((jobVacancy, index) => (
             <div
-              className="border rounded p-3 text-start mb-3 shadow-sm"
+              className="border rounded bg-light p-3 text-start mb-3 shadow-sm"
               key={index}
             >
               <div className="d-flex justify-content-between">

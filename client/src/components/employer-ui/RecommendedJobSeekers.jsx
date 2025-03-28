@@ -95,7 +95,7 @@ const RecommendedJobSeekers = () => {
         ) : (
           jobSeekers.map((jobSeeker, index) => (
             <div
-              className="border rounded p-3 text-start mb-3 shadow-sm job-list"
+              className="border rounded p-3 bg-light text-start mb-3 shadow-sm job-list"
               key={index}
             >
               <div className="d-flex">

@@ -8,6 +8,7 @@ import { useToast } from "../../contexts/toast.context";
 import { useNavigate } from "react-router-dom";
 import Footer from "../shared-ui/Footer";
 import { useUser } from "../../contexts/user.context";
+import ReportButton from "../shared-ui/ReportButton";
 
 const JobVacancyDetailsPage = ({ currentUser }) => {
   const { user, setUser } = useUser();
@@ -162,6 +163,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
           </button>
         </div>
         <div className="d-flex gap-2">
+          <ReportButton accountId={jobVacancy?.accountId} />
           <button
             type="button"
             className="btn btn-primary text-light"

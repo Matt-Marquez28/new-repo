@@ -10,6 +10,16 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+body {
+  background-image: url('https://img.freepik.com/free-photo/elegant-white-background-with-blue-wave-lines_1017-32741.jpg?t=st=1743166768~exp=1743170368~hmac=04ea7fb9122e299e10c68438ed36d5fc4addded3e9e5336cf91a3455fc653332&w=1800');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  margin: 0;
+  min-height: 100vh;
+}
+
 
 /* Apply minimalist styling to all scrollbars globally */
 * {

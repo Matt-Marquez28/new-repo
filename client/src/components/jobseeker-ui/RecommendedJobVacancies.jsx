@@ -79,13 +79,13 @@ const RecommendedJobVacancies = () => {
       </div>
       <div className="d-flex justify-content-center"></div>
 
-      <div ref={containerRef} style={{ maxHeight: "500px", overflow: "auto" }}>
+      <div ref={containerRef} style={{ maxHeight: "565px", overflow: "auto" }}>
         {!jobVacancies?.length ? (
           <p className="text-center">No job vacancies found.</p>
         ) : (
           jobVacancies.map((job, index) => (
             <div
-              className="border rounded p-3 text-start mb-3 shadow-sm job-list"
+              className="border rounded p-3 text-start mb-3 shadow-sm job-list bg-light"
               key={job?._id || index}
             >
               <div className="d-flex justify-content-between">

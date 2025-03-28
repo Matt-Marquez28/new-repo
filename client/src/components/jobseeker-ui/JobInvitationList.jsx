@@ -112,7 +112,7 @@ const JobInvitationList = () => {
       {/* Table UI */}
       <div style={{ maxHeight: "400px", overflowY: "auto" }}>
         <table
-          className="table table-hover"
+          className="table table-hover table-striped"
           style={{ tableLayout: "fixed", width: "100%" }}
         >
           {/* Table Header */}
