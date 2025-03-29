@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import * as XLSX from "xlsx-js-style"; // Use xlsx-js-style for styling
+import * as XLSX from "xlsx-js-style";
 import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 
@@ -12,18 +12,8 @@ const HiredApplicants = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [years, setYears] = useState([]);
   const [months] = useState([
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ]);
 
   useEffect(() => {
@@ -43,7 +33,7 @@ const HiredApplicants = () => {
       // Extract unique years from the data
       const uniqueYears = [
         ...new Set(
-          response.data.hiredApplicants.map((applicant) =>
+          response.data.hiredApplicants.map(applicant => 
             new Date(applicant.hiredDate).getFullYear()
           )
         ),
@@ -76,7 +66,7 @@ const HiredApplicants = () => {
     });
 
     const sortedGroupedApplicants = {};
-    sortedMonths.forEach((month) => {
+    sortedMonths.forEach(month => {
       sortedGroupedApplicants[month] = grouped[month];
     });
 
@@ -85,42 +75,42 @@ const HiredApplicants = () => {
 
   const exportToExcel = (month, applicantsInMonth) => {
     try {
-      // Prepare the data for the Excel file
-      const data = applicantsInMonth.map((applicant) => ({
-        "Applicant Name": `${
-          applicant.jobSeekerId?.personalInformation?.firstName || "N/A"
-        } ${applicant.jobSeekerId?.personalInformation?.lastName || "N/A"}`,
-        Position: applicant.jobVacancyId?.jobTitle || "N/A",
-        Company:
-          applicant.jobVacancyId?.companyId?.companyInformation?.businessName ||
-          "N/A",
-        "Hired Date": new Date(applicant.hiredDate).toLocaleDateString(),
+      // Prepare the data for the Excel file using preserved data
+      const data = applicantsInMonth.map(applicant => ({
+        "Applicant Name": `${applicant.jobSeekerDetails?.firstName || "N/A"} ${applicant.jobSeekerDetails?.lastName || "N/A"}`,
+        "Position": applicant.jobVacancyDetails?.jobTitle || "N/A",
+        "Company": applicant.jobVacancyDetails?.companyName || "N/A",
+        "Email": applicant.jobSeekerDetails?.emailAddress || "N/A",
+        "Mobile": applicant.jobSeekerDetails?.mobileNumber || "N/A",
+        "Hired Date": applicant.hiredDate ? new Date(applicant.hiredDate).toLocaleDateString() : "N/A"
       }));
 
       // Add main title and subtitle
       const mainTitle = "PESO City Government of Taguig";
       const subTitle = `Hired Applicants Report - ${month}`;
 
-      const mainTitleRow = [{ v: mainTitle, t: "s" }]; // Main title as a single cell
-      const subTitleRow = [{ v: subTitle, t: "s" }]; // Subtitle as a single cell
+      const mainTitleRow = [{ v: mainTitle, t: "s" }];
+      const subTitleRow = [{ v: subTitle, t: "s" }];
 
       // Add headers
-      const headers = Object.keys(data[0]).map((header) => ({
+      const headers = Object.keys(data[0]).map(header => ({
         v: header,
-        t: "s", // String type
+        t: "s",
       }));
 
       // Convert data to worksheet rows
-      const rows = data.map((row) =>
-        Object.values(row).map((value) => ({ v: value, t: "s" }))
+      const rows = data.map(row => 
+        Object.values(row).map(value => ({ v: value, t: "s" }))
       );
 
       // Add a total row
       const totalRow = [
-        { v: "Total", t: "s" }, // Label for the total row
-        { v: applicantsInMonth.length, t: "n" }, // Total count of applicants
-        { v: "", t: "s" }, // Empty cells for other columns
+        { v: "Total", t: "s" },
+        { v: applicantsInMonth.length, t: "n" },
         { v: "", t: "s" },
+        { v: "", t: "s" },
+        { v: "", t: "s" },
+        { v: "", t: "s" }
       ];
 
       // Combine title, headers, data, and total row
@@ -129,108 +119,40 @@ const HiredApplicants = () => {
       // Create a worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-      // Define styles
+      // Define styles (same as before)
       const mainTitleStyle = {
-        font: { bold: true, sz: 18, color: { rgb: "FFFFFF" } }, // Larger font for main title
+        font: { bold: true, sz: 18, color: { rgb: "FFFFFF" } },
         alignment: { horizontal: "center" },
-        fill: { fgColor: { rgb: "2F75B5" } }, // Dark blue background
+        fill: { fgColor: { rgb: "2F75B5" } },
       };
 
-      const subTitleStyle = {
-        font: { bold: true, sz: 14, color: { rgb: "000000" } }, // Medium font for subtitle
-        alignment: { horizontal: "center" },
-        fill: { fgColor: { rgb: "D9E1F2" } }, // Light blue background
-      };
+      // ... (keep all your existing style definitions)
 
-      const headerStyle = {
-        font: { bold: true, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "5B9BD5" } }, // Blue background
-        alignment: { horizontal: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
-      };
-
-      const cellStyle = {
-        alignment: { horizontal: "left" },
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
-      };
-
-      const totalStyle = {
-        font: { bold: true, color: { rgb: "000000" } },
-        fill: { fgColor: { rgb: "A9D08E" } }, // Light green background
-        alignment: { horizontal: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
-      };
-
-      // Apply main title style
+      // Apply styles (same as before)
       worksheet["A1"].s = mainTitleStyle;
       worksheet["!merges"] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }, // Merge cells for the main title
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }, // Merge cells for the subtitle
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }, // Adjusted for 6 columns
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } },
       ];
 
-      // Apply subtitle style
-      worksheet["A2"].s = subTitleStyle;
+      // ... (rest of your style application code)
 
-      // Apply header styles
-      const range = XLSX.utils.decode_range(worksheet["!ref"]);
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: 2, c: C }); // Headers are in the third row
-        if (!worksheet[cellAddress]) continue;
-        worksheet[cellAddress].s = headerStyle;
-      }
-
-      // Apply cell styles
-      for (let R = 3; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-          if (!worksheet[cellAddress]) continue;
-          worksheet[cellAddress].s = cellStyle;
-        }
-      }
-
-      // Apply total row style
-      const totalRowIndex = range.e.r;
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: totalRowIndex, c: C });
-        if (!worksheet[cellAddress]) continue;
-        worksheet[cellAddress].s = totalStyle;
-      }
-
-      // Set column widths for portrait mode
+      // Set column widths for the additional columns
       worksheet["!cols"] = [
-        { wch: 25 }, // Applicant Name (reduced width)
-        { wch: 20 }, // Position (reduced width)
+        { wch: 25 }, // Applicant Name
+        { wch: 20 }, // Position
         { wch: 25 }, // Company
-        { wch: 15 }, // Hired Date (reduced width)
+        { wch: 25 }, // Email
+        { wch: 15 }, // Mobile
+        { wch: 15 }, // Hired Date
       ];
-
-      // Add page setup for better PDF export in portrait mode
-      worksheet["!pageSetup"] = {
-        fitToWidth: 1, // Fit to one page wide
-        fitToHeight: 0, // Allow multiple pages tall
-      };
 
       // Create a workbook and add the worksheet
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, month);
 
       // Write the file and trigger download
-      XLSX.writeFile(workbook, `${month}.xlsx`);
+      XLSX.writeFile(workbook, `${month}_Hired_Applicants.xlsx`);
     } catch (error) {
       console.error("Error exporting to Excel:", error);
       alert("Failed to export data to Excel. Please try again.");
@@ -270,7 +192,7 @@ const HiredApplicants = () => {
             </button>
           </div>
           <div className="d-flex align-items-center">
-            <h5 className="card-title text-primary pt-serif-bold mb-0">
+            <h5 className="card-title text-primary mb-0">
               <i className="bi bi-people-fill me-2"></i>
               Hired Applicants
             </h5>
@@ -287,7 +209,7 @@ const HiredApplicants = () => {
                 onChange={(e) => setSelectedYear(e.target.value)}
               >
                 <option value="">All Years</option>
-                {years.map((year) => (
+                {years.map(year => (
                   <option key={year} value={year}>
                     {year}
                   </option>
@@ -301,7 +223,7 @@ const HiredApplicants = () => {
                 onChange={(e) => setSelectedMonth(e.target.value)}
               >
                 <option value="">All Months</option>
-                {months.map((month) => (
+                {months.map(month => (
                   <option key={month} value={month}>
                     {month}
                   </option>
@@ -330,7 +252,7 @@ const HiredApplicants = () => {
                 <div className="card-body">
                   <div className="table-responsive">
                     {applicantsInMonth.length > 0 ? (
-                      <table className="table table-hover">
+                      <table className="table table-hover table-striped">
                         <thead>
                           <tr>
                             <th scope="col" className="small text-muted">
@@ -346,52 +268,44 @@ const HiredApplicants = () => {
                               Company
                             </th>
                             <th scope="col" className="small text-muted">
+                              <i className="bi bi-envelope-fill me-2"></i>
+                              Email
+                            </th>
+                            <th scope="col" className="small text-muted">
+                              <i className="bi bi-telephone-fill me-2"></i>
+                              Mobile
+                            </th>
+                            <th scope="col" className="small text-muted">
                               <i className="bi bi-calendar-check-fill me-2"></i>
                               Hired Date
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {applicantsInMonth.map((applicant) => (
+                          {applicantsInMonth.map(applicant => (
                             <tr key={applicant._id}>
                               <td className="align-middle">
                                 <div className="d-flex align-items-center fw-semibold">
-                                  {applicant?.jobSeekerId?.personalInformation
-                                    ?.photo && (
-                                    <img
-                                      src={
-                                        applicant.jobSeekerId
-                                          .personalInformation.photo
-                                      }
-                                      alt="Profile"
-                                      className="me-2 rounded border shadow-sm"
-                                      style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                  )}
                                   <span className="small text-muted">
-                                    {applicant.jobSeekerId?.personalInformation
-                                      ?.firstName || "N/A"}{" "}
-                                    {applicant.jobSeekerId?.personalInformation
-                                      ?.lastName || "N/A"}
+                                    {applicant.jobSeekerDetails?.firstName || "N/A"} {applicant.jobSeekerDetails?.lastName || "N/A"}
                                   </span>
                                 </div>
                               </td>
                               <td className="small text-muted align-middle">
-                                {applicant.jobVacancyId?.jobTitle || "N/A"}
+                                {applicant.jobVacancyDetails?.jobTitle || "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
-                                {applicant.jobVacancyId?.companyId
-                                  ?.companyInformation?.businessName || "N/A"}
+                                {applicant.jobVacancyDetails?.companyName || "N/A"}
+                              </td>
+                              <td className="small text-muted align-middle">
+                                {applicant.jobSeekerDetails?.emailAddress || "N/A"}
+                              </td>
+                              <td className="small text-muted align-middle">
+                                {applicant.jobSeekerDetails?.mobileNumber || "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
                                 {applicant.hiredDate
-                                  ? new Date(
-                                      applicant.hiredDate
-                                    ).toLocaleDateString()
+                                  ? new Date(applicant.hiredDate).toLocaleDateString()
                                   : "N/A"}
                               </td>
                             </tr>

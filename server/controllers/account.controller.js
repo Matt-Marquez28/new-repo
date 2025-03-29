@@ -805,10 +805,10 @@ export const deleteUser = async (req, res) => {
         console.log("JobSeeker found and deleted:", jobSeeker._id);
 
         // Delete all job applications by the jobseeker
-        const deletedApps = await Application.deleteMany({
-          jobSeekerId: jobSeeker._id,
-        });
-        console.log(`Deleted Applications: ${deletedApps.deletedCount}`);
+        // const deletedApps = await Application.deleteMany({
+        //   jobSeekerId: jobSeeker._id,
+        // });
+        // console.log(`Deleted Applications: ${deletedApps.deletedCount}`);
 
         // Delete all job invitations sent to the jobseeker
         const deletedInvitations = await JobInvitation.deleteMany({

@@ -16,12 +16,12 @@ import {
   NOTIFICATION_API_END_POINT,
 } from "../../utils/constants";
 import defaultProfile from "./default-profile.png";
-import { useSocketContext } from "../../contexts/socket.context"; // ✅ Import socket context
+import { useSocketContext } from "../../contexts/socket.context"; // Import socket context
 
 export const EmployerHeader = () => {
   const triggerToast = useToast();
   const navigate = useNavigate();
-  const [socket] = useSocketContext(); // ✅ Get socket instance
+  const [socket] = useSocketContext(); // Get socket instance
   const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const EmployerHeader = () => {
 
     if (socket) {
       socket.on("notification", (notification) => {
-        console.log("🔔 New Notification:", notification);
+        console.log(" New Notification:", notification);
         setHasUnread(true);
         triggerToast(
           `📢 ${notification.title}: ${notification.message}`,
@@ -132,23 +132,14 @@ export const EmployerHeader = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="justify-content-center align-items-center flex-grow-1 pe-3">
-              <NavDropdown
-                title={
-                  <>
-                    <i className="bi bi-suitcase-lg-fill text-primary"></i>{" "}
-                    <span className="text-primary"> Job Vacancy</span>
-                  </>
-                }
-                id={`offcanvasNavbarDropdown-expand-${expand}`}
+              <Nav.Link
+                as={Link}
+                to="job-vacancy"
+                className="px-3 text-primary"
               >
-                <NavDropdown.Item as={Link} to="job-vacancy">
-                  <i className="bi bi-clipboard"></i> Post Job Vacancy
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/action2">
-                  <i className="bi bi-suitcase-lg"></i> My Job Vacancies
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-              </NavDropdown>
+                <i className="bi bi-suitcase-lg-fill"></i> Job Vacancy
+                Management
+              </Nav.Link>
               <Nav.Link
                 as={Link}
                 to="company-profile"

@@ -104,16 +104,16 @@ const JobVacancyVerification = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary mb-3 mx-1">
+      <h5 className="text-primary mb-3 mx-1">
         <i className="bi bi-clipboard-check-fill"></i> Job Vacancy Verification
-      </h4>
+      </h5>
       <section className="mb-3">
         <div className="row justify-content-center">
           <div>
             <div className="row">
               {statsData.map((stat, index) => (
                 <div key={index} className="col" style={{ minWidth: "200px" }}>
-                  <div className="card border-0 shadow-sm h-100">
+                  <div className="card border-0 shadow-sm h-100 bg-light">
                     <div className="card-body p-3">
                       <div className="d-flex align-items-center">
                         <div className={`${stat.bgColor} rounded-3 p-2 me-3`}>
@@ -221,7 +221,10 @@ const JobVacancyVerification = () => {
             {filteredJobVacancies.length > 0 ? (
               filteredJobVacancies.map((jobVacancy, index) => (
                 <tr key={jobVacancy?._id}>
-                  <td scope="row" className="small align-middle text-muted fw-semibold">
+                  <td
+                    scope="row"
+                    className="small align-middle text-muted fw-semibold"
+                  >
                     {jobVacancy?.jobTitle}
                   </td>
                   <td className="small text-muted align-middle">

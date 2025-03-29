@@ -12,6 +12,16 @@ const applicationSchema = new mongoose.Schema(
       ref: "JobVacancy",
       required: true,
     },
+    jobSeekerDetails: {
+      firstName: String,
+      lastName: String,
+      mobileNumber: String,
+      emailAddress: String,
+    },
+    jobVacancyDetails: {
+      jobTitle: String,
+      companyName: String,
+    },
     interviewId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Interview",

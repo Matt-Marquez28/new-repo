@@ -158,16 +158,16 @@ const CompanyVerification = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary mb-3 mx-1">
+      <h5 className="text-primary mb-3 mx-1">
         <i className="bi bi-building-fill-check"></i> Company Verification
-      </h4>
+      </h5>
       <section className="mb-3">
         <div className="row justify-content-center">
           <div>
             <div className="row">
               {statsData.map((stat, index) => (
                 <div key={index} className="col" style={{ minWidth: "200px" }}>
-                  <div className="card border-0 shadow-sm h-100">
+                  <div className="card border-0 shadow-sm h-100 bg-light">
                     <div className="card-body p-3">
                       <div className="d-flex align-items-center">
                         <div className={`${stat.bgColor} rounded-3 p-2 me-3`}>

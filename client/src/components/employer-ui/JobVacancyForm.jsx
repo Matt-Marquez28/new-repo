@@ -147,7 +147,7 @@ const JobVacancyForm = () => {
       >
         {({ values, touched, errors }) => (
           <Form>
-            <div className="alert alert-info" role="alert">
+            <div className="alert alert-primary" role="alert">
               <i className="bi bi-info-circle-fill"></i> Provide a detailed job
               description to attract the right candidates. Include information
               about the job title, employment type, location, required

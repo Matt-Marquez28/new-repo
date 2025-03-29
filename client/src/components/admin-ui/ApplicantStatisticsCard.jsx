@@ -33,7 +33,7 @@ const ApplicantStatisticsCard = () => {
   return (
     <div className="col-md-6 mb-4">
       <div
-        className="card h-80 rounded border-0 shadow-sm"
+        className="card h-80 rounded border-0 shadow-sm bg-light"
         style={{
           backgroundColor: "#ffffff",
           padding: "1rem",

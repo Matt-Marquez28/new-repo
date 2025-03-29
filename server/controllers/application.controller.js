@@ -8,6 +8,144 @@ import { createNotification } from "../utils/notification.js";
 import { io, userSocketMap } from "../index.js";
 
 // apply job vacancy
+// export const applyJobVacancy = async (req, res) => {
+//   try {
+//     const { jobVacancyId } = req.params;
+//     const jobSeekerId = req.jobSeekerId;
+
+//     // Fetch job seeker details
+//     const jobSeeker = await JobSeeker.findById(jobSeekerId).select(
+//       "personalInformation.firstName personalInformation.lastName personalInformation.mobileNumber personalInformation.emailAddress"
+//     );
+
+//     if (!jobSeeker) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Job seeker not found" });
+//     }
+
+//     // Check if the job vacancy still exists and populate fields
+//     const jobVacancy = await JobVacancy.findById(jobVacancyId)
+//       .populate({
+//         path: "accountId",
+//         select: "emailAddress",
+//       })
+//       .populate({
+//         path: "companyId",
+//         select: "companyInformation",
+//       });
+
+//     if (!jobVacancy) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Job vacancy not found" });
+//     }
+
+//     // Check if the job seeker has already applied
+//     const existingApplication = await Application.findOne({
+//       jobSeekerId,
+//       jobVacancyId,
+//     });
+//     if (existingApplication) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "You have already applied to this job",
+//       });
+//     }
+
+//     // Create and save the new application
+//     const newApplication = new Application({
+//       jobSeekerId,
+//       jobVacancyId,
+//     });
+//     await newApplication.save();
+
+//     // Update job vacancy applicants
+//     jobVacancy.applicants.push(jobSeekerId);
+//     await jobVacancy.save();
+
+//     // Send email notification to the employer
+//     if (jobVacancy.accountId?.emailAddress) {
+//       const emailContent = {
+//         to: jobVacancy.accountId.emailAddress,
+//         subject: `New Job Application Received for ${jobVacancy?.jobTitle}`,
+//         text: `You have received a new application for the job vacancy: ${jobVacancy?.jobTitle} at ${jobVacancy?.companyId?.companyInformation?.businessName}.
+        
+//         Applicant Details:
+//         Name: ${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName}
+//         Email: ${jobSeeker?.personalInformation?.emailAddress}`,
+//         html: `
+//           <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
+//             <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
+//               <h1 style="margin: 0;">PESO City Government of Taguig</h1>
+//             </div>
+//             <h2 style="color: #2C3E50; text-align: center;">New Job Application Received</h2>
+//             <p>Dear Hiring Team,</p>
+//             <p>You have received a new application for the following job vacancy:</p>
+//             <ul style="list-style: none; padding: 0;">
+//               <li><strong>Job Title:</strong> ${jobVacancy?.jobTitle}</li>
+//               <li><strong>Company Name:</strong> ${jobVacancy?.companyId?.companyInformation?.businessName}</li>
+//               <li><strong>Applicant Name:</strong> ${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName}</li>
+//               <li><strong>Applicant Email:</strong> ${jobSeeker?.personalInformation?.emailAddress}</li>
+//             </ul>
+//             <p style="text-align: center;">
+//               <a href="https://yourjobportal.com" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Application</a>
+//             </p>
+//             <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
+//               © 2025 | City Government of Taguig 
+//             </p>
+//           </div>
+//         `,
+//       };
+
+//       try {
+//         await sendEmail(emailContent);
+//       } catch (emailError) {
+//         console.error("Error sending email:", emailError.message);
+//         // Optionally log the error but continue processing
+//       }
+//     } else {
+//       console.warn("No email address found for the employer.");
+//     }
+
+//     // Notify the employer
+//     try {
+//       await createNotification({
+//         to: jobVacancy.accountId, // Employer ID
+//         from: jobSeeker._id, // Job Seeker ID
+//         title: "New Job Application Received",
+//         message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} has applied for the ${jobVacancy?.jobTitle} position at ${jobVacancy?.companyId?.companyInformation?.businessName}. Review the application now.`,
+//         type: "info",
+//         link: `/employer/application-details/${newApplication._id}`,
+//       });
+//     } catch (error) {
+//       console.error("Error creating notification:", error);
+//     }
+
+//     // ✅ Emit real-time notification to the employer
+//     const employerSocketId = userSocketMap[jobVacancy.accountId._id];
+
+//     if (employerSocketId) {
+//       io.to(employerSocketId).emit("newApplication", {
+//         message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} applied for ${jobVacancy?.jobTitle}.`,
+//       });
+//     } else {
+//       console.log(
+//         "Employer is offline new application is saved in the database"
+//       );
+//     }
+
+//     // Return a success response
+//     res.status(201).json({
+//       success: true,
+//       message: "Successfully applied to the job vacancy",
+//     });
+//   } catch (error) {
+//     console.error("Error in applyJobVacancy:", error);
+//     res.status(500).json({ success: false, message: "Internal server error!" });
+//   }
+// };
+
 export const applyJobVacancy = async (req, res) => {
   try {
     const { jobVacancyId } = req.params;
@@ -32,7 +170,7 @@ export const applyJobVacancy = async (req, res) => {
       })
       .populate({
         path: "companyId",
-        select: "companyInformation",
+        select: "companyInformation.businessName",
       });
 
     if (!jobVacancy) {
@@ -53,11 +191,22 @@ export const applyJobVacancy = async (req, res) => {
       });
     }
 
-    // Create and save the new application
+    // Create and save the new application with preserved data
     const newApplication = new Application({
       jobSeekerId,
       jobVacancyId,
+      jobSeekerDetails: {
+        firstName: jobSeeker.personalInformation.firstName,
+        lastName: jobSeeker.personalInformation.lastName,
+        mobileNumber: jobSeeker.personalInformation.mobileNumber,
+        emailAddress: jobSeeker.personalInformation.emailAddress,
+      },
+      jobVacancyDetails: {
+        jobTitle: jobVacancy.jobTitle,
+        companyName: jobVacancy.companyId?.companyInformation?.businessName,
+      },
     });
+
     await newApplication.save();
 
     // Update job vacancy applicants
@@ -68,12 +217,13 @@ export const applyJobVacancy = async (req, res) => {
     if (jobVacancy.accountId?.emailAddress) {
       const emailContent = {
         to: jobVacancy.accountId.emailAddress,
-        subject: `New Job Application Received for ${jobVacancy?.jobTitle}`,
-        text: `You have received a new application for the job vacancy: ${jobVacancy?.jobTitle} at ${jobVacancy?.companyId?.companyInformation?.businessName}.
+        subject: `New Job Application Received for ${jobVacancy.jobTitle}`,
+        text: `You have received a new application for the job vacancy: ${jobVacancy.jobTitle} at ${jobVacancy.companyId?.companyInformation?.businessName}.
         
         Applicant Details:
-        Name: ${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName}
-        Email: ${jobSeeker?.personalInformation?.emailAddress}`,
+        Name: ${jobSeeker.personalInformation.firstName} ${jobSeeker.personalInformation.lastName}
+        Email: ${jobSeeker.personalInformation.emailAddress}
+        Mobile: ${jobSeeker.personalInformation.mobileNumber}`,
         html: `
           <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
             <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
@@ -83,16 +233,17 @@ export const applyJobVacancy = async (req, res) => {
             <p>Dear Hiring Team,</p>
             <p>You have received a new application for the following job vacancy:</p>
             <ul style="list-style: none; padding: 0;">
-              <li><strong>Job Title:</strong> ${jobVacancy?.jobTitle}</li>
-              <li><strong>Company Name:</strong> ${jobVacancy?.companyId?.companyInformation?.businessName}</li>
-              <li><strong>Applicant Name:</strong> ${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName}</li>
-              <li><strong>Applicant Email:</strong> ${jobSeeker?.personalInformation?.emailAddress}</li>
+              <li><strong>Job Title:</strong> ${jobVacancy.jobTitle}</li>
+              <li><strong>Company Name:</strong> ${jobVacancy.companyId?.companyInformation?.businessName}</li>
+              <li><strong>Applicant Name:</strong> ${jobSeeker.personalInformation.firstName} ${jobSeeker.personalInformation.lastName}</li>
+              <li><strong>Applicant Email:</strong> ${jobSeeker.personalInformation.emailAddress}</li>
+              <li><strong>Applicant Phone:</strong> ${jobSeeker.personalInformation.mobileNumber}</li>
             </ul>
             <p style="text-align: center;">
-              <a href="https://yourjobportal.com" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Application</a>
+              <a href="${process.env.FRONTEND_URL}/employer/application-details/${newApplication._id}" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Application</a>
             </p>
             <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
-              © 2025 | City Government of Taguig 
+              © ${new Date().getFullYear()} | City Government of Taguig 
             </p>
           </div>
         `,
@@ -102,19 +253,16 @@ export const applyJobVacancy = async (req, res) => {
         await sendEmail(emailContent);
       } catch (emailError) {
         console.error("Error sending email:", emailError.message);
-        // Optionally log the error but continue processing
       }
-    } else {
-      console.warn("No email address found for the employer.");
     }
 
     // Notify the employer
     try {
       await createNotification({
-        to: jobVacancy.accountId, // Employer ID
-        from: jobSeeker._id, // Job Seeker ID
+        to: jobVacancy.accountId,
+        from: jobSeeker._id,
         title: "New Job Application Received",
-        message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} has applied for the ${jobVacancy?.jobTitle} position at ${jobVacancy?.companyId?.companyInformation?.businessName}. Review the application now.`,
+        message: `${jobSeeker.personalInformation.firstName} ${jobSeeker.personalInformation.lastName} has applied for ${jobVacancy.jobTitle}`,
         type: "info",
         link: `/employer/application-details/${newApplication._id}`,
       });
@@ -122,27 +270,31 @@ export const applyJobVacancy = async (req, res) => {
       console.error("Error creating notification:", error);
     }
 
-    // ✅ Emit real-time notification to the employer
+    // Emit real-time notification
     const employerSocketId = userSocketMap[jobVacancy.accountId._id];
-
     if (employerSocketId) {
       io.to(employerSocketId).emit("newApplication", {
-        message: `${jobSeeker?.personalInformation?.firstName} ${jobSeeker?.personalInformation?.lastName} applied for ${jobVacancy?.jobTitle}.`,
+        message: `${jobSeeker.personalInformation.firstName} ${jobSeeker.personalInformation.lastName} applied for ${jobVacancy.jobTitle}`,
+        applicationId: newApplication._id,
       });
-    } else {
-      console.log(
-        "Employer is offline new application is saved in the database"
-      );
     }
 
-    // Return a success response
     res.status(201).json({
       success: true,
       message: "Successfully applied to the job vacancy",
+      application: {
+        id: newApplication._id,
+        status: newApplication.status,
+        appliedAt: newApplication.createdAt,
+      },
     });
   } catch (error) {
     console.error("Error in applyJobVacancy:", error);
-    res.status(500).json({ success: false, message: "Internal server error!" });
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 

@@ -278,7 +278,7 @@ const AccreditedCompanies = () => {
           </button>
         </div>
         <div className="d-flex align-items-center">
-          <h5 className="card-title text-primary pt-serif-bold mb-0">
+          <h5 className="card-title text-primary mb-0">
             <i className="bi bi-building-fill-check"></i> Accredited Companies
           </h5>
         </div>
@@ -340,7 +340,7 @@ const AccreditedCompanies = () => {
                 <div className="card-body">
                   <div className="table-responsive">
                     {companiesInMonth.length > 0 ? (
-                      <table className="table table-hover">
+                      <table className="table table-hover table-striped">
                         <thead>
                           <tr>
                             <th className="small text-muted">
@@ -367,7 +367,7 @@ const AccreditedCompanies = () => {
                           {companiesInMonth.map((company) => (
                             <tr key={company._id}>
                               <td className="small text-muted align-middle fw-semibold">
-                                {company?.companyInformation?.companyLogo && (
+                                {/* {company?.companyInformation?.companyLogo && (
                                   <img
                                     src={
                                       company?.companyInformation.companyLogo
@@ -384,7 +384,7 @@ const AccreditedCompanies = () => {
                                       borderRadius: "10px",
                                     }}
                                   />
-                                )}
+                                )} */}
                                 {company?.companyInformation?.businessName ||
                                   "N/A"}
                               </td>
