@@ -124,13 +124,7 @@ const JobSeekerDetails = () => {
       {/* Job Seeker Details Card */}
       {loading ? (
         <div className="d-flex justify-content-center gap-3 my-3">
-          <div className="spinner-grow text-info" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <div className="spinner-grow text-info" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <div className="spinner-grow text-info" role="status">
+          <div className="spinner text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>

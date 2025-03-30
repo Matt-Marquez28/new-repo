@@ -837,12 +837,12 @@ export const deleteUser = async (req, res) => {
         console.log(`Deleted Job Vacancies: ${deletedJobs.deletedCount}`);
 
         // Step 2: Delete all applications for jobs that belonged to the company
-        const deletedApplications = await Application.deleteMany({
-          jobVacancyId: { $in: company.jobVacancies }, // Use array of jobVacancies
-        });
-        console.log(
-          `Deleted Job Applications: ${deletedApplications.deletedCount}`
-        );
+        // const deletedApplications = await Application.deleteMany({
+        //   jobVacancyId: { $in: company.jobVacancies }, // Use array of jobVacancies
+        // });
+        // console.log(
+        //   `Deleted Job Applications: ${deletedApplications.deletedCount}`
+        // );
 
         // Step 3: Delete company documents
         const deletedDocs = await CompanyDocuments.deleteMany({

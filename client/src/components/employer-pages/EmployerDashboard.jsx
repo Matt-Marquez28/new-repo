@@ -217,7 +217,7 @@ const EmployerDashboard = () => {
                   {candidatePreferences?.specializations?.length > 0 ? (
                     candidatePreferences.specializations.join(", ")
                   ) : (
-                    <span className="text-muted">not specified</span>
+                    <span className="text-info">Not specified</span>
                   )}
                 </p>
               </div>
@@ -232,7 +232,7 @@ const EmployerDashboard = () => {
                   {candidatePreferences?.skills?.length > 0 ? (
                     candidatePreferences.skills.join(", ")
                   ) : (
-                    <span className="text-muted">not specified</span>
+                    <span className="text-info">Not specified</span>
                   )}
                 </p>
               </div>
@@ -247,7 +247,7 @@ const EmployerDashboard = () => {
                   {candidatePreferences?.educationalLevels?.length > 0 ? (
                     candidatePreferences.educationalLevels.join(", ")
                   ) : (
-                    <span className="text-muted">not specified</span>
+                    <span className="text-info">Not specified</span>
                   )}
                 </p>
               </div>

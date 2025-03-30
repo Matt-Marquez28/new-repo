@@ -31,7 +31,7 @@ const ApplicantStatisticsCard = () => {
     stats.total > 0 ? ((stats.hired / stats.total) * 100).toFixed(2) : 0;
 
   return (
-    <div className="col-md-6 mb-4">
+    <div className="col-md-6">
       <div
         className="card h-80 rounded border-0 shadow-sm bg-light"
         style={{

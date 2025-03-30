@@ -83,7 +83,7 @@ const AboutUs = () => {
             withCredentials: true,
           }
         );
-        triggerToast(res?.data?.message, "success");
+        triggerToast(res?.data?.message, "primary");
         getCompanyData();
       } catch (error) {
         console.log(error);
@@ -120,7 +120,7 @@ const AboutUs = () => {
               </label>
               <textarea
                 id="mission"
-                className="form-control text-secondary"
+                className="form-control"
                 rows="6"
                 placeholder="Enter your mission statement here"
                 {...formik.getFieldProps("mission")}
@@ -135,7 +135,7 @@ const AboutUs = () => {
               </label>
               <textarea
                 id="vision"
-                className="form-control text-secondary"
+                className="form-control"
                 rows="6"
                 placeholder="Enter your vision statement here"
                 {...formik.getFieldProps("vision")}
@@ -153,7 +153,7 @@ const AboutUs = () => {
               </label>
               <textarea
                 id="goals"
-                className="form-control text-secondary"
+                className="form-control"
                 rows="6"
                 placeholder="Enter your goal statement here"
                 {...formik.getFieldProps("goals")}
@@ -168,7 +168,7 @@ const AboutUs = () => {
               </label>
               <textarea
                 id="values"
-                className="form-control text-secondary"
+                className="form-control"
                 rows="6"
                 placeholder="Enter your value statement here"
                 {...formik.getFieldProps("values")}
@@ -202,7 +202,7 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="facebook"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   formik.touched.facebook && formik.errors.facebook
                     ? "is-invalid"
                     : ""
@@ -211,9 +211,7 @@ const AboutUs = () => {
                 {...formik.getFieldProps("facebook")}
               />
               {formik.touched.facebook && formik.errors.facebook ? (
-                <div className="invalid-feedback">
-                  {formik.errors.facebook}
-                </div>
+                <div className="invalid-feedback">{formik.errors.facebook}</div>
               ) : null}
             </div>
           </div>
@@ -227,7 +225,7 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="instagram"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   formik.touched.instagram && formik.errors.instagram
                     ? "is-invalid"
                     : ""
@@ -252,7 +250,7 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="twitter"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   formik.touched.twitter && formik.errors.twitter
                     ? "is-invalid"
                     : ""
@@ -275,7 +273,7 @@ const AboutUs = () => {
               <input
                 type="text"
                 id="companyWebsite"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   formik.touched.companyWebsite && formik.errors.companyWebsite
                     ? "is-invalid"
                     : ""

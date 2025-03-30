@@ -69,15 +69,15 @@ io.on("connection", (socket) => {
   // Get userId from the frontend (Socket handshake query)
   const userId = socket.handshake.query.userId;
   if (userId && userId !== "undefined") {
-    userSocketMap[userId] = socket.id; // ✅ Store user socket ID
+    userSocketMap[userId] = socket.id; //  Store user socket ID
   }
 
-  console.log("Updated active users:", userSocketMap); // ✅ Debugging
+  console.log("Updated active users:", userSocketMap); //  Debugging
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     if (userId && userId !== "undefined") {
-      delete userSocketMap[userId]; // ✅ Remove user on disconnect
+      delete userSocketMap[userId]; //  Remove user on disconnect
     }
     console.log("Updated active users after disconnect:", userSocketMap);
   });
@@ -521,6 +521,29 @@ const deleteExpiredAccounts = async () => {
   }
 };
 
+// Function to deactivate inactive accounts
+const deactivateInactiveAccounts = async () => {
+  try {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1); // Exactly 1 year ago
+
+    const result = await Account.updateMany(
+      {
+        lastActive: { $lt: oneYearAgo },
+        isActive: true, // Only target currently active accounts
+      },
+      {
+        $set: { isActive: false },
+        $currentDate: { updatedAt: true },
+      }
+    );
+
+    console.log(`Deactivated ${result.modifiedCount} inactive accounts.`);
+  } catch (error) {
+    console.error("Error deactivating inactive accounts:", error);
+  }
+};
+
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
@@ -532,6 +555,7 @@ cron.schedule("0 0 * * *", async () => {
   await checkAndExpireDocuments(now);
   await checkAndExpireJobVacancies(now);
   await deleteExpiredAccounts();
+  await deactivateInactiveAccounts();
 });
 
 export { io, userSocketMap };

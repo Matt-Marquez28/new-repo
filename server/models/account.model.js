@@ -52,6 +52,7 @@ const accountSchema = new mongoose.Schema(
       default: false,
     },
     lastActive: { type: Date, default: Date.now },
+    isActive: { type: Boolean, default: true },
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true }

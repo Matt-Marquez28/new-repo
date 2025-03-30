@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import { COMPANY_API_END_POINT } from "../../utils/constants";
@@ -27,6 +27,9 @@ const CompanyRankings = () => {
   const [barChartData, setBarChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchCompanyRankings = async () => {
@@ -52,6 +55,34 @@ const CompanyRankings = () => {
     fetchCompanyRankings();
   }, []);
 
+  // Filter and paginate data
+  const filteredRankings = useMemo(() => {
+    return rankings.filter((company) =>
+      company.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [rankings, searchTerm]);
+
+  const paginatedRankings = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredRankings.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredRankings, currentPage, itemsPerPage]);
+
+  // Optimize chart data to show only top 15 companies
+  const optimizedChartData = useMemo(() => {
+    if (!barChartData) return null;
+
+    return {
+      ...barChartData,
+      labels: barChartData.labels.slice(0, 15),
+      datasets: barChartData.datasets.map((dataset) => ({
+        ...dataset,
+        data: dataset.data.slice(0, 15),
+      })),
+    };
+  }, [barChartData]);
+
+  const totalPages = Math.ceil(filteredRankings.length / itemsPerPage);
+
   if (loading) {
     return (
       <div className="p-4 flex justify-center items-center h-64">
@@ -76,73 +107,147 @@ const CompanyRankings = () => {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Top Companies</h2>
+    <div className="w-full max-w-full px-0">
+      <div className="mx-auto w-full px-4 py-6 bg-light rounded">
+        <h4 className="text-2xl font-bold mb-6">Top Companies</h4>
 
-      {/* Bar Chart */}
-      {barChartData && (
-        <div className="mb-8">
-          <Bar
-            data={barChartData}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: "top",
-                },
-                tooltip: {
-                  callbacks: {
-                    label: function (context) {
-                      return `${context.dataset.label}: ${context.raw}`;
-                    },
-                  },
-                },
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
+        {/* Search Input */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search companies..."
+            className="w-full md:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when searching
             }}
           />
         </div>
-      )}
 
-      {/* Rankings Table */}
-      <div className="overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="py-3 px-6 text-left">Rank</th>
-              <th className="py-3 px-6 text-left">Company</th>
-              <th className="py-3 px-6 text-left">Jobs</th>
-              <th className="py-3 px-6 text-left">Applicants</th>
-              <th className="py-3 px-6 text-left">Hires</th>
-              <th className="py-3 px-6 text-left">Hire Rate</th>
-              <th className="py-3 px-6 text-left">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rankings.map((company, index) => (
-              <tr
-                key={company.companyId}
-                className="border-b hover:bg-gray-50 transition-colors"
-              >
-                <td className="py-4 px-6">{index + 1}</td>
-                <td className="py-4 px-6 font-medium">{company.companyName}</td>
-                <td className="py-4 px-6">{company.vacancies}</td>
-                <td className="py-4 px-6">{company.totalApplicants}</td>
-                <td className="py-4 px-6">{company.hiredApplicants}</td>
-                <td className="py-4 px-6">
-                  {(company.hireRate * 100).toFixed(1)}%
-                </td>
-                <td className="py-4 px-6 font-semibold text-blue-600">
-                  {company.score}
-                </td>
+        {/* Bar Chart - Showing only top 15 */}
+        {optimizedChartData && (
+          <div className="mb-8 w-full">
+            <Bar
+              data={optimizedChartData}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        return `${context.dataset.label}: ${context.raw}`;
+                      },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    ticks: {
+                      maxRotation: 45,
+                      minRotation: 30,
+                      autoSkip: true,
+                    },
+                  },
+                  y: {
+                    beginAtZero: true,
+                  },
+                },
+              }}
+            />
+            {barChartData?.labels?.length > 15 && (
+              <p className="text-sm text-gray-500 mt-2">
+                Showing top 15 of {barChartData.labels.length} companies
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Rankings Table */}
+        <div className="w-full max-w-full overflow-x-auto">
+          <table className="w-full min-w-max bg-light">
+            <thead className="bg-gray-100 sticky top-0">
+              <tr>
+                <th className="py-3 px-6 text-left whitespace-nowrap">Rank</th>
+                <th className="py-3 px-6 text-left whitespace-nowrap min-w-[200px]">
+                  Company
+                </th>
+                <th className="py-3 px-6 text-left whitespace-nowrap">Jobs</th>
+                <th className="py-3 px-6 text-left whitespace-nowrap">
+                  Applicants
+                </th>
+                <th className="py-3 px-6 text-left whitespace-nowrap">Hires</th>
+                <th className="py-3 px-6 text-left whitespace-nowrap">
+                  Hire Rate
+                </th>
+                <th className="py-3 px-6 text-left whitespace-nowrap">Score</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedRankings.map((company, index) => (
+                <tr
+                  key={company.companyId}
+                  className="border-b hover:bg-gray-50 transition-colors"
+                >
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
+                  <td className="py-4 px-6 font-medium whitespace-nowrap">
+                    {company.companyName}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    {company.vacancies}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    {company.totalApplicants}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    {company.hiredApplicants}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    {(company.hireRate * 100).toFixed(1)}%
+                  </td>
+                  <td className="py-4 px-6 font-semibold text-blue-600 whitespace-nowrap">
+                    {company.score}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination Controls */}
+        {filteredRankings.length > itemsPerPage && (
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+        {/* Results Count */}
+        <div className="mt-4 text-sm text-gray-500">
+          Showing {paginatedRankings.length} of {filteredRankings.length}{" "}
+          companies
+          {searchTerm && ` matching "${searchTerm}"`}
+        </div>
       </div>
     </div>
   );

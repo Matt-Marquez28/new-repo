@@ -81,7 +81,10 @@ const RecommendedJobVacancies = () => {
 
       <div ref={containerRef} style={{ maxHeight: "565px", overflow: "auto" }}>
         {!jobVacancies?.length ? (
-          <p className="text-center">No job vacancies found.</p>
+          <div className="text-center p-4 border rounded-3  bg-light">
+          <i className="bi bi-suitcase-lg fs-1 text-muted mb-3"></i>
+          <p className="text-muted">No recommendations found.<br/> Try adjusting your job preferences in your profile for better results!</p>
+        </div>
         ) : (
           jobVacancies.map((job, index) => (
             <div

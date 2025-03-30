@@ -138,7 +138,13 @@ const AccreditedCompanies = () => {
     ];
 
     // Combine title, headers, data, and total row
-    const worksheetData = [mainTitleRow, subTitleRow, headers, ...rows, totalRow];
+    const worksheetData = [
+      mainTitleRow,
+      subTitleRow,
+      headers,
+      ...rows,
+      totalRow,
+    ];
 
     // Create a worksheet
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -428,4 +434,3 @@ const AccreditedCompanies = () => {
 };
 
 export default AccreditedCompanies;
-

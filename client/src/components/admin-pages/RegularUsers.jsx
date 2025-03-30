@@ -88,6 +88,7 @@ const RegularUsers = () => {
   return (
     <div className="container">
       <Tabs
+        
         defaultActiveKey="users"
         id="user-tabs"
         className="mb-3"
@@ -124,35 +125,56 @@ const RegularUsers = () => {
           </div>
 
           {loadingUsers ? (
-            <Spinner animation="border" className="d-block mx-auto mt-3" />
+            <Spinner
+              animation="border"
+              className="d-block mx-auto mt-3 text-primary"
+            />
           ) : (
-            <Table striped bordered hover responsive>
+            <Table striped hover responsive>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th className="small text-muted align-middle">Name</th>
+                  <th className="small text-muted align-middle">Email</th>
+                  <th className="small text-muted align-middle">Role</th>
+                  <th className="small text-muted align-middle">Status</th>
+                  <th className="small text-muted align-middle">isBlocked</th>
+                  <th className="small text-muted align-middle text-center">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {users.length > 0 ? (
                   users.map((user) => (
                     <tr key={user._id}>
-                      <td>{user.firstName}</td>
-                      <td>{user.emailAddress}</td>
-                      <td>{user.role}</td>
-                      <td>
+                      <td className="small align-middle text-muted fw-semibold">
+                        {user.firstName}
+                      </td>
+                      <td className="small text-muted align-middle">
+                        {user.emailAddress}
+                      </td>
+                      <td className="small text-muted align-middle">
+                        {user.role}
+                      </td>
+                      <td className="small text-muted align-middle">
+                        <span
+                          className={`badge ${
+                            user.isActive ? "bg-success" : "bg-danger"
+                          }`}
+                        >
+                          {user.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="small text-muted align-middle">
                         <span
                           className={`badge ${
                             user.isBlocked ? "bg-danger" : "bg-success"
                           }`}
                         >
-                          {user.isBlocked ? "Blocked" : "Active"}
+                          {user.isBlocked ? "Blocked" : "False"}
                         </span>
                       </td>
-                      <td>
+                      <td className="small text-muted align-middle text-center">
                         <Dropdown>
                           <Dropdown.Toggle variant="light" className="btn-sm">
                             <i className="bi bi-three-dots-vertical"></i>

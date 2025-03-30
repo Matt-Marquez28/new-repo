@@ -83,7 +83,7 @@ const LegalDocuments = () => {
 
       if (res.data.success) {
         console.log("Documents uploaded successfully");
-        triggerToast(res?.data?.message, "success");
+        triggerToast(res?.data?.message, "primary");
         getCompanyDocumentByCompanyId();
       }
     } catch (error) {
@@ -131,7 +131,7 @@ const LegalDocuments = () => {
       default:
         return (
           <span className="fw-semibold text-secondary">
-            Status: <span className="badge bg-secondary">Unknown</span>
+            <span className="badge bg-secondary">Unknown</span>
           </span>
         );
     }
@@ -198,6 +198,8 @@ const LegalDocuments = () => {
                       color: isExpired(documents?.dti?.expiresAt)
                         ? "red"
                         : "black",
+                      display: "block",
+                      marginTop: "5px",
                     }}
                   >
                     Expires on: {formatDate(documents?.dti?.expiresAt)}
@@ -236,6 +238,8 @@ const LegalDocuments = () => {
                     color: isExpired(documents?.mayorsPermit?.expiresAt)
                       ? "red"
                       : "black",
+                    display: "block",
+                    marginTop: "5px",
                   }}
                 >
                   Expires on: {formatDate(documents?.mayorsPermit?.expiresAt)}
@@ -273,6 +277,8 @@ const LegalDocuments = () => {
                     color: isExpired(documents?.birRegistration?.expiresAt)
                       ? "red"
                       : "black",
+                    display: "block",
+                    marginTop: "5px",
                   }}
                 >
                   Expires on:{" "}

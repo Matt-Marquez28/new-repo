@@ -174,7 +174,7 @@ const CompanyInformationForm = () => {
               withCredentials: true,
             }
           );
-          triggerToast(res?.data?.message, "success");
+          triggerToast(res?.data?.message, "primary");
           setUser((prev) => ({
             ...prev, // Preserve other properties in the state
             companyData: {
@@ -213,7 +213,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 name="tinNumber"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.tinNumber &&
                   (errors.tinNumber ? "is-invalid" : "is-valid")
                 }`}
@@ -230,7 +230,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 name="businessName"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.businessName &&
                   (errors.businessName ? "is-invalid" : "is-valid")
                 }`}
@@ -247,7 +247,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 name="officeType"
                 as="select"
-                className={`form-select text-secondary ${
+                className={`form-select ${
                   touched.officeType &&
                   (errors.officeType ? "is-invalid" : "is-valid")
                 }`}
@@ -268,7 +268,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 name="companySize"
                 as="select"
-                className={`form-select text-secondary ${
+                className={`form-select ${
                   touched.companySize &&
                   (errors.companySize ? "is-invalid" : "is-valid")
                 }`}
@@ -291,7 +291,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 name="typeOfBusiness"
                 as="select"
-                className={`form-select text-secondary ${
+                className={`form-select ${
                   touched.typeOfBusiness &&
                   (errors.typeOfBusiness ? "is-invalid" : "is-valid")
                 }`}
@@ -315,7 +315,7 @@ const CompanyInformationForm = () => {
                 disabled={isAccredited}
                 as="select"
                 name="industry"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.industry &&
                   (errors.industry ? "is-invalid" : "is-valid")
                 }`}
@@ -340,7 +340,7 @@ const CompanyInformationForm = () => {
                 name="description"
                 as="textarea"
                 rows="4"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.description &&
                   (errors.description ? "is-invalid" : "is-valid")
                 }`}
@@ -375,7 +375,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="employerName"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.employerName &&
                   (errors.employerName ? "is-invalid" : "is-valid")
                 }`}
@@ -391,7 +391,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="employerPosition"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.employerPosition &&
                   (errors.employerPosition ? "is-invalid" : "is-valid")
                 }`}
@@ -426,7 +426,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="street"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.street && (errors.street ? "is-invalid" : "is-valid")
                 }`}
               />
@@ -441,7 +441,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="barangay"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.barangay &&
                   (errors.barangay ? "is-invalid" : "is-valid")
                 }`}
@@ -457,7 +457,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="cityMunicipality"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.cityMunicipality &&
                   (errors.cityMunicipality ? "is-invalid" : "is-valid")
                 }`}
@@ -473,7 +473,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="province"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.province &&
                   (errors.province ? "is-invalid" : "is-valid")
                 }`}
@@ -489,7 +489,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="zipCode"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.zipCode &&
                   (errors.zipCode ? "is-invalid" : "is-valid")
                 }`}
@@ -524,7 +524,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="mobileNumber"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.mobileNumber &&
                   (errors.mobileNumber ? "is-invalid" : "is-valid")
                 }`}
@@ -540,7 +540,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="telephoneNumber"
                 type="text"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.telephoneNumber &&
                   (errors.telephoneNumber ? "is-invalid" : "is-valid")
                 }`}
@@ -556,7 +556,7 @@ const CompanyInformationForm = () => {
               <Field
                 name="emailAddress"
                 type="email"
-                className={`form-control text-secondary ${
+                className={`form-control ${
                   touched.emailAddress &&
                   (errors.emailAddress ? "is-invalid" : "is-valid")
                 }`}

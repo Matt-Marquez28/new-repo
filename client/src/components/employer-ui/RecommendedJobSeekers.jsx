@@ -87,10 +87,13 @@ const RecommendedJobSeekers = () => {
       </div>
       <div style={{ maxHeight: "500px", overflow: "auto" }}>
         {jobSeekers.length === 0 ? (
-          <div className="alert alert-warning" role="alert">
-            <i className="bi bi-info-circle-fill"></i> No recommendations found.
-            Try adjusting your candidate preferences in your company profile for
-            better results!
+          <div className="text-center p-4 border rounded-3  bg-light">
+            <i className="bi bi-people fs-1 text-muted mb-3"></i>
+            <p className="text-muted">
+              No recommendations found.
+              <br /> Try adjusting your candidate preferences in your company profile for
+              better results!
+            </p>
           </div>
         ) : (
           jobSeekers.map((jobSeeker, index) => (

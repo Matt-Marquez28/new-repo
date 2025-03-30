@@ -113,7 +113,7 @@ const Notification = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="text-center p-4 border rounded-3">
+        <div className="text-center p-4 border rounded-3 bg-light">
           <i className="bi bi-bell-slash fs-1 text-muted mb-3"></i>
           <p className="text-muted">No notifications available</p>
         </div>

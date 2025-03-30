@@ -26,9 +26,21 @@ const CandidatePreferences = () => {
       const { candidatePreferences } = res.data.companyData || {};
 
       // Ensure at least one field exists for each category
-      setEducationLevels(candidatePreferences?.educationalLevels?.length > 0 ? candidatePreferences.educationalLevels : [""]);
-      setSkills(candidatePreferences?.skills?.length > 0 ? candidatePreferences.skills : [""]);
-      setSpecializations(candidatePreferences?.specializations?.length > 0 ? candidatePreferences.specializations : [""]);
+      setEducationLevels(
+        candidatePreferences?.educationalLevels?.length > 0
+          ? candidatePreferences.educationalLevels
+          : [""]
+      );
+      setSkills(
+        candidatePreferences?.skills?.length > 0
+          ? candidatePreferences.skills
+          : [""]
+      );
+      setSpecializations(
+        candidatePreferences?.specializations?.length > 0
+          ? candidatePreferences.specializations
+          : [""]
+      );
     } catch (error) {
       console.log(error);
     }
@@ -58,9 +70,13 @@ const CandidatePreferences = () => {
 
     // Prepare the data for submission
     const payload = {
-      educationalLevels: educationalLevels.filter((field) => field.trim() !== ""),
+      educationalLevels: educationalLevels.filter(
+        (field) => field.trim() !== ""
+      ),
       skills: skills.filter((skill) => skill.trim() !== ""),
-      specializations: specializations.filter((specialization) => specialization.trim() !== ""),
+      specializations: specializations.filter(
+        (specialization) => specialization.trim() !== ""
+      ),
     };
 
     console.log("Submitting Preferences:", payload);
@@ -105,11 +121,7 @@ const CandidatePreferences = () => {
       {/* Specializations */}
       <div className="row mb-4">
         <div className="col-md-4 mb-3">
-          <label>
-            <h5 className="text-primary">
-              <i className="bi bi-gear-wide-connected"></i> Specializations
-            </h5>
-          </label>
+          <label>Specializations:</label>
           {specializations.map((specialization, index) => (
             <div key={index} className="input-group mb-2">
               <input
@@ -142,11 +154,7 @@ const CandidatePreferences = () => {
 
         {/* Skills */}
         <div className="col-md-4 mb-3">
-          <label>
-            <h5 className="text-primary">
-              <i className="bi bi-tools"></i> Skills
-            </h5>
-          </label>
+          <label>Skills:</label>
           {skills.map((skill, index) => (
             <div key={index} className="input-group mb-2">
               <input
@@ -179,11 +187,7 @@ const CandidatePreferences = () => {
 
         {/* Educational Levels */}
         <div className="col-md-4 mb-3">
-          <label>
-            <h5 className="text-primary">
-              <i className="bi bi-mortarboard-fill"></i> Educational Levels
-            </h5>
-          </label>
+          <label>Educational Levels:</label>
           {educationalLevels.map((level, index) => (
             <div key={index} className="input-group mb-2">
               <select

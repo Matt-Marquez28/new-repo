@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 import { useToast } from "../../contexts/toast.context";
+import { useUser } from "../../contexts/user.context";
 
 // validation schema
 const jobVacancyValidationSchema = Yup.object().shape({
@@ -102,6 +103,7 @@ const industryOptions = [
 ];
 
 const JobVacancyForm = () => {
+  // Returns "Food Service"
   const triggerToast = useToast();
 
   const initialValues = {
