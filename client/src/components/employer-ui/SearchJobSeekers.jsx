@@ -99,7 +99,7 @@ const SearchJobSeekers = () => {
               disabled={loading}
             >
               <i className="bi bi-search"></i>{" "}
-              {loading ? "Searching..." : "Search"}
+              <span className="d-none d-sm-inline"> Search</span>
             </button>
           </div>
         </div>
@@ -203,7 +203,7 @@ const SearchJobSeekers = () => {
                 </div>
                 <div className="d-flex align-items-end">
                   <p
-                    className="m-0 p-0 text-info"
+                    className="m-0 p-0 text-info d-none d-sm-inline"
                     style={{ fontSize: "0.85rem" }}
                   >
                     <i className="bi bi-envelope-fill"></i>{" "}

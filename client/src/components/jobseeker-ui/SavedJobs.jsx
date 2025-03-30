@@ -107,7 +107,8 @@ const SavedJobs = () => {
           onChange={handleSearchChange}
         />
         <button className="btn btn-primary text-light" type="submit">
-          <i className="bi bi-search"></i> Search
+          <i className="bi bi-search"></i>{" "}
+          <span className="d-none d-sm-inline"> Search</span>
         </button>
       </div>
 
@@ -150,35 +151,35 @@ const SavedJobs = () => {
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-building-fill"></i> Company
+                <i className="bi bi-building-fill d-none d-sm-inline"></i> Company
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-briefcase-fill"></i> Job Title
+                <i className="bi bi-briefcase-fill d-none d-sm-inline"></i> Job Title
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-calendar-event-fill"></i> Date Posted
+                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i> Date Posted
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "20%" }}
               >
-                <i className="bi bi-question-square-fill"></i> Status
+                <i className="bi bi-question-square-fill d-none d-sm-inline"></i> Status
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i> Handle
               </th>
             </tr>
           </thead>

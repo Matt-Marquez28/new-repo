@@ -1,13 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mukta+Malar:wght@200;300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mukta+Malar:wght@200;300;400;500;600;700;800&display=swap");
 
 /* Apply Mukta Malar to all headings */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Mukta Malar', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Mukta Malar", sans-serif;
 }
 
 /* Apply Inter to everything else */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* body {
@@ -20,7 +25,6 @@ body {
   min-height: 100vh;
 } */
 
-
 /* Apply minimalist styling to all scrollbars globally */
 * {
   scrollbar-width: thin; /* Minimalist width for Firefox */
@@ -28,8 +32,8 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 8px; /* Minimal width */
-  height: 8px;
+  width: 5px; /* Minimal width */
+  height: 5px;
 }
 
 *::-webkit-scrollbar-track {
@@ -46,52 +50,54 @@ body {
   background: #bcbcbc; /* Slightly darker gray on hover */
 }
 
-
-
 .pt-serif-regular {
-    font-family: "PT Serif", serif;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  .pt-serif-bold {
-    font-family: "PT Serif", serif;
-    font-weight: 700;
-    font-style: normal;
-  }
-  
-  .pt-serif-regular-italic {
-    font-family: "PT Serif", serif;
-    font-weight: 400;
-    font-style: italic;
-  }
-  
-  .pt-serif-bold-italic {
-    font-family: "PT Serif", serif;
-    font-weight: 700;
-    font-style: italic;
-  }
+  font-family: "PT Serif", serif;
+  font-weight: 400;
+  font-style: normal;
+}
 
+.pt-serif-bold {
+  font-family: "PT Serif", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.pt-serif-regular-italic {
+  font-family: "PT Serif", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.pt-serif-bold-italic {
+  font-family: "PT Serif", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+body {
+  font-size: 16px; /* Default size */
+}
+
+@media (max-width: 768px) {
+  /* Targeting smaller screens */
   body {
-    font-size: 16px; /* Default size */
+    font-size: 14px;
   }
-  
-  @media (max-width: 768px) { /* Targeting smaller screens */
-    body {
-      font-size: 14px;
-    }
-    p {
-      font-size: 14px;
-    }
+  p {
+    font-size: 14px;
   }
-  
-  @media (max-width: 480px) { /* Even smaller screens */
-    body {
-      font-size: 12px;
-    }
-    p {
-      font-size: 12px;
-    }
-  }
+}
 
-  
+@media (max-width: 480px) {
+  /* Even smaller screens */
+  body {
+    font-size: 12px;
+  }
+  p {
+    font-size: 12px;
+  }
+  p.lead {
+    font-size: 14px;
+    font-weight: 300;
+  }
+}

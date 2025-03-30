@@ -86,7 +86,8 @@ const JobInvitationList = () => {
           onChange={handleSearchChange}
         />
         <button className="btn btn-primary text-light" type="submit">
-          <i className="bi bi-search"></i> Search
+          <i className="bi bi-search"></i>{" "}
+          <span className="d-none d-sm-inline"> Search</span>
         </button>
       </div>
 
@@ -111,28 +112,32 @@ const JobInvitationList = () => {
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-people-fill"></i> Job Seeker
+                <i className="bi bi-people-fill d-none d-sm-inline"></i> Job
+                Seeker
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-suitcase-lg-fill"></i> Job Position
+                <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i>{" "}
+                Job Position
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-calendar-event-fill"></i> Date
+                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i>{" "}
+                Date
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i>{" "}
+                Handle
               </th>
             </tr>
           </thead>

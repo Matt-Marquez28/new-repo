@@ -164,7 +164,8 @@ const Search = () => {
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
             <button className="btn btn-primary text-light" type="submit">
-              <i className="bi bi-search"></i> Search
+              <i className="bi bi-search"></i>{" "}
+              <span className="d-none d-sm-inline"> Search</span>
             </button>
           </div>
         </div>
@@ -173,7 +174,8 @@ const Search = () => {
       {/* Filters UI */}
       <div className="mb-4 text-start">
         <div className="row">
-          <div className="col-md-3">
+          {/* Employment Type - col-6 for small screens, col-md-3 for medium+ */}
+          <div className="col-6 col-md-3 mb-3 mb-md-0">
             <select
               id="employmentType"
               className="form-select"
@@ -188,7 +190,8 @@ const Search = () => {
             </select>
           </div>
 
-          <div className="col-md-3">
+          {/* Salary Type - col-6 for small screens, col-md-3 for medium+ */}
+          <div className="col-6 col-md-3 mb-3 mb-md-0">
             <select
               id="salaryType"
               className="form-select"
@@ -201,8 +204,8 @@ const Search = () => {
             </select>
           </div>
 
-          {/* Salary Min */}
-          <div className="col-md-3">
+          {/* Salary Min - Full width on small screens, col-md-3 on medium+ */}
+          <div className="col-12 col-md-3 mb-3 mb-md-0">
             <div className="d-flex justify-content-between align-items-center">
               <label htmlFor="salaryMin" className="mb-0">
                 Min Salary
@@ -223,8 +226,8 @@ const Search = () => {
             />
           </div>
 
-          {/* Salary Max */}
-          <div className="col-md-3">
+          {/* Salary Max - Full width on small screens, col-md-3 on medium+ */}
+          <div className="col-12 col-md-3">
             <div className="d-flex justify-content-between align-items-center">
               <label htmlFor="salaryMax" className="mb-0">
                 Max Salary
@@ -350,7 +353,7 @@ const Search = () => {
 
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info"
+                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
                   >
                     {jobVacancy?.applicants.length || 0}{" "}
                     <i className="bi bi-people-fill"></i> Applicants
@@ -358,7 +361,7 @@ const Search = () => {
 
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info"
+                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
                   >
                     {jobVacancy?.vacancies || 1}{" "}
                     <i className="bi bi-clipboard-check-fill"></i> Vacancies

@@ -165,14 +165,14 @@ const RecommendedJobVacancies = () => {
                   </Link>
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info"
+                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
                   >
                     {(job?.applicants || []).length}{" "}
                     <i className="bi bi-people-fill"></i> Applicants
                   </button>
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info"
+                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
                   >
                     {job?.vacancies || 1}{" "}
                     <i className="bi bi-clipboard-check-fill"></i> Vacancies

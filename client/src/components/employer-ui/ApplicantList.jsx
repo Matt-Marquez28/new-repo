@@ -119,7 +119,8 @@ const ApplicantList = () => {
           onChange={handleSearchChange}
         />
         <button className="btn btn-primary text-light" type="submit">
-          <i className="bi bi-search"></i> Search
+          <i className="bi bi-search"></i>{" "}
+          <span className="d-none d-sm-inline"> Search</span>
         </button>
       </div>
 
@@ -142,7 +143,7 @@ const ApplicantList = () => {
           </div>
         </div>
 
-        <button className="btn btn-light">
+        <button className="btn btn-light d-none d-sm-inline">
           <i className="bi bi-calendar-event-fill"></i> Interview Scheduled{" "}
           <span
             className={`badge ${
@@ -175,36 +176,39 @@ const ApplicantList = () => {
                 className="small text-muted align-middle"
                 style={{ width: "30%" }}
               >
-                <i className="bi bi-people-fill"></i> Applicants [
-                {filteredApplicants?.length}]
+                <i className="bi bi-people-fill d-none d-sm-inline"></i> Applicants
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-suitcase-lg-fill"></i> Job Position
+                <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i>{" "}
+                Job Position
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-calendar-event-fill"></i> Date
+                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i>{" "}
+                Date
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-question-square-fill"></i> Status
+                <i className="bi bi-question-square-fill d-none d-sm-inline"></i>{" "}
+                Status
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i>{" "}
+                Handle
               </th>
             </tr>
           </thead>

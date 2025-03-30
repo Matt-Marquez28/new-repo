@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 const ApplicationList = () => {
   const navigate = useNavigate();
   const triggerToast = useToast();
-  const [applications, setApplications] = useState([]); 
-  const [filter, setFilter] = useState("all"); 
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [applications, setApplications] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getAllApplications();
@@ -126,7 +126,8 @@ const ApplicationList = () => {
           onChange={handleSearchChange}
         />
         <button className="btn btn-primary text-light" type="submit">
-          <i className="bi bi-search"></i> Search
+          <i className="bi bi-search"></i>{" "}
+          <span className="d-none d-sm-inline"> Search</span>
         </button>
       </div>
 
@@ -148,13 +149,9 @@ const ApplicationList = () => {
             </select>
           </div>
         </div>
-        <button className="btn btn-light">
+        <button className="btn btn-light d-none d-sm-inline">
           <i className="bi bi-calendar-event-fill"></i> Interview Scheduled{" "}
-          <span
-            className="badge bg-primary"
-          >
-            {interviewScheduledCount}
-          </span>
+          <span className="badge bg-primary">{interviewScheduledCount}</span>
         </button>
       </div>
 
@@ -179,35 +176,35 @@ const ApplicationList = () => {
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-building-fill"></i> Company
+                <i className="bi bi-building-fill d-none d-sm-inline"></i> Company
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-suitcase-lg-fill"></i> Job Position
+                <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i> Job Position
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "20%" }}
               >
-                <i className="bi bi-calendar-event-fill"></i> Date
+                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i> Date
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-question-square-fill"></i> Status
+                <i className="bi bi-question-square-fill d-none d-sm-inline"></i> Status
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i> Handle
               </th>
             </tr>
           </thead>
@@ -231,7 +228,7 @@ const ApplicationList = () => {
                             company.companyInformation.businessName ||
                             "Company Logo"
                           }
-                          className="me-2 border shadow-sm"
+                          className="me-2 border shadow-sm d-none d-sm-inline"
                           style={{
                             width: "40px",
                             height: "40px",

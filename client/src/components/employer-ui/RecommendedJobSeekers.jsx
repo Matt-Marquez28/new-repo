@@ -91,8 +91,8 @@ const RecommendedJobSeekers = () => {
             <i className="bi bi-people fs-1 text-muted mb-3"></i>
             <p className="text-muted">
               No recommendations found.
-              <br /> Try adjusting your candidate preferences in your company profile for
-              better results!
+              <br /> Try adjusting your candidate preferences in your company
+              profile for better results!
             </p>
           </div>
         ) : (
@@ -173,7 +173,7 @@ const RecommendedJobSeekers = () => {
                   </button>
                 </Link> */}
                 </div>
-                <div className="d-flex align-items-end">
+                <div className="d-flex align-items-end d-none d-sm-inline">
                   <p
                     className="m-0 p-0 text-info"
                     style={{ fontSize: "0.85rem" }}
