@@ -33,9 +33,9 @@ const SettingsPage = () => {
 
   return (
     <div className="container p-3">
-      <h4 className="text-primary pt-serif-bold mb-3 mx-1">
+      <h5 className="text-primary mb-3 mx-1">
         <i className="bi bi-gear-fill"></i> Settings
-      </h4>
+      </h5>
       <div className="row">
         {/* Card for Changing Password */}
         <div className="col-md-6 mb-4">

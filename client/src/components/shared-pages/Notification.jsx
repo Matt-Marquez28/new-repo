@@ -9,7 +9,7 @@ import { NOTIFICATION_API_END_POINT } from "../../utils/constants";
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [socket] = useSocketContext(); 
+  const [socket] = useSocketContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,9 +84,9 @@ const Notification = () => {
     <div className="container-fluid container-md mt-4">
       <Row className="mb-4 align-items-center">
         <Col>
-          <h4 className="m-0 text-primary">
+          <h5 className="m-0 text-primary">
             <i className="bi bi-bell-fill"></i> Notifications
-          </h4>
+          </h5>
         </Col>
         <Col xs="auto">
           {notifications.length > 0 && (
@@ -113,7 +113,7 @@ const Notification = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="text-center p-4 border rounded-3 bg-light">
+        <div className="text-center p-4 border rounded-3">
           <i className="bi bi-bell-slash fs-1 text-muted mb-3"></i>
           <p className="text-muted">No notifications available</p>
         </div>

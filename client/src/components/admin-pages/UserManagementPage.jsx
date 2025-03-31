@@ -97,9 +97,9 @@ const UserManagementPage = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary pt-serif-bold mb-3 mx-1">
-        <i className="bi bi-people-fill"></i> User Management
-      </h4>
+      <h5 className="text-primary mb-3 mx-1">
+        <i className="bi bi-people-fill"></i> Manage Staff
+      </h5>
       <div className="d-flex justify-content-end">
         <Button className="btn btn-primary" onClick={() => setModalShow(true)}>
           <i className="bi bi-person-fill-add"></i> Create New User
@@ -240,9 +240,7 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header className="bg-primary" closeButton>
-        <Modal.Title className="text-light">
-          <i className="bi bi-person-fill-add"></i> Create New User
-        </Modal.Title>
+        <Modal.Title className="text-light">Create New User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={onSubmit}>
