@@ -11,7 +11,7 @@ const JobInvitationList = () => {
   const navigate = useNavigate();
   const triggerToast = useToast();
   const [invitations, setInvitations] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState("");
   const [socket] = useSocketContext();
 
   useEffect(() => {
@@ -35,14 +35,14 @@ const JobInvitationList = () => {
   useEffect(() => {
     if (socket) {
       socket.on("newInvitation", ({ message }) => {
-        getAllEmployerJobInvitations(); // Refresh applicants when new one arrives
+        getAllEmployerJobInvitations();
       });
 
       return () => {
-        socket.off("newInvitation"); // Proper cleanup to avoid duplicate listeners
+        socket.off("newInvitation");
       };
     }
-  }, [socket]); // Runs only when socket changes
+  }, [socket]);
 
   // Dropdown content for action buttons
   const dropdownContent = (jobVacancyId, invitationId) => (
@@ -111,7 +111,7 @@ const JobInvitationList = () => {
       </div>
 
       {/* Table UI */}
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+      <div style={{ maxHeight: "400px", overflowX: "auto", overflowY: "auto" }}>
         <table
           className="table table-hover table-striped"
           style={{ tableLayout: "fixed", width: "100%" }}
@@ -180,7 +180,7 @@ const JobInvitationList = () => {
                           invitation?.companyId?.companyInformation
                             .businessName || "Company Logo"
                         }
-                        className="me-2 border shadow-sm"
+                        className="me-2 border shadow-sm d-none d-sm-inline"
                         style={{
                           width: "40px",
                           height: "40px",

@@ -918,6 +918,12 @@ export const accreditCompany = async (req, res) => {
       return res.status(404).send({ message: "Company not found" });
     }
 
+    if (company.status === "accredited") {
+      return res.status(400).send({
+        message: "Company is already accredited. No further action needed.",
+      });
+    }
+
     // Generate a unique accreditation ID
     const accreditationId = `ACC-${new Date().getFullYear()}-${uuidv4()
       .slice(0, 8)

@@ -204,8 +204,8 @@ const Search = () => {
             </select>
           </div>
 
-          {/* Salary Min - Full width on small screens, col-md-3 on medium+ */}
-          <div className="col-12 col-md-3 mb-3 mb-md-0">
+          {/* Salary Min - col-6 for small screens, col-md-3 for medium+ */}
+          <div className="col-6 col-md-3 mb-3 mb-md-0">
             <div className="d-flex justify-content-between align-items-center">
               <label htmlFor="salaryMin" className="mb-0">
                 Min Salary
@@ -226,8 +226,8 @@ const Search = () => {
             />
           </div>
 
-          {/* Salary Max - Full width on small screens, col-md-3 on medium+ */}
-          <div className="col-12 col-md-3">
+          {/* Salary Max - col-6 for small screens, col-md-3 for medium+ */}
+          <div className="col-6 col-md-3">
             <div className="d-flex justify-content-between align-items-center">
               <label htmlFor="salaryMax" className="mb-0">
                 Max Salary
@@ -311,7 +311,7 @@ const Search = () => {
                       {jobVacancy.jobTitle}
                     </h5>
                     <p
-                      className="m-0 p-0 text-primary fw-semibold"
+                      className="m-0 p-0 text-primary fw-semibold salary-range"
                       style={{ fontSize: "0.85rem" }}
                     >
                       ₱ {Number(jobVacancy?.salaryMin).toLocaleString()} -{" "}
@@ -328,7 +328,7 @@ const Search = () => {
                 </div>
                 <div>
                   <span
-                    className={`badge ${getEmploymentTypeBadgeClass(
+                    className={`d-none d-sm-inline-block badge ${getEmploymentTypeBadgeClass(
                       jobVacancy?.employmentType
                     )} text-bg-info text-light px-3 py-1`}
                   >

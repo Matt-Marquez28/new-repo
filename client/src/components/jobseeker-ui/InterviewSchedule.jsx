@@ -5,9 +5,10 @@ import { Alert } from "react-bootstrap";
 const ScheduleInterview = ({ interviewDetails }) => {
   if (!interviewDetails) {
     return (
-      <Alert variant="warning" className="text-center">
-        No interview scheduled.
-      </Alert>
+      <div className="text-center p-4 border rounded-3 bg-light">
+      <i className="bi bi-calendar-minus fs-1 text-muted mb-3"></i>
+      <p className="text-muted">No interview scheduled.</p>
+    </div>
     );
   }
 

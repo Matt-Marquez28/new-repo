@@ -65,7 +65,7 @@ const SkillsAndSpecializations = () => {
         { withCredentials: true }
       );
       console.log("Update successful:", response?.data?.message);
-      triggerToast(response?.data?.message, "success");
+      triggerToast(response?.data?.message, "primary");
       setUser((prev) => ({
         ...prev,
         profileData: {

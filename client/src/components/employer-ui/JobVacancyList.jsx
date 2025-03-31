@@ -51,7 +51,6 @@ const JobVacancyList = () => {
     setFilteredJobVacancies(vacancies);
   };
 
-  // Function to get the badge class based on the status
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case "pending":
@@ -65,7 +64,6 @@ const JobVacancyList = () => {
     }
   };
 
-  // Dropdown content for action buttons
   const dropdownContent = (jobVacancyId) => (
     <Dropdown.Menu>
       <Dropdown.Item
@@ -82,9 +80,8 @@ const JobVacancyList = () => {
   return (
     <div>
       {/* Filters UI & Search UI */}
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between flex-wrap gap-3 mb-3">
         <div className="d-flex align-items-center gap-2">
-          <h6 className="text-secondary fw-normal m-0">Sort by: </h6>
           <div>
             <select
               id="filter"
@@ -101,7 +98,7 @@ const JobVacancyList = () => {
         </div>
 
         <div className="d-flex align-items-center">
-          <div className="input-group" style={{ width: "350px" }}>
+          <div className="input-group" style={{ minWidth: "250px" }}>
             <input
               type="text"
               className="form-control"
@@ -111,17 +108,18 @@ const JobVacancyList = () => {
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
             <button className="btn btn-primary" type="button">
-              <i className="bi bi-search"></i> Search
+              <i className="bi bi-search"></i>{" "}
+              <span className="d-none d-sm-inline"> Search</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Table UI */}
-      <div style={{ maxHeight: "450px", overflowY: "auto" }}>
+      <div className="table-responsive" style={{ maxHeight: "450px" }}>
         <table
-          className="table table-hover table-striped mt-2"
-          style={{ tableLayout: "fixed", width: "100%" }}
+          className="table table-hover table-striped"
+          style={{ minWidth: "900px" }} // Set minimum width for the table
         >
           {/* Table Header */}
           <thead
@@ -134,51 +132,44 @@ const JobVacancyList = () => {
           >
             <tr>
               <th
-                scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "20%" }}
+                style={{ width: "200px" }}
               >
                 <i className="bi bi-suitcase-lg-fill"></i> Job Title
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "15%" }}
+                style={{ width: "150px" }}
               >
                 <i className="bi bi-calendar-event-fill"></i> Date
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "15%" }}
+                style={{ width: "150px" }}
               >
                 <i className="bi bi-calendar-event-fill"></i> Deadline
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle text-center"
-                style={{ width: "10%" }}
+                style={{ width: "100px" }}
               >
                 <i className="bi bi-search"></i> Vacancies
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle text-center"
-                style={{ width: "10%" }}
+                style={{ width: "100px" }}
               >
                 <i className="bi bi-people-fill"></i> Applicants
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle text-center"
-                style={{ width: "15%" }}
+                style={{ width: "150px" }}
               >
                 <i className="bi bi-question-square-fill"></i> Publication
               </th>
               <th
-                scope="col"
                 className="small text-muted align-middle text-center"
-                style={{ width: "15%" }}
+                style={{ width: "150px" }}
               >
                 <i className="bi bi-hand-index-thumb-fill"></i> Handle
               </th>
@@ -190,43 +181,24 @@ const JobVacancyList = () => {
             {filteredJobVacancies.length > 0 ? (
               filteredJobVacancies.map((jobVacancy) => (
                 <tr key={jobVacancy._id}>
-                  <td
-                    scope="row"
-                    className="small text-muted align-middle fw-semibold"
-                    style={{ width: "20%" }}
-                  >
+                  <td className="small text-muted align-middle fw-semibold">
                     {jobVacancy.jobTitle}
                   </td>
-                  <td
-                    className="small text-muted align-middle"
-                    style={{ width: "15%" }}
-                  >
+                  <td className="small text-muted align-middle">
                     {new Date(jobVacancy?.updatedAt).toLocaleDateString()}
                   </td>
-                  <td
-                    className="small text-muted align-middle"
-                    style={{ width: "15%" }}
-                  >
+                  <td className="small text-muted align-middle">
                     {new Date(
                       jobVacancy?.applicationDeadline
                     ).toLocaleDateString()}
                   </td>
-                  <td
-                    className="small text-muted align-middle text-center"
-                    style={{ width: "10%" }}
-                  >
+                  <td className="small text-muted align-middle text-center">
                     {jobVacancy?.vacancies}
                   </td>
-                  <td
-                    className="small text-muted align-middle text-center"
-                    style={{ width: "10%" }}
-                  >
+                  <td className="small text-muted align-middle text-center">
                     {jobVacancy?.applicants.length}
                   </td>
-                  <td
-                    className="small text-muted align-middle text-center"
-                    style={{ width: "15%" }}
-                  >
+                  <td className="small text-muted align-middle text-center">
                     <span
                       className={`badge ${getStatusBadgeClass(
                         jobVacancy?.publicationStatus
@@ -235,10 +207,7 @@ const JobVacancyList = () => {
                       {jobVacancy?.publicationStatus}
                     </span>
                   </td>
-                  <td
-                    className="small text-muted align-middle text-center"
-                    style={{ width: "15%" }}
-                  >
+                  <td className="small text-muted align-middle text-center">
                     <Dropdown>
                       <Dropdown.Toggle
                         variant="light"

@@ -14,7 +14,7 @@ const ApplicationDetail = () => {
   const [application, setApplication] = useState(null);
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("hireDecline");
+  const [activeTab, setActiveTab] = useState("interviewSchedule");
 
   const handleTabClick = (tabName) => {
     setActiveTab(tabName);
@@ -76,7 +76,7 @@ const ApplicationDetail = () => {
         };
     }
 
-    return <ProgressBar {...progressProps} />;
+    return <ProgressBar {...progressProps} style={{ height: "8px" }} />;
   };
 
   return (
@@ -91,7 +91,7 @@ const ApplicationDetail = () => {
           >
             <i className="bi bi-arrow-90deg-left"></i>
           </button>
-          <h5 className="my-2 pt-serif-bold text-primary">
+          <h5 className="my-2 text-primary">
             Application for {application?.jobVacancyId?.jobTitle}
           </h5>
         </div>
@@ -101,7 +101,7 @@ const ApplicationDetail = () => {
           {/* overview card */}
           <div className="card shadow-sm mb-3">
             <div className="card-header bg-primary text-center fw-normal text-light">
-              <i className="bi bi-info-circle"></i> Overview
+              Overview
             </div>
             <div className="card-body">
               <div className="text-center">
@@ -112,9 +112,14 @@ const ApplicationDetail = () => {
                       application?.jobSeekerId?.personalInformation?.photo ||
                       "https://th.bing.com/th/id/OIP.OesLvyzDO6AvU_hYUAT4IAHaHa?rs=1&pid=ImgDetMain"
                     }
-                    className="rounded border"
+                    className="border"
                     alt="Avatar"
-                    style={{ width: "100px", height: "100px" }}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
                   />
                 </div>
 
@@ -138,7 +143,7 @@ const ApplicationDetail = () => {
                 <hr />
 
                 {/* Hiring Progress Section - Always Visible */}
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-light">
                   <h5 className="mb-3 text-primary">Hiring Progress</h5>
                   {getStatusProgressBar(application?.status)}
                   <span
@@ -152,7 +157,7 @@ const ApplicationDetail = () => {
                 <hr />
 
                 {/* Contact Section - Always Visible */}
-                <div className="p-3 border rounded mb-3">
+                <div className="p-3 border rounded mb-3 bg-light">
                   <h5 className="mb-3 text-primary">Contact</h5>
                   <div className="d-flex text-start align-items-center gap-3 mb-3">
                     <div>

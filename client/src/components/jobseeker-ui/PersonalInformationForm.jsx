@@ -125,7 +125,7 @@ const PersonalInformationForm = () => {
               personalInformation: res?.data?.personalInformation,
             },
           }));
-          triggerToast(res?.data?.message, "success");
+          triggerToast(res?.data?.message, "primary");
         } catch (error) {
           console.log(error?.response?.data?.message);
           triggerToast(error?.response?.data?.message, "danger");

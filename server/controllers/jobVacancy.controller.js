@@ -65,7 +65,7 @@ export const postJobVacancy = async (req, res) => {
       requiredQualifications,
       employmentType,
       workLocation,
-      applicationDeadline: formattedDeadline, // Use formatted deadline
+      applicationDeadline: formattedDeadline, 
       responsibilities,
       skillsRequired,
       interviewProcess,

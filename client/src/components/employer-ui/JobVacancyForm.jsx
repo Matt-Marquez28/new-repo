@@ -32,7 +32,7 @@ const jobVacancyValidationSchema = Yup.object().shape({
       "Maximum salary must be greater than minimum salary"
     ),
   description: Yup.string().required("Description is required"),
-  industry: Yup.string().required("Industry is required"),
+  // industry: Yup.string().required("Industry is required"),
   requiredQualifications: Yup.array()
     .of(Yup.string().required("Qualification is required"))
     .min(1, "At least one qualification is required"),
@@ -103,7 +103,7 @@ const industryOptions = [
 ];
 
 const JobVacancyForm = () => {
-  // Returns "Food Service"
+  const { user } = useUser();
   const triggerToast = useToast();
 
   const initialValues = {
@@ -115,7 +115,7 @@ const JobVacancyForm = () => {
     salaryMin: null,
     salaryMax: null,
     description: "",
-    industry: "",
+    industry: user?.companyData?.companyInformation?.industry || "",
     educationalLevel: "",
     requiredQualifications: [""],
     responsibilities: [""],
@@ -128,6 +128,7 @@ const JobVacancyForm = () => {
     <div className="container">
       <Formik
         initialValues={initialValues}
+        enableReinitialize={true}
         validationSchema={jobVacancyValidationSchema}
         onSubmit={async (values) => {
           console.log(values);
@@ -253,7 +254,7 @@ const JobVacancyForm = () => {
               </div>
 
               {/* Industry */}
-              <div className="col-md-6 mb-3">
+              {/* <div className="col-md-6 mb-3">
                 <label htmlFor="industry">Industry:</label>
                 <Field
                   name="industry"
@@ -275,7 +276,7 @@ const JobVacancyForm = () => {
                   component="div"
                   className="invalid-feedback"
                 />
-              </div>
+              </div> */}
 
               {/* Description */}
               <div className="mb-3">

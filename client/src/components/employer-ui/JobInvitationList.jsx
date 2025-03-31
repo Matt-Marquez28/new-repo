@@ -92,7 +92,7 @@ const JobInvitationList = () => {
       </div>
 
       {/* Table UI */}
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+      <div style={{ maxHeight: "400px", overflowX: "auto", overflowY: "auto" }}>
         <table
           className="table table-hover table-striped"
           style={{ tableLayout: "fixed", width: "100%" }}
@@ -164,7 +164,7 @@ const JobInvitationList = () => {
                             invitation?.jobSeekerId?.personalInformation
                               ?.lastName || "Company Logo"
                         }
-                        className="me-2 border shadow-sm"
+                        className="me-2 border shadow-sm d-none d-sm-inline"
                         style={{
                           width: "40px",
                           height: "40px",

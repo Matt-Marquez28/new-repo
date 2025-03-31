@@ -180,7 +180,7 @@ const EducationalBackground = () => {
         { withCredentials: true }
       );
 
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
     } catch (error) {
       console.error("Error deleting educational background:", error);
       triggerToast(error?.response?.data?.message, "danger");
@@ -260,11 +260,13 @@ const EducationalBackground = () => {
                     {education?.relevantCoursework &&
                       education?.relevantCoursework.length > 0 && (
                         <ul className="list-unstyled">
-                          {education?.relevantCoursework.map((coursework, i) => (
-                            <li key={i} className="text-muted mx-3">
-                              &#8226; {coursework}
-                            </li>
-                          ))}
+                          {education?.relevantCoursework.map(
+                            (coursework, i) => (
+                              <li key={i} className="text-muted mx-3">
+                                &#8226; {coursework}
+                              </li>
+                            )
+                          )}
                         </ul>
                       )}
                   </div>
@@ -288,20 +290,22 @@ const EducationalBackground = () => {
                     {education?.proofOfEducationDocuments &&
                       education?.proofOfEducationDocuments.length > 0 && (
                         <ul className="list-unstyled">
-                          {education?.proofOfEducationDocuments.map((doc, i) => (
-                            <li key={i} className="text-muted mx-3">
-                              &#8226;
-                              <a
-                                href={doc.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-decoration-none"
-                              >
-                                {" "}
-                                {doc.originalName}
-                              </a>
-                            </li>
-                          ))}
+                          {education?.proofOfEducationDocuments.map(
+                            (doc, i) => (
+                              <li key={i} className="text-muted mx-3">
+                                &#8226;
+                                <a
+                                  href={doc.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-decoration-none"
+                                >
+                                  {" "}
+                                  {doc.originalName}
+                                </a>
+                              </li>
+                            )
+                          )}
                         </ul>
                       )}
                   </div>
@@ -572,7 +576,7 @@ const EducationalBackground = () => {
             {isSubmitting ? (
               <>
                 <span
-                  className="spinner-grow spinner-grow-sm me-2"
+                  className="spinner-border spinner-border-sm me-2"
                   role="status"
                   aria-hidden="true"
                 ></span>

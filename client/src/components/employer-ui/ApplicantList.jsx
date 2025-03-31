@@ -156,10 +156,14 @@ const ApplicantList = () => {
       </div>
 
       {/* Table UI */}
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+      <div style={{ maxHeight: "400px", overflowX: "auto", overflowY: "auto" }}>
         <table
           className="table table-hover table-striped text-start mt-2"
-          style={{ tableLayout: "fixed", width: "100%" }}
+          style={{
+            tableLayout: "fixed",
+            width: "100%",
+            // maxWidth: "400px", // Ensures table doesn't get too compressed
+          }}
         >
           {/* Table Header */}
           <thead
@@ -174,14 +178,15 @@ const ApplicantList = () => {
               <th
                 scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "30%" }}
+                style={{ width: "25%", minWidth: "120px" }}
               >
-                <i className="bi bi-people-fill d-none d-sm-inline"></i> Applicants
+                <i className="bi bi-people-fill d-none d-sm-inline"></i>{" "}
+                Applicants
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "25%" }}
+                style={{ width: "25%", minWidth: "120px" }}
               >
                 <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i>{" "}
                 Job Position
@@ -189,7 +194,7 @@ const ApplicantList = () => {
               <th
                 scope="col"
                 className="small text-muted align-middle"
-                style={{ width: "15%" }}
+                style={{ width: "15%", minWidth: "90px" }}
               >
                 <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i>{" "}
                 Date
@@ -197,15 +202,15 @@ const ApplicantList = () => {
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
-                style={{ width: "15%" }}
+                style={{ width: "15%", minWidth: "90px" }}
               >
                 <i className="bi bi-question-square-fill d-none d-sm-inline"></i>{" "}
                 Status
               </th>
               <th
                 scope="col"
-                className="small text-muted align-middle text-center"
-                style={{ width: "15%" }}
+                className="small text-muted align-middle text-center "
+                style={{ width: "15%", minWidth: "90px" }}
               >
                 <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i>{" "}
                 Handle
@@ -217,17 +222,22 @@ const ApplicantList = () => {
           <tbody>
             {filteredApplicants.length > 0 ? (
               filteredApplicants.map((applicant) => (
-                <tr key={applicant._id}>
+                <tr
+                  key={applicant._id}
+                  onClick={() =>
+                    navigate(`/employer/application-details/${applicant._id}`)
+                  }
+                >
                   <td
                     scope="row"
                     className="small text-muted align-middle fw-semibold"
-                    style={{ width: "30%" }}
+                    style={{ width: "30%", minWidth: "150px" }}
                   >
                     {applicant?.photo && (
                       <img
                         src={applicant?.photo}
                         alt={applicant?.photo || "Photo"}
-                        className="me-2 border shadow-sm"
+                        className="me-2 border shadow-sm d-none d-sm-inline"
                         style={{
                           width: "40px",
                           height: "40px",
@@ -240,13 +250,13 @@ const ApplicantList = () => {
                   </td>
                   <td
                     className="small text-muted align-middle"
-                    style={{ width: "25%" }}
+                    style={{ width: "25%", minWidth: "120px" }}
                   >
                     {applicant.jobVacancyTitle}
                   </td>
                   <td
                     className="small text-muted align-middle"
-                    style={{ width: "15%" }}
+                    style={{ width: "15%", minWidth: "90px" }}
                   >
                     {applicant?.createdAt
                       ? new Date(applicant.updatedAt).toLocaleDateString(
@@ -256,7 +266,7 @@ const ApplicantList = () => {
                   </td>
                   <td
                     className="small text-muted align-middle text-center"
-                    style={{ width: "15%" }}
+                    style={{ width: "15%", minWidth: "90px" }}
                   >
                     <span
                       className={`badge ${getStatusBadgeClass(
@@ -268,7 +278,7 @@ const ApplicantList = () => {
                   </td>
                   <td
                     className="small text-muted align-middle text-center"
-                    style={{ width: "15%" }}
+                    style={{ width: "15%", minWidth: "90px" }}
                   >
                     <Dropdown>
                       <Dropdown.Toggle

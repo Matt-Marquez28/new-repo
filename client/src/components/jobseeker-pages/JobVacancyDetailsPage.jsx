@@ -198,13 +198,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
       {loading ? (
         <div className="d-flex justify-content-center gap-3 my-3">
-          <div className="spinner-grow text-info" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <div className="spinner-grow text-info" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <div className="spinner-grow text-info" role="status">
+          <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
@@ -215,7 +209,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
             <div>
               <div class="card shadow-sm mb-3">
                 <Link className="card-header bg-primary text-decoration-none text-center fw-normal text-light">
-                  <i className="bi bi-info-circle"></i> Job Details
+                  Job Details
                 </Link>
                 <div class="card-body">
                   <div className="my-2">
@@ -251,7 +245,6 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         <div className="col-12 col-md-5 d-flex justify-content-center">
                           {/* Salary Range Button */}
                           <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
-                            <i className="bi bi-cash-coin fs-6"></i>
                             <span>
                               {`₱ ${jobVacancy?.salaryMin.toLocaleString()} - ${jobVacancy?.salaryMax.toLocaleString()} ${
                                 jobVacancy?.salaryType === "monthly"
@@ -370,7 +363,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
           <div className="col-md-4">
             <div class="card shadow-sm">
               <Link class="card-header bg-primary text-decoration-none text-center fw-normal text-light">
-                <i className="bi bi-info-circle"></i> About the company
+                About the company
               </Link>
               <div class="card-body">
                 <div className="">

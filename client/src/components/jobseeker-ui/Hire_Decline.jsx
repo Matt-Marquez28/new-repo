@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const Hire_Decline = ({ remarks, getApplication }) => {
-
   return (
     <div>
       <h5>Hire / Decline</h5>
@@ -15,11 +14,9 @@ const Hire_Decline = ({ remarks, getApplication }) => {
           rows="4"
           value={remarks}
           placeholder="View your remarks here..."
-          disabled
-
+          readOnly
         ></textarea>
       </div>
-     
     </div>
   );
 };

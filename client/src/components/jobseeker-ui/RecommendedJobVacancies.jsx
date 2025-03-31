@@ -121,7 +121,7 @@ const RecommendedJobVacancies = () => {
                       {job?.jobTitle}
                     </h5>
                     <p
-                      className="m-0 p-0 text-primary fw-semibold"
+                      className="m-0 p-0 text-primary fw-semibold salary-range"
                       style={{ fontSize: "0.85rem" }}
                     >
                       ₱ {Number(job?.salaryMin || 0).toLocaleString()} -{" "}
@@ -140,7 +140,7 @@ const RecommendedJobVacancies = () => {
                 </div>
                 <div>
                   <span
-                    className={`badge ${getEmploymentTypeBadgeClass(
+                    className={`d-none d-sm-inline-block badge ${getEmploymentTypeBadgeClass(
                       job?.employmentType
                     )} text-light px-3 py-1`}
                   >

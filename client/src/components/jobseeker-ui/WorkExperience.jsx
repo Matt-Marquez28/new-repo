@@ -7,6 +7,7 @@ import "./timeline.css";
 
 const WorkExperience = () => {
   const triggerToast = useToast();
+  const [isSubmitting, setSubmitting] = useState(false);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -137,6 +138,7 @@ const WorkExperience = () => {
     }
 
     try {
+      setSubmitting(true);
       const res = await axios.put(
         `${JOBSEEKER_API_END_POINT}/add-work-experience`,
         formDataToSend,
@@ -153,6 +155,8 @@ const WorkExperience = () => {
     } catch (error) {
       console.error("Error updating work experience:", error);
       triggerToast(error?.response?.data?.message, "danger");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -173,7 +177,7 @@ const WorkExperience = () => {
       );
 
       // Show a success toast
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
     } catch (error) {
       console.error("Error deleting work experience:", error);
       triggerToast(error?.response?.data?.message, "danger");
@@ -218,7 +222,9 @@ const WorkExperience = () => {
                 className="btn btn-sm btn-outline-primary mt-2"
                 onClick={() => toggleWorkExperienceDetails(index)}
               >
-                {expandedWorkExperience[index] ? "Hide Details" : "Show Details"}
+                {expandedWorkExperience[index]
+                  ? "Hide Details"
+                  : "Show Details"}
               </button>
 
               {/* Delete Button */}
@@ -545,7 +551,20 @@ const WorkExperience = () => {
             className="btn btn-primary"
             onClick={handleSubmit}
           >
-            <i className="bi bi-floppy"></i> Save Changes
+            {isSubmitting ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Saving Please Wait...
+              </>
+            ) : (
+              <>
+                <i className="bi bi-floppy"></i> Save Changes
+              </>
+            )}
           </button>
         </Modal.Footer>
       </Modal>

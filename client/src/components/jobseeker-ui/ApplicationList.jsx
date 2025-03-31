@@ -156,7 +156,7 @@ const ApplicationList = () => {
       </div>
 
       {/* Table UI */}
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+      <div style={{ maxHeight: "400px", overflowX: "auto", overflowY: "auto" }}>
         <table
           className="table table-hover table-striped mt-2"
           style={{ tableLayout: "fixed", width: "100%" }}
@@ -176,35 +176,40 @@ const ApplicationList = () => {
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-building-fill d-none d-sm-inline"></i> Company
+                <i className="bi bi-building-fill d-none d-sm-inline"></i>{" "}
+                Company
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "25%" }}
               >
-                <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i> Job Position
+                <i className="bi bi-suitcase-lg-fill d-none d-sm-inline"></i>{" "}
+                Job Position
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle"
                 style={{ width: "20%" }}
               >
-                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i> Date
+                <i className="bi bi-calendar-event-fill d-none d-sm-inline"></i>{" "}
+                Date
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-question-square-fill d-none d-sm-inline"></i> Status
+                <i className="bi bi-question-square-fill d-none d-sm-inline"></i>{" "}
+                Status
               </th>
               <th
                 scope="col"
                 className="small text-muted align-middle text-center"
                 style={{ width: "15%" }}
               >
-                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i> Handle
+                <i className="bi bi-hand-index-thumb-fill d-none d-sm-inline"></i>{" "}
+                Handle
               </th>
             </tr>
           </thead>
