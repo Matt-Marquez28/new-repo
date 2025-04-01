@@ -1,21 +1,13 @@
 import Company from "../models/company.model.js";
-import mongoose from "mongoose";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
-import fs from "fs";
 import CompanyDocuments from "../models/companyDocuments.model.js";
-import pdf from "pdf-creator-node";
-import PDFDocument from "pdfkit";
-import puppeteer from "puppeteer";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { Account } from "../models/account.model.js";
 import { sendEmail } from "../utils/email.js";
-import { v4 as uuidv4 } from "uuid"; // Import uuid
+import { v4 as uuidv4 } from "uuid";
 import { createNotification } from "../utils/notification.js";
 import Application from "../models/application.model.js";
-
-// dotenv.config();
+import AuditTrail from "../models/auditTrail.model.js";
 
 export const upsertCompany = async (req, res) => {
   try {

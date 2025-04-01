@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   ACCOUNT_API_END_POINT,
   NOTIFICATION_API_END_POINT,
@@ -14,12 +14,14 @@ import {
 import axios from "axios";
 import { useToast } from "../../contexts/toast.context";
 import { useSocketContext } from "../../contexts/socket.context";
+import { useUser } from "../../contexts/user.context";
 import defaultProfile from "./default-profile.png";
 
 const AdminHeader = () => {
   const triggerToast = useToast();
   const navigate = useNavigate();
   const [socket] = useSocketContext();
+  const { user } = useUser();
   const [hasUnread, setHasUnread] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navbarRef = useRef();
@@ -80,6 +82,12 @@ const AdminHeader = () => {
       console.error("Navigation error:", error);
       triggerToast("Failed to navigate", "danger");
     }
+  };
+
+  // Define active link styles here
+  const activeLinkStyle = {
+    backgroundColor: "#007BFF",
+    color: "#fff",
   };
 
   return (
@@ -227,18 +235,101 @@ const AdminHeader = () => {
           <Offcanvas.Body className="d-flex flex-column justify-content-between">
             <div>
               <Nav className="flex-column gap-2">
-                <Nav.Link
-                  as={Link}
+                <NavLink
+                  exact
                   to="/admin/dashboard"
-                  className="px-3 py-2 rounded text-primary"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
                   onClick={() => setShowOffcanvas(false)}
                 >
-                  <i className="bi bi-house-door-fill me-2"></i> Home
-                </Nav.Link>
-                <Nav.Link
+                  <i className="bi bi-columns me-2"></i>
+                  Dashboard
+                </NavLink>
+                
+                <NavLink
+                  exact
+                  to="/admin/verification/company"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-building me-2"></i>
+                  Company Verification
+                </NavLink>
+                
+                <NavLink
+                  exact
+                  to="/admin/verification/job-vacancy"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-briefcase me-2"></i>
+                  Job Vacancy Verification
+                </NavLink>
+                
+                <NavLink
+                  exact
+                  to="/admin/analytics"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-bar-chart-line me-2"></i>
+                  Analytics
+                </NavLink>
+                
+                <NavLink
+                  exact
+                  to="/admin/audit-trail"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  Audit Trail
+                </NavLink>
+                
+                <NavLink
+                  exact
+                  to="/admin/user-management/user-option"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                    ...(user?.accountData?.role === "staff"
+                      ? { pointerEvents: "none", color: "#ccc" }
+                      : {}),
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-people me-2"></i>
+                  Manage User
+                </NavLink>
+                
+                <NavLink
                   as={Link}
                   to="/admin/notification"
-                  className="px-3 py-2 rounded text-primary"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
                   onClick={() => {
                     setHasUnread(false);
                     setShowOffcanvas(false);
@@ -248,15 +339,20 @@ const AdminHeader = () => {
                   {hasUnread && (
                     <span className="ms-2 badge bg-danger">New</span>
                   )}
-                </Nav.Link>
-                <Nav.Link
+                </NavLink>
+                
+                <NavLink
                   as={Link}
                   to="/admin/settings"
-                  className="px-3 py-2 rounded text-primary"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
                   onClick={() => setShowOffcanvas(false)}
                 >
                   <i className="bi bi-gear-fill me-2"></i> Settings
-                </Nav.Link>
+                </NavLink>
               </Nav>
             </div>
 

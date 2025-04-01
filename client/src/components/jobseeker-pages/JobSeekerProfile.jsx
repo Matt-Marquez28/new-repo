@@ -35,7 +35,7 @@ const JobSeekerProfile = () => {
     <div className="container">
       <div className="d-flex gap-2 my-2 align-items-center">
         <button onClick={() => navigate(-1)} className="btn btn-light">
-          <i className="bi bi-arrow-90deg-left"></i>
+        <i className="bi bi-arrow-left"></i>
         </button>
         <h5 className="my-2 text-primary">Job Seeker Profile</h5>
       </div>

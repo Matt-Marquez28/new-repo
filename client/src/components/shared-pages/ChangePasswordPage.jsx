@@ -46,103 +46,113 @@ const ChangePasswordPage = () => {
   });
 
   return (
-    <div className="d-flex align-items-center justify-content-center">
-      <div
-        className="card shadow-sm p-4 rounded mt-5"
-        style={{ maxWidth: "400px", width: "100%" }}
-      >
-        <h3 className="text-center text-primary mb-4">
-          <i className="bi bi-key-fill"></i> Change Password
-        </h3>
-        <form onSubmit={formik.handleSubmit}>
-          {/* Current Password */}
-          <div className="mb-3">
-            <label htmlFor="currentPassword" className="form-label">
-              <i className="bi bi-lock-fill"></i> Current Password
-            </label>
-            <input
-              type="password"
-              id="currentPassword"
-              className={`form-control ${
-                formik.errors.currentPassword && formik.touched.currentPassword
-                  ? "is-invalid"
-                  : ""
-              }`}
-              {...formik.getFieldProps("currentPassword")}
-            />
-            {formik.errors.currentPassword &&
-              formik.touched.currentPassword && (
+    <div>
+      <div className="d-flex gap-2 my-2 align-items-center">
+        <button onClick={() => navigate(-1)} className="btn btn-light">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h5 className="my-2 text-primary">Change Password</h5>
+      </div>
+      <div className="d-flex align-items-center justify-content-center">
+        <div
+          className="card shadow-sm p-4 rounded mt-5"
+          style={{ maxWidth: "400px", width: "100%" }}
+        >
+          <h3 className="text-center text-primary mb-4">
+            <i className="bi bi-key-fill"></i> Change Password
+          </h3>
+          <form onSubmit={formik.handleSubmit}>
+            {/* Current Password */}
+            <div className="mb-3">
+              <label htmlFor="currentPassword" className="form-label">
+                <i className="bi bi-lock-fill"></i> Current Password
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                className={`form-control ${
+                  formik.errors.currentPassword &&
+                  formik.touched.currentPassword
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("currentPassword")}
+              />
+              {formik.errors.currentPassword &&
+                formik.touched.currentPassword && (
+                  <div className="invalid-feedback">
+                    {formik.errors.currentPassword}
+                  </div>
+                )}
+            </div>
+
+            {/* New Password */}
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label">
+                <i className="bi bi-lock-fill"></i> New Password
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                className={`form-control ${
+                  formik.errors.newPassword && formik.touched.newPassword
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("newPassword")}
+              />
+              {formik.errors.newPassword && formik.touched.newPassword && (
                 <div className="invalid-feedback">
-                  {formik.errors.currentPassword}
+                  {formik.errors.newPassword}
                 </div>
               )}
-          </div>
+            </div>
 
-          {/* New Password */}
-          <div className="mb-3">
-            <label htmlFor="newPassword" className="form-label">
-              <i className="bi bi-lock-fill"></i> New Password
-            </label>
-            <input
-              type="password"
-              id="newPassword"
-              className={`form-control ${
-                formik.errors.newPassword && formik.touched.newPassword
-                  ? "is-invalid"
-                  : ""
-              }`}
-              {...formik.getFieldProps("newPassword")}
-            />
-            {formik.errors.newPassword && formik.touched.newPassword && (
-              <div className="invalid-feedback">
-                {formik.errors.newPassword}
-              </div>
-            )}
-          </div>
+            {/* Confirm Password */}
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">
+                <i className="bi bi-lock-fill"></i> Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className={`form-control ${
+                  formik.errors.confirmPassword &&
+                  formik.touched.confirmPassword
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("confirmPassword")}
+              />
+              {formik.errors.confirmPassword &&
+                formik.touched.confirmPassword && (
+                  <div className="invalid-feedback">
+                    {formik.errors.confirmPassword}
+                  </div>
+                )}
+            </div>
 
-          {/* Confirm Password */}
-          <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label">
-              <i className="bi bi-lock-fill"></i> Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className={`form-control ${
-                formik.errors.confirmPassword && formik.touched.confirmPassword
-                  ? "is-invalid"
-                  : ""
-              }`}
-              {...formik.getFieldProps("confirmPassword")}
-            />
-            {formik.errors.confirmPassword &&
-              formik.touched.confirmPassword && (
-                <div className="invalid-feedback">
-                  {formik.errors.confirmPassword}
-                </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={formik.isSubmitting}
+            >
+              {formik.isSubmitting ? (
+                <>
+                  <span
+                    className="spinner-grow spinner-grow-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Changing...
+                </>
+              ) : (
+                "Change Password"
               )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={formik.isSubmitting}
-          >
-            {formik.isSubmitting ? (
-              <>
-                <span
-                  className="spinner-grow spinner-grow-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Changing...
-              </>
-            ) : (
-              "Change Password"
-            )}
-          </button>
-        </form>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -167,50 +167,58 @@ const CompanyRankings = () => {
         )}
 
         {/* Rankings Table */}
-        <div className="w-full max-w-full overflow-x-auto">
-          <table className="w-full min-w-max bg-light">
-            <thead className="bg-gray-100 sticky top-0">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-full bg-white">
+            {" "}
+            {/* Ensure table expands to full width */}
+            <thead className="bg-gray-50 sticky top-0">
               <tr>
-                <th className="py-3 px-6 text-left whitespace-nowrap">Rank</th>
-                <th className="py-3 px-6 text-left whitespace-nowrap min-w-[200px]">
+                {/* Distribute columns proportionally */}
+                <th className="w-[5%] py-2 px-3 text-left text-sm font-medium text-gray-700">
+                  Rank
+                </th>
+                <th className="w-[30%] py-2 px-3 text-left text-sm font-medium text-gray-700">
                   Company
                 </th>
-                <th className="py-3 px-6 text-left whitespace-nowrap">Jobs</th>
-                <th className="py-3 px-6 text-left whitespace-nowrap">
+                <th className="w-[10%] py-2 px-3 text-left text-sm font-medium text-gray-700">
+                  Jobs
+                </th>
+                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
                   Applicants
                 </th>
-                <th className="py-3 px-6 text-left whitespace-nowrap">Hires</th>
-                <th className="py-3 px-6 text-left whitespace-nowrap">
+                <th className="w-[10%] py-2 px-3 text-left text-sm font-medium text-gray-700">
+                  Hires
+                </th>
+                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
                   Hire Rate
                 </th>
-                <th className="py-3 px-6 text-left whitespace-nowrap">Score</th>
+                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
+                  Score
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-200">
               {paginatedRankings.map((company, index) => (
-                <tr
-                  key={company.companyId}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                >
-                  <td className="py-4 px-6 whitespace-nowrap">
+                <tr key={company.companyId} className="hover:bg-gray-50">
+                  <td className="w-[5%] py-2 px-3 text-sm">
                     {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
-                  <td className="py-4 px-6 font-medium whitespace-nowrap">
+                  <td className="w-[30%] py-2 px-3 text-sm font-medium truncate">
                     {company.companyName}
                   </td>
-                  <td className="py-4 px-6 whitespace-nowrap">
+                  <td className="w-[10%] py-2 px-3 text-sm">
                     {company.vacancies}
                   </td>
-                  <td className="py-4 px-6 whitespace-nowrap">
+                  <td className="w-[15%] py-2 px-3 text-sm">
                     {company.totalApplicants}
                   </td>
-                  <td className="py-4 px-6 whitespace-nowrap">
+                  <td className="w-[10%] py-2 px-3 text-sm">
                     {company.hiredApplicants}
                   </td>
-                  <td className="py-4 px-6 whitespace-nowrap">
+                  <td className="w-[15%] py-2 px-3 text-sm">
                     {(company.hireRate * 100).toFixed(1)}%
                   </td>
-                  <td className="py-4 px-6 font-semibold text-blue-600 whitespace-nowrap">
+                  <td className="w-[15%] py-2 px-3 text-sm font-semibold text-blue-600">
                     {company.score}
                   </td>
                 </tr>

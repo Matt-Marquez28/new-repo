@@ -85,7 +85,7 @@ const ApplicationDetails = () => {
         };
     }
 
-    return <ProgressBar {...progressProps} />;
+    return <ProgressBar {...progressProps} style={{ height: "8px" }} />;
   };
 
   return (
@@ -97,7 +97,7 @@ const ApplicationDetails = () => {
             className="btn btn-light text-dark"
             onClick={() => navigate(-1)}
           >
-            <i className="bi bi-arrow-90deg-left"></i>
+            <i class="bi bi-arrow-left"></i>
           </button>
           <h5 className="my-2 text-primary">
             Application for {application?.jobVacancyId?.jobTitle}
@@ -109,7 +109,7 @@ const ApplicationDetails = () => {
         <div className="col-md-4">
           <div className="card shadow-sm mb-3">
             <div className="card-header bg-primary text-center fw-normal text-light">
-              <i className="bi bi-info-circle"></i> Overview
+              Overview
             </div>
             <div className="card-body">
               <div className="text-center">
@@ -150,7 +150,7 @@ const ApplicationDetails = () => {
                 <hr />
 
                 {/* Hiring Progress Section - Always Visible */}
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-light">
                   <h5 className="mb-3 text-primary">Hiring Progress</h5>
                   {getStatusProgressBar(application?.status)}
                   <span
@@ -164,7 +164,7 @@ const ApplicationDetails = () => {
                 <hr />
 
                 {/* Contact Section - Always Visible */}
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-light">
                   <h5 className="mb-3 text-primary">Contact</h5>
                   <div className="d-flex text-start align-items-center gap-3 mb-3">
                     <div>

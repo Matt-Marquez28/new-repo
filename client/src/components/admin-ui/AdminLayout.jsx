@@ -13,15 +13,19 @@ const AdminLayout = () => {
   return (
     <div className="d-flex flex-column vh-100">
       {/* Header */}
-      <AdminHeader />
+      <AdminHeader toggleSidebar={toggleSidebar} />
 
-      <div className="d-flex flex-grow-1 overflow-auto">
-        {/* Sidebar */}
-        {isSidebarOpen && <AdminSidebar />}
+      {/* Main content area */}
+      <div className="d-flex flex-grow-1 overflow-hidden">
+        {/* Sidebar - hidden on mobile, visible on md+ */}
+        {isSidebarOpen && (
+          <div className="d-none d-md-flex h-100" style={{ minWidth: "250px" }}>
+            <AdminSidebar />
+          </div>
+        )}
 
-        {/* Main content */}
+        {/* Main content - always visible */}
         <main className="flex-grow-1 overflow-auto p-3">
-          {/* Routed content */}
           <Outlet />
         </main>
       </div>

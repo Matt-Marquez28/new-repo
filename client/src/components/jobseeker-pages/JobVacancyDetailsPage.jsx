@@ -159,7 +159,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
             className="btn btn-light text-dark"
             onClick={() => navigate(-1)}
           >
-            <i className="bi bi-arrow-90deg-left"></i> Back
+           <i class="bi bi-arrow-left"></i>
           </button>
         </div>
         <div className="d-flex gap-2">
@@ -432,11 +432,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
         </div>
       )}
 
-      <div className="d-flex gap-2 my-3">
-        <button type="button" className="btn btn-light">
-          <i className="bi bi-arrow-90deg-left"></i> Back to Dashboard
-        </button>
-      </div>
+    
       <Footer />
     </div>
   );

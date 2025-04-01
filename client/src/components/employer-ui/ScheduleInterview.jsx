@@ -126,7 +126,7 @@ const ScheduleInterview = ({
         {({ handleChange, values, touched, errors, isSubmitting }) => (
           <Form noValidate className="container">
             {interviewDetails ? (
-              <div className="alert alert-info" role="alert">
+              <div className="alert alert-primary" role="alert">
                 <i className="bi bi-info-circle-fill"></i> Interview has been
                 scheduled!
               </div>
@@ -312,7 +312,8 @@ const ScheduleInterview = ({
                 onClick={() => setShowCancelModal(true)}
                 disabled={!interviewDetails || isSubmitting}
               >
-                <i className="bi bi-calendar2-x"></i> Cancel Interview
+                <i className="bi bi-calendar2-x d-none d-sm-inline"></i> Cancel
+                Interview
               </button>
               <button
                 type="button"
@@ -320,7 +321,8 @@ const ScheduleInterview = ({
                 onClick={() => setShowCompleteModal(true)}
                 disabled={!interviewDetails || isSubmitting}
               >
-                <i className="bi bi-calendar2-check"></i> Mark as Complete
+                <i className="bi bi-calendar2-check d-none d-sm-inline"></i>{" "}
+                Mark as Complete
               </button>
 
               <button
@@ -328,7 +330,8 @@ const ScheduleInterview = ({
                 className="btn btn-primary"
                 disabled={isSubmitting}
               >
-                <i className="bi bi-calendar2-event"></i> Schedule Interview
+                <i className="bi bi-calendar2-event d-none d-sm-inline"></i>{" "}
+                Schedule Interview
               </button>
             </div>
           </Form>

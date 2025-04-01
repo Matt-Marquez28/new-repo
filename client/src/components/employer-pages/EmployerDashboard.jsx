@@ -88,7 +88,10 @@ const EmployerDashboard = () => {
         <Link className="text-decoration-none" to="/employer/company-profile">
           Company Profile
         </Link>{" "}
-        and submit <Link className="text-decoration-none">Legal Documents</Link>{" "}
+        and submit{" "}
+        <Link to="/employer/company-profile" className="text-decoration-none">
+          Legal Documents
+        </Link>{" "}
         to start posting job vacancies!
       </div>
 

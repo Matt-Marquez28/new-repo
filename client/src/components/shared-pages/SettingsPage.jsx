@@ -4,10 +4,12 @@ import { useUser } from "../../contexts/user.context";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import { ACCOUNT_API_END_POINT } from "../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const SettingsPage = () => {
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleDeleteClick = () => {
     setShowModal(true);
@@ -32,10 +34,13 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="container p-3">
-      <h5 className="text-primary mb-3 mx-1">
-        <i className="bi bi-gear-fill"></i> Settings
-      </h5>
+    <div className="container pb-3">
+      <div className="d-flex gap-2 my-2 align-items-center">
+        <button onClick={() => navigate(-1)} className="btn btn-light">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h5 className="my-2 text-primary">Settings</h5>
+      </div>
       <div className="row">
         {/* Card for Changing Password */}
         <div className="col-md-6 mb-4">

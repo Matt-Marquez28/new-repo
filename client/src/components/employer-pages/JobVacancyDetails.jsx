@@ -208,7 +208,7 @@ const JobVacancyDetails = () => {
       {/* buttons */}
       <div className="d-flex justify-content-between my-2">
         <button onClick={() => navigate(-1)} className="btn btn-light">
-          <i className="bi bi-arrow-90deg-left"></i> Back
+        <i class="bi bi-arrow-left"></i>
         </button>
         {jobVacancy?.status === "archived" ? (
           <Button variant="success" onClick={handleShowUnarchiveModal}>

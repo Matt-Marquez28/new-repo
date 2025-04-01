@@ -45,7 +45,7 @@ const Hire_Decline = ({ getApplication }) => {
 
   return (
     <div className="container">
-      <div className="alert alert-info" role="alert">
+      <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> Keep the language neutral and
         professional, especially for the "Decline" option. Avoid harsh or
         negative phrasing.

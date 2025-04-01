@@ -14,16 +14,16 @@ h6 {
 body {
   font-family: "Inter", sans-serif;
 }
-/* 
+
 body {
-  background-image: url('https://img.freepik.com/free-psd/gradient-wavy-border-design_23-2151320985.jpg?t=st=1743388691~exp=1743392291~hmac=cbdcd46c0b23ad56384183b8496f92fa675b50bcbd52d9f4b591c33c6b35e19a&w=1380');
+  background-image: url('/bg-blue.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
   margin: 0;
   min-height: 100vh;
-} */
+}
 
 /* Apply minimalist styling to all scrollbars globally */
 * {

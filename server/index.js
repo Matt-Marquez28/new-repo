@@ -10,12 +10,13 @@ import applicationRoute from "./routes/application.route.js";
 import jobSeekerRoute from "./routes/jobSeeker.route.js";
 import auditTrailRoute from "./routes/auditTrail.route.js";
 import notificationRoute from "./routes/notification.route.js";
-import http from "http"; // Import HTTP module
-import { Server } from "socket.io"; // Import Socket.IO
+import http from "http"; 
+import { Server } from "socket.io"; 
 import cron from "node-cron";
 import CompanyDocuments from "./models/companyDocuments.model.js";
 import JobVacancy from "./models/jobVacancy.model.js";
 import Company from "./models/company.model.js";
+import { Account } from "./models/account.model.js";
 import { createNotification } from "./utils/notification.js";
 import { sendEmail } from "./utils/email.js";
 
@@ -232,11 +233,11 @@ const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
         `✔ Marked ${gracePeriodDocuments.length} documents as within the grace period. Notifications and emails sent.`
       );
     } else {
-      console.log("❌ No documents found within the grace period.");
+      console.log("No documents found within the grace period.");
     }
   } catch (error) {
     console.error(
-      "❌ Error while marking grace period documents and sending notifications/emails:",
+      "Error while marking grace period documents and sending notifications/emails:",
       error
     );
   }
@@ -544,6 +545,131 @@ const deactivateInactiveAccounts = async () => {
   }
 };
 
+const deleteAccountWithRelatedData = async (accountId) => {
+  try {
+    const account = await Account.findById(accountId);
+    if (!account) {
+      return { success: false, message: `Account ${accountId} not found` };
+    }
+
+    const result = {
+      accountId: accountId,
+      role: account.role,
+      deletedRelated: {},
+    };
+
+    /** --------------------------- DELETE JOBSEEKER RELATED DATA --------------------------- */
+    if (account.role?.trim().toLowerCase() === "jobseeker") {
+      const jobSeeker = await JobSeeker.findOneAndDelete({ accountId });
+
+      if (jobSeeker) {
+        result.deletedRelated.jobSeekerId = jobSeeker._id;
+
+        // Delete job invitations
+        const invitationsResult = await JobInvitation.deleteMany({
+          jobSeekerId: jobSeeker._id,
+        });
+        result.deletedRelated.invitations = invitationsResult.deletedCount;
+
+        // Add other jobseeker-related deletions as needed
+      }
+    } else if (account.role?.trim().toLowerCase() === "employer") {
+    /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- */
+      const company = await Company.findOne({ accountId });
+
+      if (company) {
+        result.deletedRelated.companyId = company._id;
+
+        // Delete job vacancies
+        const jobsResult = await JobVacancy.deleteMany({
+          companyId: company._id,
+        });
+        result.deletedRelated.jobVacancies = jobsResult.deletedCount;
+
+        // Delete company documents
+        const docsResult = await CompanyDocuments.deleteMany({
+          companyId: company._id,
+        });
+        result.deletedRelated.companyDocuments = docsResult.deletedCount;
+
+        // Delete the company
+        await Company.findByIdAndDelete(company._id);
+      }
+    }
+
+    /** --------------------------- FINALLY DELETE THE ACCOUNT --------------------------- */
+    await Account.findByIdAndDelete(accountId);
+
+    return {
+      success: true,
+      message: `Successfully deleted account ${accountId} and related data`,
+      deletedData: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to delete account ${accountId}: ${error.message}`,
+    };
+  }
+};
+
+const deleteScheduledAccounts = async () => {
+  try {
+    const today = new Date();
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const tomorrowStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
+
+    // Find accounts scheduled for deletion today
+    const accountsToDelete = await Account.find({
+      deletedAt: {
+        $gte: todayStart,
+        $lt: tomorrowStart,
+      },
+    });
+
+    if (accountsToDelete.length === 0) {
+      return {
+        success: true,
+        message: "No accounts scheduled for deletion today",
+        totalDeleted: 0,
+      };
+    }
+
+    // Process deletions in series (for better error handling)
+    const deletionResults = [];
+    for (const account of accountsToDelete) {
+      const result = await deleteAccountWithRelatedData(account._id);
+      deletionResults.push(result);
+    }
+
+    // Count successful/failed deletions
+    const successfulDeletions = deletionResults.filter((r) => r.success).length;
+    const failedDeletions = deletionResults.length - successfulDeletions;
+
+    return {
+      success: true,
+      message: `Processed ${accountsToDelete.length} accounts for deletion`,
+      totalDeleted: successfulDeletions,
+      failedDeletions: failedDeletions,
+      details: deletionResults,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Batch deletion failed: ${error.message}`,
+      totalDeleted: 0,
+    };
+  }
+};
+
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
@@ -556,6 +682,7 @@ cron.schedule("0 0 * * *", async () => {
   await checkAndExpireJobVacancies(now);
   await deleteExpiredAccounts();
   await deactivateInactiveAccounts();
+  await deleteScheduledAccounts();
 });
 
 export { io, userSocketMap };
