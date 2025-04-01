@@ -33,7 +33,7 @@ const server = http.createServer(app);
 // Set up Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://new-repo-client.onrender.com"],
+    origin: ["http://localhost:3000", "https://peso-city-of-taguig.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -46,7 +46,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://new-repo-client.onrender.com"],
+  origin: ["http://localhost:3000", "https://peso-city-of-taguig.onrender.com"],
   credentials: true,
 };
 app.use(cors(corsOptions));
