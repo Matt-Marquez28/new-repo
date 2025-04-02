@@ -19,6 +19,12 @@ import Company from "./models/company.model.js";
 import { Account } from "./models/account.model.js";
 import { createNotification } from "./utils/notification.js";
 import { sendEmail } from "./utils/email.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Equivalent to __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +50,7 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 const corsOptions = {
   origin: ["http://localhost:3000", "https://peso-city-of-taguig.onrender.com"],
@@ -82,6 +89,10 @@ io.on("connection", (socket) => {
     }
     console.log("Updated active users after disconnect:", userSocketMap);
   });
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // Start the server
