@@ -173,7 +173,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
               new Date(jobVacancy?.applicationDeadline) < new Date()
             } // Disable if already applied or past deadline
           >
-            <i className="bi bi-file-earmark-check"></i>{" "}
+            <i className="bi bi-file-earmark-check d-none d-sm-inline-block"></i>{" "}
             {new Date(jobVacancy?.applicationDeadline) < new Date()
               ? "Expired"
               : isAlreadyApplied
@@ -189,7 +189,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
             <i
               className={`bi ${
                 isJobVacancySaved ? "bi-bookmark-fill" : "bi-bookmark"
-              }`}
+              } d-none d-sm-inline-block`}
             ></i>{" "}
             {isJobVacancySaved ? "Saved" : "Save"}
           </button>

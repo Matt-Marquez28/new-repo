@@ -43,12 +43,12 @@ const Header = () => {
       <div className="col-md-3 text-end">
         <Link to="/login">
           <button type="button" className="btn btn-outline-primary me-2">
-            <i className="bi bi-box-arrow-in-right"></i> Login
+            <i className="bi bi-box-arrow-in-right d-none d-md-inline-block"></i> Login
           </button>
         </Link>
         <Link to="/signup">
           <button type="button" className="btn btn-primary">
-            <i className="bi bi-pen"></i> Sign-up
+            <i className="bi bi-pen d-none d-md-inline-block"></i> Sign-up
           </button>
         </Link>
       </div>
