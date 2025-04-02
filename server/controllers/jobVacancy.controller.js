@@ -65,7 +65,7 @@ export const postJobVacancy = async (req, res) => {
       requiredQualifications,
       employmentType,
       workLocation,
-      applicationDeadline: formattedDeadline, 
+      applicationDeadline: formattedDeadline,
       responsibilities,
       skillsRequired,
       interviewProcess,
@@ -711,14 +711,31 @@ export const approveJobVacancy = async (req, res) => {
       jobVacancyId,
       { publicationStatus: "approved" },
       { new: true }
-    ).populate({
-      path: "accountId",
-      select: "emailAddress",
-    });
+    ).populate([
+      {
+        path: "accountId",
+        select: "emailAddress firstName lastName",
+      },
+      {
+        path: "companyId",
+        select: "companyInformation.businessName",
+      },
+    ]);
 
     if (!jobVacancy) {
       return res.status(404).json({ message: "Job vacancy not found" });
     }
+
+    // Audit trail for successful approval
+    await auditTrail({
+      accountId,
+      action: "approved job vacancy",
+      details: {
+        jobTitle: jobVacancy.jobTitle,
+        companyName: jobVacancy.companyId?.companyInformation?.businessName,
+        newStatus: "approved",
+      },
+    });
 
     const emailContent = {
       to: jobVacancy?.accountId?.emailAddress, // Send to the email associated with the company
@@ -774,8 +791,8 @@ export const approveJobVacancy = async (req, res) => {
     // Notify the employer
     try {
       await createNotification({
-        to: jobVacancy?.accountId?._id, // Employer ID
-        from: accountId, // admin / staff ID
+        to: jobVacancy?.accountId?._id,
+        from: accountId,
         title: "Job Vacancy Approved",
         message: `Your job vacancy, ${jobVacancy?.jobTitle}, has been approved.`,
         type: "success",
@@ -801,17 +818,32 @@ export const declineJobVacancy = async (req, res) => {
       jobVacancyId,
       { publicationStatus: "declined", remarks: reason },
       { new: true }
-    ).populate({
-      path: "accountId",
-      select: "emailAddress",
-    });
+    ).populate([
+      {
+        path: "accountId",
+        select: "emailAddress firstName lastName",
+      },
+      {
+        path: "companyId",
+        select: "companyInformation.businessName",
+      },
+    ]);
 
     if (!jobVacancy) {
       return res.status(404).json({ message: "Job vacancy not found" });
     }
 
     // Save activity
-    auditTrail({ accountId, action: "decline a job vacancy" });
+    // Audit trail for successful approval
+    await auditTrail({
+      accountId,
+      action: "declined job vacancy",
+      details: {
+        jobTitle: jobVacancy.jobTitle,
+        companyName: jobVacancy.companyId?.companyInformation?.businessName,
+        newStatus: "declined",
+      },
+    });
 
     const emailContent = {
       to: jobVacancy?.accountId?.emailAddress, // Recipient's email
@@ -879,6 +911,18 @@ export const declineJobVacancy = async (req, res) => {
       },\n\nWe regret to inform you...`, // Use the dynamic text
       html: emailContent.html, // Use the HTML content
     });
+
+    try {
+      await createNotification({
+        to: jobVacancy?.accountId?._id,
+        from: accountId,
+        title: "Job Vacancy Declined",
+        message: `Your job vacancy, ${jobVacancy?.jobTitle}, has been declined.`,
+        type: "error",
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
 
     res.status(200).json({ message: "Job vacancy declined", jobVacancy });
   } catch (error) {

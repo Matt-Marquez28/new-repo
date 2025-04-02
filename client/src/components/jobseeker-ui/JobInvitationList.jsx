@@ -48,7 +48,7 @@ const JobInvitationList = () => {
   const dropdownContent = (jobVacancyId, invitationId) => (
     <Dropdown.Menu>
       <Dropdown.Item as="button" onClick={() => viewDetails(jobVacancyId)}>
-        <i className="bi bi-info-circle-fill text-info"></i> Details
+        <i className="bi bi-info-circle-fill text-primary"></i> Details
       </Dropdown.Item>
       <Dropdown.Item as="button" onClick={() => deleteInvitation(invitationId)}>
         <i className="bi bi-trash-fill text-danger"></i> Delete

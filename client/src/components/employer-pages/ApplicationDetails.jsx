@@ -161,10 +161,10 @@ const ApplicationDetails = () => {
                   </span>
                 </div>
 
-                <hr />
+                <hr className="d-none d-md-block"/>
 
                 {/* Contact Section - Always Visible */}
-                <div className="p-3 border rounded bg-light">
+                <div className="p-3 border rounded bg-light d-none d-md-block">
                   <h5 className="mb-3 text-primary">Contact</h5>
                   <div className="d-flex text-start align-items-center gap-3 mb-3">
                     <div>

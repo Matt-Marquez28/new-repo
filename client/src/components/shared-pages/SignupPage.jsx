@@ -9,7 +9,9 @@ import { Modal, Button } from "react-bootstrap"; // Import Bootstrap Modal
 const SignupPage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [isAgreed, setIsAgreed] = useState(false); // Track agreement checkbox
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -185,21 +187,34 @@ const SignupPage = () => {
                 <label htmlFor="password" className="form-label">
                   Password:
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className={`form-control ${
-                    formik.errors.password && formik.touched.password
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("password")}
-                />
-                {formik.errors.password && formik.touched.password && (
-                  <div className="invalid-feedback">
-                    {formik.errors.password}
-                  </div>
-                )}
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className={`form-control ${
+                      formik.errors.password && formik.touched.password
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("password")}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <i
+                      className={`bi ${
+                        showPassword ? "bi-eye-slash" : "bi-eye"
+                      }`}
+                    ></i>
+                  </button>
+                  {formik.errors.password && formik.touched.password && (
+                    <div className="invalid-feedback">
+                      {formik.errors.password}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Confirm Password */}
@@ -207,23 +222,36 @@ const SignupPage = () => {
                 <label htmlFor="confirmPassword" className="form-label">
                   Confirm Password:
                 </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  className={`form-control ${
-                    formik.errors.confirmPassword &&
-                    formik.touched.confirmPassword
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("confirmPassword")}
-                />
-                {formik.errors.confirmPassword &&
-                  formik.touched.confirmPassword && (
-                    <div className="invalid-feedback">
-                      {formik.errors.confirmPassword}
-                    </div>
-                  )}
+                <div className="input-group">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    className={`form-control ${
+                      formik.errors.confirmPassword &&
+                      formik.touched.confirmPassword
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("confirmPassword")}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <i
+                      className={`bi ${
+                        showConfirmPassword ? "bi-eye-slash" : "bi-eye"
+                      }`}
+                    ></i>
+                  </button>
+                  {formik.errors.confirmPassword &&
+                    formik.touched.confirmPassword && (
+                      <div className="invalid-feedback">
+                        {formik.errors.confirmPassword}
+                      </div>
+                    )}
+                </div>
               </div>
 
               {/* Terms and Conditions */}

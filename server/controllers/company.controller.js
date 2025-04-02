@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from "uuid";
 import { createNotification } from "../utils/notification.js";
 import Application from "../models/application.model.js";
 import AuditTrail from "../models/auditTrail.model.js";
+import jwt from "jsonwebtoken";
+import puppeteer from "puppeteer";
+import { auditTrail } from "../utils/auditTrail.js";
 
 export const upsertCompany = async (req, res) => {
   try {
@@ -876,6 +879,15 @@ export const declineCompany = async (req, res) => {
       console.error("Error creating notification:", error);
     }
 
+    await auditTrail({
+      accountId,
+      action: "declined a company",
+      details: {
+        companyName: company?.companyInformation?.businessName,
+        newStatus: "declined",
+      },
+    });
+
     res
       .status(200)
       .json({ message: "Company declined and notified successfully" });
@@ -1280,6 +1292,15 @@ export const accreditCompany = async (req, res) => {
 
     // Send the email notification with the PDF attachment
     await sendEmail(emailContent);
+
+    await auditTrail({
+      accountId,
+      action: "accredited a company",
+      details: {
+        companyName: company?.companyInformation?.businessName,
+        newStatus: "accredited",
+      },
+    });
 
     // Notify the employer
     try {

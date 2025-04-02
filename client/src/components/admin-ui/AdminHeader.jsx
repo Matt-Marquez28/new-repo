@@ -248,7 +248,7 @@ const AdminHeader = () => {
                   <i className="bi bi-columns me-2"></i>
                   Dashboard
                 </NavLink>
-                
+
                 <NavLink
                   exact
                   to="/admin/verification/company"
@@ -262,7 +262,7 @@ const AdminHeader = () => {
                   <i className="bi bi-building me-2"></i>
                   Company Verification
                 </NavLink>
-                
+
                 <NavLink
                   exact
                   to="/admin/verification/job-vacancy"
@@ -276,8 +276,8 @@ const AdminHeader = () => {
                   <i className="bi bi-briefcase me-2"></i>
                   Job Vacancy Verification
                 </NavLink>
-                
-                <NavLink
+
+                {/* <NavLink
                   exact
                   to="/admin/analytics"
                   className="nav-link px-3 py-2 rounded"
@@ -289,8 +289,8 @@ const AdminHeader = () => {
                 >
                   <i className="bi bi-bar-chart-line me-2"></i>
                   Analytics
-                </NavLink>
-                
+                </NavLink> */}
+
                 <NavLink
                   exact
                   to="/admin/audit-trail"
@@ -304,7 +304,7 @@ const AdminHeader = () => {
                   <i className="bi bi-exclamation-circle me-2"></i>
                   Audit Trail
                 </NavLink>
-                
+
                 <NavLink
                   exact
                   to="/admin/user-management/user-option"
@@ -321,7 +321,7 @@ const AdminHeader = () => {
                   <i className="bi bi-people me-2"></i>
                   Manage User
                 </NavLink>
-                
+
                 <NavLink
                   as={Link}
                   to="/admin/notification"
@@ -340,7 +340,7 @@ const AdminHeader = () => {
                     <span className="ms-2 badge bg-danger">New</span>
                   )}
                 </NavLink>
-                
+
                 <NavLink
                   as={Link}
                   to="/admin/settings"

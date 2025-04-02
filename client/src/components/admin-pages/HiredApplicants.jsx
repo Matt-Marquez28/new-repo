@@ -12,8 +12,18 @@ const HiredApplicants = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [years, setYears] = useState([]);
   const [months] = useState([
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ]);
 
   useEffect(() => {
@@ -33,7 +43,7 @@ const HiredApplicants = () => {
       // Extract unique years from the data
       const uniqueYears = [
         ...new Set(
-          response.data.hiredApplicants.map(applicant => 
+          response.data.hiredApplicants.map((applicant) =>
             new Date(applicant.hiredDate).getFullYear()
           )
         ),
@@ -66,7 +76,7 @@ const HiredApplicants = () => {
     });
 
     const sortedGroupedApplicants = {};
-    sortedMonths.forEach(month => {
+    sortedMonths.forEach((month) => {
       sortedGroupedApplicants[month] = grouped[month];
     });
 
@@ -76,13 +86,17 @@ const HiredApplicants = () => {
   const exportToExcel = (month, applicantsInMonth) => {
     try {
       // Prepare the data for the Excel file using preserved data
-      const data = applicantsInMonth.map(applicant => ({
-        "Applicant Name": `${applicant.jobSeekerDetails?.firstName || "N/A"} ${applicant.jobSeekerDetails?.lastName || "N/A"}`,
-        "Position": applicant.jobVacancyDetails?.jobTitle || "N/A",
-        "Company": applicant.jobVacancyDetails?.companyName || "N/A",
-        "Email": applicant.jobSeekerDetails?.emailAddress || "N/A",
-        "Mobile": applicant.jobSeekerDetails?.mobileNumber || "N/A",
-        "Hired Date": applicant.hiredDate ? new Date(applicant.hiredDate).toLocaleDateString() : "N/A"
+      const data = applicantsInMonth.map((applicant) => ({
+        "Applicant Name": `${applicant.jobSeekerDetails?.firstName || "N/A"} ${
+          applicant.jobSeekerDetails?.lastName || "N/A"
+        }`,
+        Position: applicant.jobVacancyDetails?.jobTitle || "N/A",
+        Company: applicant.jobVacancyDetails?.companyName || "N/A",
+        Email: applicant.jobSeekerDetails?.emailAddress || "N/A",
+        Mobile: applicant.jobSeekerDetails?.mobileNumber || "N/A",
+        "Hired Date": applicant.hiredDate
+          ? new Date(applicant.hiredDate).toLocaleDateString()
+          : "N/A",
       }));
 
       // Add main title and subtitle
@@ -93,14 +107,14 @@ const HiredApplicants = () => {
       const subTitleRow = [{ v: subTitle, t: "s" }];
 
       // Add headers
-      const headers = Object.keys(data[0]).map(header => ({
+      const headers = Object.keys(data[0]).map((header) => ({
         v: header,
         t: "s",
       }));
 
       // Convert data to worksheet rows
-      const rows = data.map(row => 
-        Object.values(row).map(value => ({ v: value, t: "s" }))
+      const rows = data.map((row) =>
+        Object.values(row).map((value) => ({ v: value, t: "s" }))
       );
 
       // Add a total row
@@ -110,11 +124,17 @@ const HiredApplicants = () => {
         { v: "", t: "s" },
         { v: "", t: "s" },
         { v: "", t: "s" },
-        { v: "", t: "s" }
+        { v: "", t: "s" },
       ];
 
       // Combine title, headers, data, and total row
-      const worksheetData = [mainTitleRow, subTitleRow, headers, ...rows, totalRow];
+      const worksheetData = [
+        mainTitleRow,
+        subTitleRow,
+        headers,
+        ...rows,
+        totalRow,
+      ];
 
       // Create a worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -188,7 +208,7 @@ const HiredApplicants = () => {
         <div className="d-flex mb-3 align-items-center gap-2">
           <div className="d-flex align-items-center">
             <button className="btn btn-light" onClick={() => navigate(-1)}>
-              <i className="bi bi-arrow-90deg-left"></i>
+              <i className="bi bi-arrow-left"></i>
             </button>
           </div>
           <div className="d-flex align-items-center">
@@ -209,7 +229,7 @@ const HiredApplicants = () => {
                 onChange={(e) => setSelectedYear(e.target.value)}
               >
                 <option value="">All Years</option>
-                {years.map(year => (
+                {years.map((year) => (
                   <option key={year} value={year}>
                     {year}
                   </option>
@@ -223,7 +243,7 @@ const HiredApplicants = () => {
                 onChange={(e) => setSelectedMonth(e.target.value)}
               >
                 <option value="">All Months</option>
-                {months.map(month => (
+                {months.map((month) => (
                   <option key={month} value={month}>
                     {month}
                   </option>
@@ -282,12 +302,15 @@ const HiredApplicants = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {applicantsInMonth.map(applicant => (
+                          {applicantsInMonth.map((applicant) => (
                             <tr key={applicant._id}>
                               <td className="align-middle">
                                 <div className="d-flex align-items-center fw-semibold">
                                   <span className="small text-muted">
-                                    {applicant.jobSeekerDetails?.firstName || "N/A"} {applicant.jobSeekerDetails?.lastName || "N/A"}
+                                    {applicant.jobSeekerDetails?.firstName ||
+                                      "N/A"}{" "}
+                                    {applicant.jobSeekerDetails?.lastName ||
+                                      "N/A"}
                                   </span>
                                 </div>
                               </td>
@@ -295,17 +318,22 @@ const HiredApplicants = () => {
                                 {applicant.jobVacancyDetails?.jobTitle || "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
-                                {applicant.jobVacancyDetails?.companyName || "N/A"}
+                                {applicant.jobVacancyDetails?.companyName ||
+                                  "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
-                                {applicant.jobSeekerDetails?.emailAddress || "N/A"}
+                                {applicant.jobSeekerDetails?.emailAddress ||
+                                  "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
-                                {applicant.jobSeekerDetails?.mobileNumber || "N/A"}
+                                {applicant.jobSeekerDetails?.mobileNumber ||
+                                  "N/A"}
                               </td>
                               <td className="small text-muted align-middle">
                                 {applicant.hiredDate
-                                  ? new Date(applicant.hiredDate).toLocaleDateString()
+                                  ? new Date(
+                                      applicant.hiredDate
+                                    ).toLocaleDateString()
                                   : "N/A"}
                               </td>
                             </tr>

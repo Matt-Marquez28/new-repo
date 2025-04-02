@@ -50,7 +50,7 @@ const ApplicationList = () => {
   const dropdownContent = (applicationId, jobVacancyId) => (
     <Dropdown.Menu>
       <Dropdown.Item as="button" onClick={() => viewDetails(applicationId)}>
-        <i className="bi bi-info-circle-fill text-info"></i> Details
+        <i className="bi bi-info-circle-fill text-primary"></i> Details
       </Dropdown.Item>
       <Dropdown.Item
         as="button"

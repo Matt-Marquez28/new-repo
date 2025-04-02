@@ -108,32 +108,30 @@ const JobVacancyVerification = () => {
         <i className="bi bi-clipboard-check-fill"></i> Job Vacancy Verification
       </h5>
       <section className="mb-3">
-        <div className="row justify-content-center">
-          <div>
-            <div className="row">
-              {statsData.map((stat, index) => (
-                <div key={index} className="col" style={{ minWidth: "200px" }}>
-                  <div className="card border-0 shadow-sm h-100 bg-light">
-                    <div className="card-body p-3">
-                      <div className="d-flex align-items-center">
-                        <div className={`${stat.bgColor} rounded-3 p-2 me-3`}>
-                          <i className={`${stat.icon} text-white fs-5`}></i>
-                        </div>
-                        <div>
-                          <h6 className="card-subtitle text-muted mb-1 small text-uppercase">
-                            {stat.title}
-                          </h6>
-                          <h5 className="card-title mb-0 fw-bold">
-                            {stat.value.toLocaleString()}
-                          </h5>
-                        </div>
-                      </div>
+        <div className="row g-2 g-md-3">
+          {statsData.map((stat, index) => (
+            <div key={index} className="col-6 col-md">
+              <div className="card border-0 shadow-sm h-100 bg-light">
+                <div className="card-body p-2 p-md-3">
+                  <div className="d-flex align-items-center">
+                    <div
+                      className={`${stat.bgColor} rounded-3 p-1 p-md-2 me-2 me-md-3`}
+                    >
+                      <i className={`${stat.icon} text-white fs-6 fs-md-5`}></i>
+                    </div>
+                    <div>
+                      <h6 className="card-subtitle text-muted mb-0 mb-md-1 small text-uppercase">
+                        {stat.title}
+                      </h6>
+                      <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
+                        {stat.value.toLocaleString()}
+                      </h5>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -174,99 +172,134 @@ const JobVacancyVerification = () => {
       </div>
 
       {/* Table Container with Scrollable Body */}
-      <div style={{ maxHeight: "380px", overflowY: "auto" }}>
-        <table className="table table-hover table-striped mt-2">
-          <thead
-            style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "white",
-              zIndex: 1,
-            }}
+      <div style={{ maxHeight: "380px", overflow: "auto" }}>
+        <div style={{ minWidth: "900px" }}>
+          {" "}
+          {/* Minimum width to trigger horizontal scroll */}
+          <table
+            className="table table-hover table-striped mt-2"
+            style={{ width: "100%" }}
           >
-            <tr>
-              <th scope="col" className="small text-muted align-middle">
-                <i className="bi bi-briefcase-fill"></i> Job Title
-              </th>
-              <th scope="col" className="small text-muted align-middle">
-                <i className="bi bi-building-fill"></i> Company
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-calendar-event-fill"></i> Date Posted
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-search"></i> Vacancies
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-question-square-fill"></i> Publication
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredJobVacancies.length > 0 ? (
-              filteredJobVacancies.map((jobVacancy, index) => (
-                <tr key={jobVacancy?._id}>
-                  <td
-                    scope="row"
-                    className="small align-middle text-muted fw-semibold"
-                  >
-                    {jobVacancy?.jobTitle}
-                  </td>
-                  <td className="small text-muted align-middle">
-                    {jobVacancy.companyId?.companyInformation?.businessName}
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    {new Date(jobVacancy.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    {jobVacancy?.vacancies}
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    <span
-                      className={`text-white badge ${getStatusBadgeClass(
-                        jobVacancy.publicationStatus
-                      )}`}
+            <thead
+              style={{
+                position: "sticky",
+                top: 0,
+                backgroundColor: "white",
+                zIndex: 1,
+              }}
+            >
+              <tr>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle"
+                  style={{ width: "25%" }}
+                >
+                  <i className="bi bi-briefcase-fill"></i> Job Title
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle"
+                  style={{ width: "20%" }}
+                >
+                  <i className="bi bi-building-fill"></i> Company
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "15%" }}
+                >
+                  <i className="bi bi-calendar-event-fill"></i> Date Posted
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "10%" }}
+                >
+                  <i className="bi bi-search"></i> Vacancies
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "15%" }}
+                >
+                  <i className="bi bi-question-square-fill"></i> Publication
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "15%" }}
+                >
+                  <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredJobVacancies.length > 0 ? (
+                filteredJobVacancies.map((jobVacancy) => (
+                  <tr key={jobVacancy?._id}>
+                    <td
+                      scope="row"
+                      className="small align-middle text-muted fw-semibold"
+                      style={{ width: "25%" }}
                     >
-                      {jobVacancy.publicationStatus}
-                    </span>
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="light"
-                        className="text-secondary btn-sm"
+                      {jobVacancy?.jobTitle}
+                    </td>
+                    <td
+                      className="small text-muted align-middle"
+                      style={{ width: "20%" }}
+                    >
+                      {jobVacancy.companyId?.companyInformation?.businessName}
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "15%" }}
+                    >
+                      {new Date(jobVacancy.createdAt).toLocaleDateString()}
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "10%" }}
+                    >
+                      {jobVacancy?.vacancies}
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "15%" }}
+                    >
+                      <span
+                        className={`text-white badge ${getStatusBadgeClass(
+                          jobVacancy.publicationStatus
+                        )}`}
                       >
-                        <i className="bi bi-three-dots-vertical"></i>
-                      </Dropdown.Toggle>
-                      {dropdownContent(jobVacancy._id)}
-                    </Dropdown>
+                        {jobVacancy.publicationStatus}
+                      </span>
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "15%" }}
+                    >
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="light"
+                          className="text-secondary btn-sm"
+                        >
+                          <i className="bi bi-three-dots-vertical"></i>
+                        </Dropdown.Toggle>
+                        {dropdownContent(jobVacancy._id)}
+                      </Dropdown>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No records found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="text-center">
-                  No records found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

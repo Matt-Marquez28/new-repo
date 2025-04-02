@@ -11,8 +11,10 @@ import {
 import axios from "axios";
 import { ACCOUNT_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
+import { useNavigate } from "react-router-dom";
 
 const UserManagementPage = () => {
+  const navigate = useNavigate();
   const triggerToast = useToast();
   const [users, setUsers] = useState([]); // State to store users fetched from the API
   const [modalShow, setModalShow] = useState(false);
@@ -97,9 +99,15 @@ const UserManagementPage = () => {
 
   return (
     <div className="container">
-      <h5 className="text-primary mb-3 mx-1">
-        <i className="bi bi-people-fill"></i> Manage Staff
-      </h5>
+      <div className="d-flex gap-2 my-2 align-items-center">
+        <button onClick={() => navigate(-1)} className="btn btn-light">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h5 className="my-2 text-primary">
+          <i className="bi bi-people-fill"></i> Manage Staff
+        </h5>
+      </div>
+
       <div className="d-flex justify-content-end">
         <Button className="btn btn-primary" onClick={() => setModalShow(true)}>
           <i className="bi bi-person-fill-add"></i> Create New User
@@ -107,81 +115,114 @@ const UserManagementPage = () => {
       </div>
 
       {/* Table Container with Scrollable Body */}
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-        <table className="table table-hover mt-2">
-          <thead
-            style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "white",
-              zIndex: 1,
-            }}
-          >
-            <tr>
-              <th scope="col" className="small text-muted align-middle">
-                <i className="bi bi-people-fill"></i> Full Name
-              </th>
-              <th scope="col" className="small text-muted align-middle">
-                <i className="bi bi-envelope-fill"></i> Email
-              </th>
-              <th scope="col" className="small text-muted align-middle">
-                <i className="bi bi-calendar-fill"></i> Date Created
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-gear-fill"></i> Role
-              </th>
-              <th
-                scope="col"
-                className="small text-muted align-middle text-center"
-              >
-                <i className="bi bi-hand-index-thumb-fill"></i> Handle
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length > 0 ? (
-              users.map((user) => (
-                <tr key={user._id}>
-                  <td
-                    scope="row"
-                    className="small text-muted align-middle fw-semibold"
-                  >
-                    {`${user?.firstName} ${user?.lastName}`}
-                  </td>
-                  <td className="small text-muted align-middle">
-                    {user?.emailAddress}
-                  </td>
-                  <td className="small text-muted align-middle">
-                    {formatDate(user?.createdAt)} {/* Display formatted date */}
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    <Badge bg={getBadgeVariant(user?.role)}>{user?.role}</Badge>
-                  </td>
-                  <td className="small text-muted align-middle text-center">
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="light"
-                        className="text-secondary btn-sm"
-                      >
-                        <i className="bi bi-three-dots-vertical"></i>
-                      </Dropdown.Toggle>
-                      {dropdownContent(user?._id)}
-                    </Dropdown>
+      <div style={{ maxHeight: "400px", overflow: "auto" }}>
+        <div style={{ minWidth: "800px" }}>
+          {" "}
+          {/* Minimum width to trigger horizontal scroll */}
+          <table className="table table-hover mt-2" style={{ width: "100%" }}>
+            <thead
+              style={{
+                position: "sticky",
+                top: 0,
+                backgroundColor: "white",
+                zIndex: 1,
+              }}
+            >
+              <tr>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle"
+                  style={{ width: "25%" }}
+                >
+                  <i className="bi bi-people-fill"></i> Full Name
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle"
+                  style={{ width: "25%" }}
+                >
+                  <i className="bi bi-envelope-fill"></i> Email
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle"
+                  style={{ width: "20%" }}
+                >
+                  <i className="bi bi-calendar-fill"></i> Date Created
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "15%" }}
+                >
+                  <i className="bi bi-gear-fill"></i> Role
+                </th>
+                <th
+                  scope="col"
+                  className="small text-muted align-middle text-center"
+                  style={{ width: "15%" }}
+                >
+                  <i className="bi bi-hand-index-thumb-fill"></i> Handle
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length > 0 ? (
+                users.map((user) => (
+                  <tr key={user._id}>
+                    <td
+                      scope="row"
+                      className="small text-muted align-middle fw-semibold"
+                      style={{ width: "25%" }}
+                    >
+                      {`${user?.firstName} ${user?.lastName}`}
+                    </td>
+                    <td
+                      className="small text-muted align-middle"
+                      style={{ width: "25%" }}
+                    >
+                      {user?.emailAddress}
+                    </td>
+                    <td
+                      className="small text-muted align-middle"
+                      style={{ width: "20%" }}
+                    >
+                      {formatDate(user?.createdAt)}
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "15%" }}
+                    >
+                      <Badge bg={getBadgeVariant(user?.role)}>
+                        {user?.role}
+                      </Badge>
+                    </td>
+                    <td
+                      className="small text-muted align-middle text-center"
+                      style={{ width: "15%" }}
+                    >
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="light"
+                          className="text-secondary btn-sm"
+                        >
+                          <i className="bi bi-three-dots-vertical"></i>
+                        </Dropdown.Toggle>
+                        {dropdownContent(user?._id)}
+                      </Dropdown>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    No users found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="text-center">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal for Adding Staff */}

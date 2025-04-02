@@ -93,7 +93,7 @@ const AdminSidebar = () => {
               {!isCollapsed && "Job Vacancy Verification"}
             </NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <NavLink
               exact
               to="/analytics"
@@ -107,7 +107,7 @@ const AdminSidebar = () => {
               <i className="bi bi-bar-chart-line me-2"></i>
               {!isCollapsed && "Analytics"}
             </NavLink>
-          </li>
+          </li> */}
           <li className="nav-item">
             <NavLink
               exact

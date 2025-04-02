@@ -81,7 +81,7 @@ const ApplicantList = () => {
   const dropdownContent = (applicationId) => (
     <Dropdown.Menu>
       <Dropdown.Item as="button" onClick={() => viewDetails(applicationId)}>
-        <i className="bi bi-info-circle-fill text-info"></i> Details
+        <i className="bi bi-info-circle-fill text-primary"></i> Details
       </Dropdown.Item>
     </Dropdown.Menu>
   );
@@ -224,9 +224,9 @@ const ApplicantList = () => {
               filteredApplicants.map((applicant) => (
                 <tr
                   key={applicant._id}
-                  onClick={() =>
-                    navigate(`/employer/application-details/${applicant._id}`)
-                  }
+                  // onClick={() =>
+                  //   navigate(`/employer/application-details/${applicant._id}`)
+                  // }
                 >
                   <td
                     scope="row"

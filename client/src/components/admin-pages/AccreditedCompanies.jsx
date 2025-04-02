@@ -280,7 +280,7 @@ const AccreditedCompanies = () => {
       <div className="d-flex mb-3 align-items-center gap-2">
         <div className="d-flex align-items-center">
           <button className="btn btn-light" onClick={() => navigate(-1)}>
-            <i className="bi bi-arrow-90deg-left"></i>
+          <i className="bi bi-arrow-left"></i>
           </button>
         </div>
         <div className="d-flex align-items-center">

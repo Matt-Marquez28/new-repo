@@ -81,29 +81,23 @@ const Notification = () => {
   };
 
   return (
-    <div className="container-fluid container-md mt-4">
+    <div className="container-fluid container-md">
       <Row className="mb-4 align-items-center">
         <Col>
-          <h5 className="m-0 text-primary">
-            <i className="bi bi-bell-fill"></i> Notifications
-          </h5>
+          <div className="d-flex gap-2 my-2 align-items-center">
+            <button onClick={() => navigate(-1)} className="btn btn-light">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <h5 className="my-2 text-primary">
+              <i className="bi bi-bell-fill"></i> Notifications
+            </h5>
+          </div>
         </Col>
         <Col xs="auto">
           {notifications.length > 0 && (
             <Badge bg="primary" pill>
               {notifications.length}
             </Badge>
-          )}
-        </Col>
-        <Col xs="auto">
-          {notifications.length > 0 && (
-            <Button
-              variant="outline-danger"
-              size="sm"
-              onClick={clearAllNotifications}
-            >
-              <i className="bi bi-trash-fill"></i> Clear All
-            </Button>
           )}
         </Col>
       </Row>

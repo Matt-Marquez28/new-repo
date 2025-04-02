@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "../shared-ui/Header";
@@ -13,6 +13,11 @@ const LoginPage = () => {
   const { setUser } = useUser();
   const triggerToast = useToast();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -121,20 +126,33 @@ const LoginPage = () => {
                 <label htmlFor="password" className="form-label">
                   <i className="bi bi-lock-fill"></i> Password:
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className={`form-control ${
-                    formik.errors.password && formik.touched.password
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  aria-describedby="passwordFeedback"
-                  aria-invalid={
-                    formik.errors.password && formik.touched.password
-                  }
-                  {...formik.getFieldProps("password")}
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className={`form-control ${
+                      formik.errors.password && formik.touched.password
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    aria-describedby="passwordFeedback"
+                    aria-invalid={
+                      formik.errors.password && formik.touched.password
+                    }
+                    {...formik.getFieldProps("password")}
+                  />
+                  <button
+                    className="btn btn-outline-primary"
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                  >
+                    <i
+                      className={`bi ${
+                        showPassword ? "bi-eye-slash" : "bi-eye"
+                      }`}
+                    ></i>
+                  </button>
+                </div>
                 {formik.errors.password && formik.touched.password && (
                   <div id="passwordFeedback" className="invalid-feedback">
                     {formik.errors.password}

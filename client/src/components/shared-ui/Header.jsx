@@ -16,7 +16,9 @@ const Header = () => {
             height="60"
             className="me-2" // Adds spacing to the right of the image
           />
-           <h5 className=" pt-serif-bold" style={{color: "#555555"}}>PESO City of Taguig</h5>
+          <h5 className=" pt-serif-bold" style={{ color: "#555555" }}>
+            PESO City of Taguig
+          </h5>
         </Link>
       </div>
 
@@ -33,11 +35,6 @@ const Header = () => {
         </li>
         <li>
           <Link to="#" className="nav-link px-2">
-            FAQs
-          </Link>
-        </li>
-        <li>
-          <Link to="#" className="nav-link px-2">
             About
           </Link>
         </li>
@@ -46,12 +43,12 @@ const Header = () => {
       <div className="col-md-3 text-end">
         <Link to="/login">
           <button type="button" className="btn btn-outline-primary me-2">
-          <i className="bi bi-box-arrow-in-right"></i> Login
+            <i className="bi bi-box-arrow-in-right"></i> Login
           </button>
         </Link>
         <Link to="/signup">
           <button type="button" className="btn btn-primary">
-          <i className="bi bi-pen"></i> Sign-up
+            <i className="bi bi-pen"></i> Sign-up
           </button>
         </Link>
       </div>
