@@ -10,8 +10,8 @@ import applicationRoute from "./routes/application.route.js";
 import jobSeekerRoute from "./routes/jobSeeker.route.js";
 import auditTrailRoute from "./routes/auditTrail.route.js";
 import notificationRoute from "./routes/notification.route.js";
-import http from "http"; 
-import { Server } from "socket.io"; 
+import http from "http";
+import { Server } from "socket.io";
 import cron from "node-cron";
 import CompanyDocuments from "./models/companyDocuments.model.js";
 import JobVacancy from "./models/jobVacancy.model.js";
@@ -19,8 +19,8 @@ import Company from "./models/company.model.js";
 import { Account } from "./models/account.model.js";
 import { createNotification } from "./utils/notification.js";
 import { sendEmail } from "./utils/email.js";
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Equivalent to __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -39,7 +39,10 @@ const server = http.createServer(app);
 // Set up Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://peso-city-of-taguig.onrender.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://peso-city-of-taguig.onrender.com",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -50,7 +53,7 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 const corsOptions = {
   origin: ["http://localhost:3000", "https://peso-city-of-taguig.onrender.com"],
@@ -91,8 +94,8 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
 // Start the server
@@ -585,7 +588,7 @@ const deleteAccountWithRelatedData = async (accountId) => {
         // Add other jobseeker-related deletions as needed
       }
     } else if (account.role?.trim().toLowerCase() === "employer") {
-    /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- */
+      /** --------------------------- DELETE EMPLOYER RELATED DATA --------------------------- */
       const company = await Company.findOne({ accountId });
 
       if (company) {
@@ -680,6 +683,10 @@ const deleteScheduledAccounts = async () => {
     };
   }
 };
+
+cron.schedule("* * * * *", async () => {
+  console.log("Running the minutely cron job...");
+});
 
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");

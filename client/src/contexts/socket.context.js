@@ -17,12 +17,15 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       // Initialize socket connection when user is available
-      const socketInstance = io("http://localhost:8080", {
-        query: {
-          userId: user.accountData._id,
-        },
-        transports: ["websocket", "polling"], // Ensures fallback
-      });
+      const socketInstance = io(
+        "https://peso-city-of-taguig-web-server.onrender.com",
+        {
+          query: {
+            userId: user.accountData._id,
+          },
+          transports: ["websocket", "polling"], // Ensures fallback
+        }
+      );
       setSocket(socketInstance);
 
       return () => {
