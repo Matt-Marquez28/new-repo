@@ -6,6 +6,7 @@ import { useToast } from "../../contexts/toast.context";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useSocketContext } from "../../contexts/socket.context";
+import default_company from "../../images/default-company.jpg";
 
 const JobInvitationList = () => {
   const navigate = useNavigate();
@@ -168,13 +169,13 @@ const JobInvitationList = () => {
                 <tr key={invitation._id}>
                   <td
                     scope="row"
-                    className="small text-muted align-middle fw-semibold"
+                    className="small text-muted align-middle"
                     style={{ width: "25%" }}
                   >
                     {invitation?.companyId?.companyInformation?.companyLogo && (
                       <img
                         src={
-                          invitation?.companyId?.companyInformation.companyLogo
+                          invitation?.companyId?.companyInformation.companyLogo || default_company
                         }
                         alt={
                           invitation?.companyId?.companyInformation

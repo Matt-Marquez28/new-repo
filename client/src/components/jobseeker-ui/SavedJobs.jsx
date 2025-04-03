@@ -4,6 +4,7 @@ import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { Dropdown } from "react-bootstrap";
 import { useToast } from "../../contexts/toast.context";
 import { useNavigate } from "react-router-dom";
+import default_company from "../../images/default-company.jpg";
 
 const SavedJobs = () => {
   const triggerToast = useToast();
@@ -202,7 +203,7 @@ const SavedJobs = () => {
                     >
                       {company?.companyInformation?.companyLogo && (
                         <img
-                          src={company?.companyInformation.companyLogo}
+                          src={company?.companyInformation.companyLogo || default_company}
                           alt={
                             company.companyInformation.businessName ||
                             "Company Logo"

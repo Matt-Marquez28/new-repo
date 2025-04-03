@@ -3,6 +3,7 @@ import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import { format } from "date-fns";
+import default_company from "../../images/default-company.jpg";
 
 const Search = () => {
   // Load state from localStorage or use initial state
@@ -289,8 +290,7 @@ const Search = () => {
                     }}
                     src={
                       jobVacancy?.companyInfo?.companyInformation
-                        ?.companyLogo ||
-                      "https://st3.depositphotos.com/43745012/44906/i/450/depositphotos_449066958-stock-photo-financial-accounting-logo-financial-logo.jpg"
+                        ?.companyLogo || default_company
                     }
                     alt={`${jobVacancy?.companyName} LOGO`}
                   />

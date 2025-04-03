@@ -4,6 +4,7 @@ import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { format } from "date-fns";
 import { useUser } from "../../contexts/user.context";
+import default_company from "../../images/default-company.jpg";
 
 const RecommendedJobVacancies = () => {
   const { user } = useUser();
@@ -101,7 +102,7 @@ const RecommendedJobVacancies = () => {
                       borderRadius: "10px",
                       objectFit: "cover",
                     }}
-                    src={job?.companyLogo || "/default-company-logo.png"}
+                    src={job?.companyLogo || default_company}
                     alt="Company Logo"
                     onError={(e) => {
                       e.target.src = "/default-company-logo.png";

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../shared-ui/Footer";
 import { useUser } from "../../contexts/user.context";
 import ReportButton from "../shared-ui/ReportButton";
+import default_company from "../../images/default-company.jpg";
 
 const JobVacancyDetailsPage = ({ currentUser }) => {
   const { user, setUser } = useUser();
@@ -372,7 +373,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                       src={
                         jobVacancy?.companyId?.companyInformation
                           ?.companyLogo ||
-                        "https://st3.depositphotos.com/43745012/44906/i/450/depositphotos_449066958-stock-photo-financial-accounting-logo-financial-logo.jpg"
+                        default_company
                       }
                       className="border shadow-sm"
                       alt="Avatar"

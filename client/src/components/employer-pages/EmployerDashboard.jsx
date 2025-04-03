@@ -7,6 +7,7 @@ import RecommendedJobSeekers from "../employer-ui/RecommendedJobSeekers";
 import SearchJobSeekers from "../employer-ui/SearchJobSeekers";
 import { useUser } from "../../contexts/user.context";
 import JobInvitationList from "../employer-ui/JobInvitationList";
+import default_company from "../../images/default-company.jpg";
 
 const EmployerDashboard = () => {
   const { user } = useUser();
@@ -180,7 +181,7 @@ const EmployerDashboard = () => {
               <img
                 src={
                   user?.companyData?.companyInformation?.companyLogo ||
-                  "https://cdn-icons-png.flaticon.com/512/2399/2399925.png"
+                  default_company
                 }
                 className="border shadow-sm"
                 alt="Avatar"

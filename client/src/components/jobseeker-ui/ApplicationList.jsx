@@ -4,6 +4,7 @@ import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import { Dropdown } from "react-bootstrap";
 import { useToast } from "../../contexts/toast.context";
 import { useNavigate } from "react-router-dom";
+import default_company from "../../images/default-company.jpg";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
@@ -223,12 +224,12 @@ const ApplicationList = () => {
                 return (
                   <tr key={application._id}>
                     <td
-                      className="small text-muted align-middle fw-semibold"
+                      className="small text-muted align-middle"
                       style={{ width: "25%" }}
                     >
                       {company?.companyInformation?.companyLogo && (
                         <img
-                          src={company?.companyInformation.companyLogo}
+                          src={company?.companyInformation.companyLogo || default_company}
                           alt={
                             company.companyInformation.businessName ||
                             "Company Logo"

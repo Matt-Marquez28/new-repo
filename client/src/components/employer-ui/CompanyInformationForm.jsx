@@ -5,6 +5,7 @@ import { COMPANY_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
 import axios from "axios";
 import { useUser } from "../../contexts/user.context";
+import default_company from "../../images/default-company.jpg";
 
 // formik validation schema
 const FormSchema = Yup.object().shape({
@@ -594,7 +595,7 @@ const CompanyInformationForm = () => {
               <div className="text-center">
                 <img
                   src={
-                    previewUrl ? previewUrl : companyInformation?.companyLogo
+                    previewUrl || companyInformation?.companyLogo || default_company
                   }
                   alt="Profile Preview"
                   style={{
