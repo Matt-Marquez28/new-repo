@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
+import default_profile from "../../images/default-profile.jpg";
 
 const CurriculumVitae = () => {
   const [jobseekerData, setJobseekerData] = useState(null);
@@ -55,7 +56,7 @@ const CurriculumVitae = () => {
           {personalInformation?.photo && (
             <div className="mb-4 text-center">
               <img
-                src={personalInformation.photo}
+                src={personalInformation.photo || default_profile}
                 alt="Profile Preview"
                 style={{
                   width: "100px",
@@ -68,7 +69,10 @@ const CurriculumVitae = () => {
           )}
 
           {personalInformation?.firstName && personalInformation?.lastName && (
-            <h5 className="my-2 fw-bold text-center" style={{ color: "#555555" }}>
+            <h5
+              className="my-2 fw-bold text-center"
+              style={{ color: "#555555" }}
+            >
               {`${personalInformation.firstName} ${personalInformation.lastName}`}
             </h5>
           )}
@@ -108,7 +112,8 @@ const CurriculumVitae = () => {
             </div>
           )}
 
-          {(personalInformation?.emailAddress || personalInformation?.mobileNumber) && (
+          {(personalInformation?.emailAddress ||
+            personalInformation?.mobileNumber) && (
             <div className="mb-2">
               <h5 className="text-primary">Contact Information</h5>
               {personalInformation?.emailAddress && (
@@ -117,7 +122,9 @@ const CurriculumVitae = () => {
                     <i className="bi bi-envelope-fill fs-4 text-secondary"></i>
                   </div>
                   <div>
-                    <div className="small fw-semibold text-secondary">Email</div>
+                    <div className="small fw-semibold text-secondary">
+                      Email
+                    </div>
                     <div className="text-secondary small">
                       {personalInformation.emailAddress}
                     </div>
@@ -130,7 +137,9 @@ const CurriculumVitae = () => {
                     <i className="bi bi-phone-fill fs-4 text-secondary"></i>
                   </div>
                   <div>
-                    <div className="small fw-semibold text-secondary">Mobile No.</div>
+                    <div className="small fw-semibold text-secondary">
+                      Mobile No.
+                    </div>
                     <div className="text-secondary small">
                       {personalInformation.mobileNumber}
                     </div>
@@ -161,7 +170,9 @@ const CurriculumVitae = () => {
                       className="btn btn-sm btn-outline-primary mt-2"
                       onClick={() => toggleEducationDetails(index)}
                     >
-                      {expandedEducation[index] ? "Hide Details" : "Show Details"}
+                      {expandedEducation[index]
+                        ? "Hide Details"
+                        : "Show Details"}
                     </button>
 
                     {expandedEducation[index] && (
@@ -171,7 +182,10 @@ const CurriculumVitae = () => {
                             <h6 className="m-0 small">Achievements:</h6>
                             <ul className="list-unstyled">
                               {education.achievements.map((achievement, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
+                                <li
+                                  key={i}
+                                  className="text-secondary mx-3 small"
+                                >
                                   &#8226; {achievement}
                                 </li>
                               ))}
@@ -183,11 +197,16 @@ const CurriculumVitae = () => {
                           <div className="my-3">
                             <h6 className="m-0 small">Relevant Course Work:</h6>
                             <ul className="list-unstyled">
-                              {education.relevantCoursework.map((coursework, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
-                                  &#8226; {coursework}
-                                </li>
-                              ))}
+                              {education.relevantCoursework.map(
+                                (coursework, i) => (
+                                  <li
+                                    key={i}
+                                    className="text-secondary mx-3 small"
+                                  >
+                                    &#8226; {coursework}
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}
@@ -196,11 +215,16 @@ const CurriculumVitae = () => {
                           <div className="my-3">
                             <h6 className="m-0 small">Certifications:</h6>
                             <ul className="list-unstyled">
-                              {education.certifications.map((certification, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
-                                  &#8226; {certification}
-                                </li>
-                              ))}
+                              {education.certifications.map(
+                                (certification, i) => (
+                                  <li
+                                    key={i}
+                                    className="text-secondary mx-3 small"
+                                  >
+                                    &#8226; {certification}
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}
@@ -209,20 +233,22 @@ const CurriculumVitae = () => {
                           <div className="my-3">
                             <h6 className="m-0 small">Documents:</h6>
                             <ul className="list-unstyled">
-                              {education.proofOfEducationDocuments.map((doc, i) => (
-                                <li key={i} className="text-muted mx-3 small">
-                                  &#8226;
-                                  <a
-                                    href={doc.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-decoration-none"
-                                  >
-                                    {" "}
-                                    {doc.originalName}
-                                  </a>
-                                </li>
-                              ))}
+                              {education.proofOfEducationDocuments.map(
+                                (doc, i) => (
+                                  <li key={i} className="text-muted mx-3 small">
+                                    &#8226;
+                                    <a
+                                      href={doc.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-decoration-none"
+                                    >
+                                      {" "}
+                                      {doc.originalName}
+                                    </a>
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}
@@ -263,7 +289,9 @@ const CurriculumVitae = () => {
                       className="btn btn-sm btn-outline-primary mt-2"
                       onClick={() => toggleWorkExperienceDetails(index)}
                     >
-                      {expandedWorkExperience[index] ? "Hide Details" : "Show Details"}
+                      {expandedWorkExperience[index]
+                        ? "Hide Details"
+                        : "Show Details"}
                     </button>
 
                     {expandedWorkExperience[index] && (
@@ -272,24 +300,36 @@ const CurriculumVitae = () => {
                           <div className="my-3">
                             <h6 className="m-0 small">Key Responsibilities:</h6>
                             <ul className="list-unstyled">
-                              {work.keyResponsibilities.map((responsibility, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
-                                  &#8226; {responsibility}
-                                </li>
-                              ))}
+                              {work.keyResponsibilities.map(
+                                (responsibility, i) => (
+                                  <li
+                                    key={i}
+                                    className="text-secondary mx-3 small"
+                                  >
+                                    &#8226; {responsibility}
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}
 
                         {work?.achievements_and_contributions?.length > 0 && (
                           <div className="my-3">
-                            <h6 className="m-0 small">Achievements & Contributions:</h6>
+                            <h6 className="m-0 small">
+                              Achievements & Contributions:
+                            </h6>
                             <ul className="list-unstyled">
-                              {work.achievements_and_contributions.map((achievement, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
-                                  &#8226; {achievement}
-                                </li>
-                              ))}
+                              {work.achievements_and_contributions.map(
+                                (achievement, i) => (
+                                  <li
+                                    key={i}
+                                    className="text-secondary mx-3 small"
+                                  >
+                                    &#8226; {achievement}
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}
@@ -299,7 +339,10 @@ const CurriculumVitae = () => {
                             <h6 className="m-0 small">Skills & Tools Used:</h6>
                             <ul className="list-unstyled">
                               {work.skills_and_tools_used.map((skills, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
+                                <li
+                                  key={i}
+                                  className="text-secondary mx-3 small"
+                                >
                                   &#8226; {skills}
                                 </li>
                               ))}
@@ -311,20 +354,25 @@ const CurriculumVitae = () => {
                           <div className="my-3">
                             <h6 className="m-0 small">Documents:</h6>
                             <ul className="list-unstyled">
-                              {work.proofOfWorkExperienceDocuments.map((doc, i) => (
-                                <li key={i} className="text-secondary mx-3 small">
-                                  &#8226;
-                                  <a
-                                    href={doc.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-decoration-none"
+                              {work.proofOfWorkExperienceDocuments.map(
+                                (doc, i) => (
+                                  <li
+                                    key={i}
+                                    className="text-secondary mx-3 small"
                                   >
-                                    {" "}
-                                    {doc.originalName}
-                                  </a>
-                                </li>
-                              ))}
+                                    &#8226;
+                                    <a
+                                      href={doc.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-decoration-none"
+                                    >
+                                      {" "}
+                                      {doc.originalName}
+                                    </a>
+                                  </li>
+                                )
+                              )}
                             </ul>
                           </div>
                         )}

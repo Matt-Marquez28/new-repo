@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import default_profile from "../../images/default-profile.jpg";
 
 const ApplicantResume = ({ jobseekerData }) => {
   // Separate state for educational background and work experiences
@@ -38,7 +39,7 @@ const ApplicantResume = ({ jobseekerData }) => {
           <div className="mb-4 text-center">
             {personalInformation?.photo && (
               <img
-                src={personalInformation.photo}
+                src={personalInformation.photo || default_profile}
                 alt="Profile Preview"
                 style={{
                   width: "100px",

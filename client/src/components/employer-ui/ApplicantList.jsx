@@ -4,6 +4,8 @@ import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSocketContext } from "../../contexts/socket.context";
+import default_profile from "../../images/default-profile.jpg";
+
 const ApplicantList = () => {
   // states
   const [applicants, setApplicants] = useState([]);
@@ -235,7 +237,7 @@ const ApplicantList = () => {
                   >
                     {applicant?.photo && (
                       <img
-                        src={applicant?.photo}
+                        src={applicant?.photo || default_profile}
                         alt={applicant?.photo || "Photo"}
                         className="me-2 border shadow-sm d-none d-sm-inline"
                         style={{

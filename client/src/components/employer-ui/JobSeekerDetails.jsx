@@ -18,6 +18,7 @@ import {
 import { useToast } from "../../contexts/toast.context";
 import Footer from "../shared-ui/Footer";
 import ReportButton from "../shared-ui/ReportButton";
+import default_profile from "../../images/default-profile.jpg";
 
 const JobSeekerDetails = () => {
   const triggerToast = useToast();
@@ -142,7 +143,7 @@ const JobSeekerDetails = () => {
                   <div className="mb-4 text-center">
                     {personalInformation?.photo && (
                       <img
-                        src={personalInformation.photo}
+                        src={personalInformation.photo || default_profile}
                         alt="Profile Preview"
                         style={{
                           width: "100px",

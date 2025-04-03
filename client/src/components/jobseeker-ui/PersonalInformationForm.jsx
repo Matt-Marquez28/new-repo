@@ -6,6 +6,7 @@ import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
 import { useUser } from "../../contexts/user.context";
 import { Card } from "react-bootstrap";
+import default_profile from "../../images/default-profile.jpg";
 
 // form validation schema
 const FormSchema = Yup.object().shape({
@@ -556,7 +557,7 @@ const PersonalInformationForm = () => {
             <div className="col-md-6">
               <div className="text-center">
                 <img
-                  src={previewUrl ? previewUrl : personalInformation?.photo}
+                  src={previewUrl || personalInformation?.photo || default_profile}
                   alt="Profile Preview"
                   style={{
                     width: "100px",

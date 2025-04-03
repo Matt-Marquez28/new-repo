@@ -3,6 +3,7 @@ import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { Dropdown } from "react-bootstrap";
 import { useToast } from "../../contexts/toast.context";
+import default_profile from "../../images/default-profile.jpg";
 
 const JobInvitationList = () => {
   const triggerToast = useToast();
@@ -155,7 +156,7 @@ const JobInvitationList = () => {
                     {invitation?.jobSeekerId?.personalInformation?.photo && (
                       <img
                         src={
-                          invitation?.jobSeekerId?.personalInformation?.photo
+                          invitation?.jobSeekerId?.personalInformation?.photo || default_profile
                         }
                         alt={
                           invitation?.jobSeekerId?.personalInformation

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import { useUser } from "../../contexts/user.context";
+import default_profile from "../../images/default-profile.jpg";
 
 const RecommendedJobSeekers = () => {
   const { user } = useUser();
@@ -112,7 +113,7 @@ const RecommendedJobSeekers = () => {
                   }}
                   src={
                     jobSeeker?.personalInformation?.photo ||
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQJxKGGpPc9-5g25KWwnsCCy9O_dlS4HWo5A&s"
+                    default_profile
                   } // Fallback image
                   alt="PHOTO"
                 />

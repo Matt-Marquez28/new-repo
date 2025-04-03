@@ -8,6 +8,7 @@ import axios from "axios";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Hire_Decline from "../jobseeker-ui/Hire_Decline";
 import InterviewSchedule from "../jobseeker-ui/InterviewSchedule";
+import default_profile from "../../images/default-profile.jpg";
 
 const ApplicationDetail = () => {
   const { applicationId } = useParams();
@@ -110,7 +111,7 @@ const ApplicationDetail = () => {
                   <img
                     src={
                       application?.jobSeekerId?.personalInformation?.photo ||
-                      "https://th.bing.com/th/id/OIP.OesLvyzDO6AvU_hYUAT4IAHaHa?rs=1&pid=ImgDetMain"
+                      default_profile
                     }
                     className="border"
                     alt="Avatar"

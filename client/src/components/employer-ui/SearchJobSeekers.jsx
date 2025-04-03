@@ -3,6 +3,7 @@ import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import default_profile from "../../images/default-profile.jpg";
 
 const SearchJobSeekers = () => {
   // Load state from localStorage or use initial state
@@ -144,7 +145,7 @@ const SearchJobSeekers = () => {
                     }}
                     src={
                       jobSeeker?.personalInformation?.photo ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQJxKGGpPc9-5g25KWwnsCCy9O_dlS4HWo5A&s"
+                      default_profile
                     }
                     alt={`${
                       jobSeeker?.personalInformation?.firstName || "User"

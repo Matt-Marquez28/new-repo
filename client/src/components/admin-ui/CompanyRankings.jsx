@@ -168,7 +168,7 @@ const CompanyRankings = () => {
 
         {/* Rankings Table */}
         <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-full bg-white">
+          <table className="w-full min-w-full bg-white border">
             {" "}
             {/* Ensure table expands to full width */}
             <thead className="bg-gray-50 sticky top-0">

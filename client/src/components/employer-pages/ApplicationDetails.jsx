@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import ApplicantResume from "../employer-ui/ApplicantResume";
 import Hire_Decline from "../employer-ui/Hire_Decline";
+import default_profile from "../../images/default-profile.jpg";
 
 const ApplicationDetails = () => {
   const [application, setApplication] = useState(null);
@@ -118,7 +119,7 @@ const ApplicationDetails = () => {
                   <img
                     src={
                       application?.jobSeekerId?.personalInformation?.photo ||
-                      "https://th.bing.com/th/id/OIP.OesLvyzDO6AvU_hYUAT4IAHaHa?rs=1&pid=ImgDetMain"
+                      default_profile
                     }
                     className="rounded border shadow-sm"
                     alt="Avatar"
@@ -161,7 +162,7 @@ const ApplicationDetails = () => {
                   </span>
                 </div>
 
-                <hr className="d-none d-md-block"/>
+                <hr className="d-none d-md-block" />
 
                 {/* Contact Section - Always Visible */}
                 <div className="p-3 border rounded bg-light d-none d-md-block">

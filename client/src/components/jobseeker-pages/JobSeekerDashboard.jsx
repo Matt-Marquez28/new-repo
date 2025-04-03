@@ -8,6 +8,7 @@ import Search from "../jobseeker-ui/Search";
 import SavedJobs from "../jobseeker-ui/SavedJobs";
 import JobInvitationList from "../jobseeker-ui/JobInvitationList";
 import { useNavigate } from "react-router-dom";
+import default_profile from "../../images/default-profile.jpg";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ const JobSeekerDashboard = () => {
               </h5>
               <hr />
               <img
-                src={user?.profileData?.personalInformation?.photo}
+                src={user?.profileData?.personalInformation?.photo || default_profile}
                 className="border shadow-sm"
                 alt="Avatar"
                 style={{
