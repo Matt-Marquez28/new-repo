@@ -16,7 +16,7 @@ body {
 }
 
 body {
-  background-image: url('/bg-blue.png');
+  background-image: url("/bg-blue.png");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -110,3 +110,18 @@ body {
     font-size: 13px !important;
   }
 }
+
+/* Base Job Card */
+.job-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.25s ease-out;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+

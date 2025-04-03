@@ -337,17 +337,25 @@ const Search = () => {
                 </div>
               </div>
               <div
-                className="text-secondary my-2"
-                style={{ fontSize: "0.85rem" }}
+                className="text-secondary mt-3 p-2 bg-white rounded border"
+                style={{ fontSize: "0.85rem", minHeight: "60px" }}
               >
-                <p>{`Job description: ${jobVacancy.description}`}</p>
+                {jobVacancy?.description ? (
+                  <p className="m-0">{jobVacancy.description}</p>
+                ) : (
+                  <p className="text-muted text-center my-3">
+                    <i className="bi bi-file-text me-2"></i>
+                    No job description provided
+                  </p>
+                )}
               </div>
               {/* Footer */}
               <div className="d-flex mt-3 gap-2 justify-content-between">
                 <div>
                   <Link to={`/jobseeker/job-vacancy-details/${jobVacancy._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle d-none d-md-inline-block"></i> Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i>{" "}
+                      Details
                     </button>
                   </Link>
 

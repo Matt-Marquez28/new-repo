@@ -83,9 +83,13 @@ const RecommendedJobVacancies = () => {
       <div ref={containerRef} style={{ maxHeight: "565px", overflow: "auto" }}>
         {!jobVacancies?.length ? (
           <div className="text-center p-4 border rounded-3  bg-light">
-          <i className="bi bi-suitcase-lg fs-1 text-muted mb-3"></i>
-          <p className="text-muted">No recommendations found.<br/> Try adjusting your job preferences in your profile for better results!</p>
-        </div>
+            <i className="bi bi-suitcase-lg fs-1 text-muted mb-3"></i>
+            <p className="text-muted">
+              No recommendations found.
+              <br /> Try adjusting your job preferences in your profile for
+              better results!
+            </p>
+          </div>
         ) : (
           jobVacancies.map((job, index) => (
             <div
@@ -151,17 +155,26 @@ const RecommendedJobVacancies = () => {
               </div>
 
               <div
-                className="text-secondary my-2"
-                style={{ fontSize: "0.85rem" }}
+                className="text-secondary mt-3 p-2 bg-white rounded border border-primry border-opacity-25"
+                style={{ fontSize: "0.85rem", minHeight: "60px" }}
               >
-                <p>{truncateDescription(job?.description)}</p>
+                {job?.description ? (
+                  <p className="m-0">{truncateDescription(job.description)}</p>
+                ) : (
+                  <p className="text-muted text-center my-3">
+                    <i className="bi bi-file-text me-2"></i>{" "}
+                    {/* Bootstrap icon */}
+                    No job description provided
+                  </p>
+                )}
               </div>
 
               <div className="d-flex mt-3 gap-2 justify-content-between">
                 <div>
                   <Link to={`/jobseeker/job-vacancy-details/${job?._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle d-none d-md-inline-block"></i> Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i>{" "}
+                      Details
                     </button>
                   </Link>
                   <button

@@ -183,13 +183,21 @@ const SearchJobSeekers = () => {
               </div>
 
               <div
-                className="text-secondary my-2"
-                style={{ fontSize: "0.85rem" }}
+                className="text-secondary mt-3 p-2 bg-white rounded border"
+                style={{ fontSize: "0.85rem", minHeight: "60px" }}
               >
-                <p>{`About me: ${truncateDescription(
-                  jobSeeker?.personalInformation?.aboutMe,
-                  400
-                )}`}</p>
+                {jobSeeker?.personalInformation?.aboutMe ? (
+                  <p className="m-0">
+                    {truncateDescription(
+                      jobSeeker.personalInformation.aboutMe,
+                      400
+                    )}
+                  </p>
+                ) : (
+                  <p className="text-muted text-center my-3">
+                    This candidate hasn't added an about me section yet.
+                  </p>
+                )}
               </div>
 
               {/* Footer */}

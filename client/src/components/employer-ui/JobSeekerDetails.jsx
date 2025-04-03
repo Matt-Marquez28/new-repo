@@ -542,7 +542,6 @@ const JobSeekerDetails = () => {
                     className="d-flex align-items-center"
                     onClick={() => handleSelectJob(job)}
                   >
-                    
                     Select
                   </Button>
                 </ListGroup.Item>

@@ -111,10 +111,7 @@ const RecommendedJobSeekers = () => {
                     borderRadius: "10px",
                     objectFit: "cover",
                   }}
-                  src={
-                    jobSeeker?.personalInformation?.photo ||
-                    default_profile
-                  } // Fallback image
+                  src={jobSeeker?.personalInformation?.photo || default_profile} // Fallback image
                   alt="PHOTO"
                 />
                 <div className="mx-2">
@@ -150,13 +147,21 @@ const RecommendedJobSeekers = () => {
                 </div>
               </div>
               <div
-                className="text-secondary my-2"
-                style={{ fontSize: "0.85rem" }}
+                className="text-secondary mt-3 p-2 bg-white rounded border"
+                style={{ fontSize: "0.85rem", minHeight: "60px" }}
               >
-                <p>{`About me: ${truncateDescription(
-                  jobSeeker?.personalInformation?.aboutMe,
-                  400
-                )}`}</p>
+                {jobSeeker?.personalInformation?.aboutMe ? (
+                  <p className="m-0">
+                    {truncateDescription(
+                      jobSeeker.personalInformation.aboutMe,
+                      400
+                    )}
+                  </p>
+                ) : (
+                  <p className="text-muted text-center my-3">
+                    This candidate hasn't added an about me section yet.
+                  </p>
+                )}
               </div>
 
               {/* footer */}
@@ -164,7 +169,8 @@ const RecommendedJobSeekers = () => {
                 <div className="d-flex">
                   <Link to={`/employer/jobseeker-details/${jobSeeker._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle d-none d-md-inline-block"></i> More Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i>{" "}
+                      More Details
                     </button>
                   </Link>
                   {/* <Link to={`/invite-jobseeker/${jobSeeker._id}`}>
