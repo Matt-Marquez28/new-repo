@@ -5,16 +5,13 @@ const Header = () => {
   return (
     <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-2 mb-4 border-bottom">
       <div className="col-md-3 mb-md-0">
-        <Link
-          to="/"
-          className="d-inline-flex align-items-center link-body-emphasis text-decoration-none"
-        >
+        <Link className="d-inline-flex align-items-center link-body-emphasis text-decoration-none">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s"
             alt="Logo"
             width="60"
             height="60"
-            className="me-2" // Adds spacing to the right of the image
+            className="me-2"
           />
           <h5 className=" pt-serif-bold" style={{ color: "#555555" }}>
             PESO City of Taguig
@@ -43,7 +40,8 @@ const Header = () => {
       <div className="col-md-3 text-end">
         <Link to="/login">
           <button type="button" className="btn btn-outline-primary me-2">
-            <i className="bi bi-box-arrow-in-right d-none d-md-inline-block"></i> Login
+            <i className="bi bi-box-arrow-in-right d-none d-md-inline-block"></i>{" "}
+            Login
           </button>
         </Link>
         <Link to="/signup">

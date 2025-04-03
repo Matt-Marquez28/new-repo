@@ -46,6 +46,7 @@ import { SocketProvider } from "./contexts/socket.context";
 import UserOption from "./components/admin-pages/UserOption";
 import RegularUsers from "./components/admin-pages/RegularUsers";
 import Notification from "./components/shared-pages/Notification";
+import BrowseJobs from "./components/shared-ui/BrowseJobs";
 
 function App() {
   return (
@@ -68,6 +69,7 @@ const AppRoutes = () => {
       {/* public routes */}
       <Route path="/admin-login" element={<AdminLoginPage />} />
       <Route path="/" element={<LandingPage />} />
+      <Route path="/browse-jobs" element={<BrowseJobs />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/verification" element={<VerificationPage />} />
