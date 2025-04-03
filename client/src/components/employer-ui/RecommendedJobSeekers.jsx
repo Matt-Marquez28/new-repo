@@ -164,7 +164,7 @@ const RecommendedJobSeekers = () => {
                 <div className="d-flex">
                   <Link to={`/employer/jobseeker-details/${jobSeeker._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle"></i> More Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i> More Details
                     </button>
                   </Link>
                   {/* <Link to={`/invite-jobseeker/${jobSeeker._id}`}>

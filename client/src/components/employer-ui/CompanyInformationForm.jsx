@@ -595,7 +595,9 @@ const CompanyInformationForm = () => {
               <div className="text-center">
                 <img
                   src={
-                    previewUrl || companyInformation?.companyLogo || default_company
+                    previewUrl ||
+                    companyInformation?.companyLogo ||
+                    default_company
                   }
                   alt="Profile Preview"
                   style={{

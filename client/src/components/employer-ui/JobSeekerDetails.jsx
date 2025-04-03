@@ -117,7 +117,8 @@ const JobSeekerDetails = () => {
             className="text-light"
             onClick={handleSendInvitation}
           >
-            <i className="bi bi-envelope-paper-fill"></i> Send Invitation
+            <i className="bi bi-envelope-paper-fill d-none d-md-inline-block"></i>{" "}
+            Invite
           </Button>
         </Col>
       </Row>
@@ -515,10 +516,7 @@ const JobSeekerDetails = () => {
       <Modal show={showModal} onHide={handleCloseModal} centered scrollable>
         {/* Modal Header */}
         <Modal.Header closeButton className="bg-primary text-light">
-          <Modal.Title>
-            <i className="bi bi-briefcase me-2"></i>
-            Choose a Job for Your Invitation
-          </Modal.Title>
+          <Modal.Title>Choose a Job for Your Invitation</Modal.Title>
         </Modal.Header>
 
         {/* Modal Body */}
@@ -544,7 +542,7 @@ const JobSeekerDetails = () => {
                     className="d-flex align-items-center"
                     onClick={() => handleSelectJob(job)}
                   >
-                    <i className="bi bi-check-circle me-2"></i>
+                    
                     Select
                   </Button>
                 </ListGroup.Item>

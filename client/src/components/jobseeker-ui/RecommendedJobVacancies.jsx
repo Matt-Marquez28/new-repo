@@ -161,7 +161,7 @@ const RecommendedJobVacancies = () => {
                 <div>
                   <Link to={`/jobseeker/job-vacancy-details/${job?._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle"></i> Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i> Details
                     </button>
                   </Link>
                   <button

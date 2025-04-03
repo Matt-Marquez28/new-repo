@@ -17,6 +17,7 @@
     "jspdf": "^2.5.2",
     "lucide-react": "^0.468.0",
     "moment": "^2.30.1",
+    "philippines": "^1.0.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
     "react-chartjs-2": "^5.3.0",

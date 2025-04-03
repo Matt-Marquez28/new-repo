@@ -144,8 +144,7 @@ const SearchJobSeekers = () => {
                       objectFit: "cover",
                     }}
                     src={
-                      jobSeeker?.personalInformation?.photo ||
-                      default_profile
+                      jobSeeker?.personalInformation?.photo || default_profile
                     }
                     alt={`${
                       jobSeeker?.personalInformation?.firstName || "User"
@@ -198,7 +197,8 @@ const SearchJobSeekers = () => {
                 <div className="d-flex gap-2">
                   <Link to={`/employer/jobseeker-details/${jobSeeker._id}`}>
                     <button type="button" className="btn btn-info text-light">
-                      <i className="bi bi-info-circle"></i> Details
+                      <i className="bi bi-info-circle d-none d-md-inline-block"></i>{" "}
+                      More Details
                     </button>
                   </Link>
                 </div>
