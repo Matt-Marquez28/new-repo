@@ -310,7 +310,7 @@ const CompanyVerification = () => {
                   <tr key={company._id}>
                     <td
                       scope="row"
-                      className="small text-muted align-middle fw-semibold"
+                      className="small text-muted align-middle"
                       style={{ width: "20%" }}
                     >
                       {company?.companyInformation?.companyLogo && (

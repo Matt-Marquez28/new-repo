@@ -156,7 +156,7 @@ const RecommendedJobVacancies = () => {
 
               <div
                 className="text-secondary mt-3 p-2 bg-white rounded border border-primry border-opacity-25"
-                style={{ fontSize: "0.85rem", minHeight: "60px" }}
+                style={{ fontSize: "0.85rem" }}
               >
                 {job?.description ? (
                   <p className="m-0">{truncateDescription(job.description)}</p>
@@ -164,7 +164,7 @@ const RecommendedJobVacancies = () => {
                   <p className="text-muted text-center my-3">
                     <i className="bi bi-file-text me-2"></i>{" "}
                     {/* Bootstrap icon */}
-                    No job description provided
+                    No job description provided.
                   </p>
                 )}
               </div>

@@ -90,7 +90,7 @@ const ApplicationDetail = () => {
             className="btn btn-light text-dark"
             onClick={() => navigate(-1)}
           >
-            <i className="bi bi-arrow-90deg-left"></i>
+            <i className="bi bi-arrow-left"></i>
           </button>
           <h5 className="my-2 text-primary">
             Application for {application?.jobVacancyId?.jobTitle}

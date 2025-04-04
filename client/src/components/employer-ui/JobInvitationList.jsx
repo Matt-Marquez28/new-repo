@@ -150,7 +150,7 @@ const JobInvitationList = () => {
                 <tr key={invitation._id}>
                   <td
                     scope="row"
-                    className="small text-muted align-middle fw-semibold"
+                    className="small text-muted align-middle"
                     style={{ width: "25%" }}
                   >
                     {invitation?.jobSeekerId?.personalInformation?.photo && (

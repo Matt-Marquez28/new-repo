@@ -239,7 +239,7 @@ const JobVacancyVerification = () => {
                   <tr key={jobVacancy?._id}>
                     <td
                       scope="row"
-                      className="small align-middle text-muted fw-semibold"
+                      className="small align-middle text-muted"
                       style={{ width: "25%" }}
                     >
                       {jobVacancy?.jobTitle}

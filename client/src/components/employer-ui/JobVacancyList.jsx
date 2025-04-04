@@ -181,7 +181,7 @@ const JobVacancyList = () => {
             {filteredJobVacancies.length > 0 ? (
               filteredJobVacancies.map((jobVacancy) => (
                 <tr key={jobVacancy._id}>
-                  <td className="small text-muted align-middle fw-semibold">
+                  <td className="small text-muted align-middle">
                     {jobVacancy.jobTitle}
                   </td>
                   <td className="small text-muted align-middle">

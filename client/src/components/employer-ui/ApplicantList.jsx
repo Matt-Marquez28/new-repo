@@ -232,7 +232,7 @@ const ApplicantList = () => {
                 >
                   <td
                     scope="row"
-                    className="small text-muted align-middle fw-semibold"
+                    className="small text-muted align-middle"
                     style={{ width: "30%", minWidth: "150px" }}
                   >
                     {applicant?.photo && (

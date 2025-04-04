@@ -136,19 +136,30 @@ const RecommendedJobSeekers = () => {
                     className="text-secondary m-0"
                     style={{ fontSize: "0.85rem" }}
                   >
-                    {jobSeeker?.skillsAndSpecializations?.specializations.map(
-                      (specialization, index) => (
-                        <span key={index} className="badge bg-info me-1">
-                          {specialization}
-                        </span>
-                      )
+                    {/* Show first specialization as a badge */}
+                    {jobSeeker?.skillsAndSpecializations
+                      ?.specializations?.[0] && (
+                      <span className="badge bg-info me-1">
+                        {jobSeeker.skillsAndSpecializations.specializations[0]}
+                      </span>
+                    )}
+
+                    {/* Show "+X more" as plain text if more exist */}
+                    {jobSeeker?.skillsAndSpecializations?.specializations
+                      ?.length > 1 && (
+                      <span className="text-muted">
+                        +
+                        {jobSeeker.skillsAndSpecializations.specializations
+                          .length - 1}{" "}
+                        more
+                      </span>
                     )}
                   </p>
                 </div>
               </div>
               <div
                 className="text-secondary mt-3 p-2 bg-white rounded border"
-                style={{ fontSize: "0.85rem", minHeight: "60px" }}
+                style={{ fontSize: "0.85rem" }}
               >
                 {jobSeeker?.personalInformation?.aboutMe ? (
                   <p className="m-0">

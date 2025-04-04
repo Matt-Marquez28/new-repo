@@ -149,6 +149,11 @@ const Search = () => {
     }
   };
 
+  const truncateDescription = (description = "", maxLength = 400) => {
+    if (!description || description.length <= maxLength) return description;
+    return `${description.substring(0, maxLength)}...`;
+  };
+
   return (
     <div>
       {/* Search form */}
@@ -275,7 +280,7 @@ const Search = () => {
         ) : (
           jobVacancies.map((jobVacancy, index) => (
             <div
-              className="border rounded bg-light p-3 text-start mb-3 shadow-sm"
+              className="border rounded bg-light p-3 text-start mb-3 job-list shadow-sm"
               key={index}
             >
               <div className="d-flex justify-content-between">
@@ -337,15 +342,16 @@ const Search = () => {
                 </div>
               </div>
               <div
-                className="text-secondary mt-3 p-2 bg-white rounded border"
-                style={{ fontSize: "0.85rem", minHeight: "60px" }}
+                className="text-secondary mt-3 p-2 bg-white rounded border border-primry border-opacity-25"
+                style={{ fontSize: "0.85rem" }}
               >
                 {jobVacancy?.description ? (
-                  <p className="m-0">{jobVacancy.description}</p>
+                  <p className="m-0">{truncateDescription(jobVacancy.description)}</p>
                 ) : (
                   <p className="text-muted text-center my-3">
-                    <i className="bi bi-file-text me-2"></i>
-                    No job description provided
+                    <i className="bi bi-file-text me-2"></i>{" "}
+                    {/* Bootstrap icon */}
+                    No job description provided.
                   </p>
                 )}
               </div>

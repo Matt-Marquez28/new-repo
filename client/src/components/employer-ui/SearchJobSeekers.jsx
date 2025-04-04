@@ -184,7 +184,7 @@ const SearchJobSeekers = () => {
 
               <div
                 className="text-secondary mt-3 p-2 bg-white rounded border"
-                style={{ fontSize: "0.85rem", minHeight: "60px" }}
+                style={{ fontSize: "0.85rem" }}
               >
                 {jobSeeker?.personalInformation?.aboutMe ? (
                   <p className="m-0">
