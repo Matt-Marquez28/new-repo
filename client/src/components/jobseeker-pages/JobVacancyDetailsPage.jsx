@@ -160,7 +160,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
             className="btn btn-light text-dark"
             onClick={() => navigate(-1)}
           >
-           <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-arrow-left"></i>
           </button>
         </div>
         <div className="d-flex gap-2">
@@ -372,8 +372,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                     <img
                       src={
                         jobVacancy?.companyId?.companyInformation
-                          ?.companyLogo ||
-                        default_company
+                          ?.companyLogo || default_company
                       }
                       className="border shadow-sm"
                       alt="Avatar"
@@ -392,11 +391,13 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   >
                     {jobVacancy?.companyId?.companyInformation?.businessName}
                   </h4>
-                  <p class="card-text text-justify text-secondary small">
-                    {truncateDescription(
-                      jobVacancy?.companyId?.companyInformation?.description
-                    )}
-                  </p>
+                  <div className="bg-light p-3 rounded border border-primary border-opacity-25">
+                    <p class="card-text text-justify text-secondary small m-0">
+                      {truncateDescription(
+                        jobVacancy?.companyId?.companyInformation?.description
+                      )}
+                    </p>
+                  </div>
                 </div>
 
                 <hr />
@@ -423,8 +424,15 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                 </div>
 
                 <div className="d-flex justify-content-center">
-                  <button className="btn btn-light text-secondary">
-                    <i className="bi bi-info-circle"></i> Company Details
+                  <button
+                    className="btn btn-light btn-sm text-secondary"
+                    onClick={() =>
+                      navigate(
+                        `/jobseeker/company-information/${jobVacancy?.companyId?._id}`
+                      )
+                    }
+                  >
+                    Company Details
                   </button>
                 </div>
               </div>
@@ -433,7 +441,6 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
         </div>
       )}
 
-    
       <Footer />
     </div>
   );

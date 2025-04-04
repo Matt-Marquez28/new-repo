@@ -170,6 +170,22 @@ export const getAllEmployerJobVacancies = async (req, res) => {
   }
 };
 
+export const getAllEmployerJobVacanciesByCompanyId = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const jobVacancies = await JobVacancy.find({ companyId })
+      .populate("companyId")
+      .sort({ updatedAt: -1 }); // Sort by updatedAt in descending order
+
+    res.status(200).json({ success: true, jobVacancies });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error!",
+    });
+  }
+};
+
 // get single job
 export const getSingleJobVacancy = async (req, res) => {
   const { jobVacancyId } = req.params;

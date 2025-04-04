@@ -49,7 +49,6 @@ import Notification from "./components/shared-pages/Notification";
 import BrowseJobs from "./components/shared-ui/BrowseJobs";
 import CompanyInformation from "./components/jobseeker-pages/CompanyInformation";
 
-
 function App() {
   return (
     <UserProvider>
@@ -99,7 +98,7 @@ const AppRoutes = () => {
         <Route path="notification" element={<Notification />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
-        <Route path="company-information" element={<CompanyInformation />} />
+        <Route path="company-information/:companyId" element={<CompanyInformation />} />
         <Route
           path="job-vacancy-details/:jobVacancyId"
           element={<JobVacancyDetailsPage />}

@@ -212,7 +212,7 @@ const EmployerDashboard = () => {
             </div>
             <div className="card-body pt-0">
               {/* Specializations */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Specializations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -227,7 +227,7 @@ const EmployerDashboard = () => {
               </div>
 
               {/* Skills */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Skills</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -242,7 +242,7 @@ const EmployerDashboard = () => {
               </div>
 
               {/* Educational Levels */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Educational Levels</h6>
                 <p
                   className="m-0 text-info fw-semibold"

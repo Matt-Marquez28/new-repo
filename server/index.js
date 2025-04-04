@@ -94,9 +94,9 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+// });
 
 // Start the server
 server.listen(PORT, "0.0.0.0", () => {
@@ -683,10 +683,6 @@ const deleteScheduledAccounts = async () => {
     };
   }
 };
-
-cron.schedule("* * * * *", async () => {
-  console.log("Running the minutely cron job...");
-});
 
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");

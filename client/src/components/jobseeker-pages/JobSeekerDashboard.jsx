@@ -169,7 +169,7 @@ const JobSeekerDashboard = () => {
               <hr />
 
               {/* Preferred Position */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Preferred Positions</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -180,7 +180,7 @@ const JobSeekerDashboard = () => {
               </div>
 
               {/* Preferred Location */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Preferred Locations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -191,7 +191,7 @@ const JobSeekerDashboard = () => {
               </div>
 
               {/* Preferred Employment Type */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Employment Type</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -202,7 +202,7 @@ const JobSeekerDashboard = () => {
               </div>
 
               {/* Salary Range */}
-              <div className="mb-3 px-3 py-2 bg-light rounded">
+              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Salary Expectations</h6>
                 <p
                   className="m-0 text-info fw-semibold"

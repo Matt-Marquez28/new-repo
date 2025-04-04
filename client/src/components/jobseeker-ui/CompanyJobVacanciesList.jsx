@@ -1,37 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState, useRef } from "react";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
-import { format } from "date-fns";
-import { useUser } from "../../contexts/user.context";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import default_company from "../../images/default-company.jpg";
+import { format } from "date-fns";
 
-const RecommendedJobVacancies = () => {
-  const { user } = useUser();
+const CompanyJobVacanciesList = ({ companyId, companyName }) => {
   const [jobVacancies, setJobVacancies] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const containerRef = useRef(null);
 
   useEffect(() => {
-    getRecommendedJobVacancies();
+    getCompanyJobVacancies();
   }, []);
 
-  const getRecommendedJobVacancies = async () => {
+  const getCompanyJobVacancies = async () => {
     try {
-      setLoading(true);
-      const jobPreferences = user?.profileData?.jobPreferences || {};
-      console.log("Job Preferences:", jobPreferences);
-      const res = await axios.post(
-        `${JOB_VACANCY_API_END_POINT}/get-recommended-job-vacancies`,
-        jobPreferences
+      const res = await axios.get(
+        `${JOB_VACANCY_API_END_POINT}/get-all-employer-job-vacancies-by-company-id/${companyId}`
       );
-      setJobVacancies(res?.data?.results || []);
-      console.log(res?.data?.results);
+      setJobVacancies(res?.data?.jobVacancies || []);
+      console.log(res?.data?.jobVacancies);
     } catch (error) {
-      console.error("Error:", error);
-      setJobVacancies([]);
-    } finally {
-      setLoading(false);
+      console.log(error);
     }
   };
 
@@ -50,32 +41,17 @@ const RecommendedJobVacancies = () => {
     return `${description.substring(0, maxLength)}...`;
   };
 
-  if (loading) {
-    return (
-      <div>
-        {/* Loading Spinner */}
-        {loading && (
-          <div className="d-flex justify-content-center my-3">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div>
       <div className="my-3">
         <h5 className="text-primary text-center fw-semibold mb-1">
-          <i className="bi bi-hand-thumbs-up-fill"></i> Recommended Jobs{" "}
+          Current Job Openings at {companyName}{" "}
           <span className="badge bg-primary rounded">
             {jobVacancies?.length}
           </span>
         </h5>
         <p className="text-muted text-center m-0">
-          Recommended jobs based on your profile.
+          Explore career opportunities with this employer.
         </p>
       </div>
       <div className="d-flex justify-content-center"></div>
@@ -85,9 +61,8 @@ const RecommendedJobVacancies = () => {
           <div className="text-center p-4 border rounded-3  bg-light">
             <i className="bi bi-suitcase-lg fs-1 text-muted mb-3"></i>
             <p className="text-muted">
-              No recommendations found.
-              <br /> Try adjusting your job preferences in your profile for
-              better results!
+              No job vacancies found.
+              <br /> Please check back later.
             </p>
           </div>
         ) : (
@@ -155,7 +130,7 @@ const RecommendedJobVacancies = () => {
               </div>
 
               <div
-                className="text-secondary mt-3 p-2 bg-white rounded border border-primary border-opacity-25"
+                className="text-secondary mt-3 p-2 bg-white rounded border border-primry border-opacity-25"
                 style={{ fontSize: "0.85rem" }}
               >
                 {job?.description ? (
@@ -213,4 +188,4 @@ const RecommendedJobVacancies = () => {
   );
 };
 
-export default RecommendedJobVacancies;
+export default CompanyJobVacanciesList;

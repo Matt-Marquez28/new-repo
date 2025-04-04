@@ -1,7 +1,90 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { COMPANY_API_END_POINT } from "../../utils/constants";
+import Footer from "../shared-ui/Footer";
+import CompanyInformation from "../jobseeker-ui/CompanyInformation";
+import CompanyJobVacanciesList from "../jobseeker-ui/CompanyJobVacanciesList";
 
-const CompanyInformation = () => {
-  return <div className="container">Company Information</div>;
+const CompanyProfile = () => {
+  const navigate = useNavigate();
+  const { companyId } = useParams();
+  const [activeTab, setActiveTab] = useState("companyInformation");
+  const [company, setCompany] = useState(null);
+
+  useEffect(() => {
+    getCompanyDataById();
+  }, []);
+
+  const getCompanyDataById = async () => {
+    try {
+      const res = await axios.get(
+        `${COMPANY_API_END_POINT}/get-company-data-by-id/${companyId}`
+      );
+      setCompany(res?.data?.companyData);
+      console.log(res?.data?.companyData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="d-flex my-2 justify-content-between">
+        <div className="d-flex gap-2 align-items-center">
+          <button
+            type="button"
+            className="btn btn-light text-dark"
+            onClick={() => navigate(-1)}
+          >
+            <i className="bi bi-arrow-left"></i>
+          </button>
+          <h5 className="my-2 text-primary">
+            Company Details
+          </h5>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <ul className="nav nav-pills card-header-pills">
+            <li className="nav-item">
+              <button
+                className={`nav-link ${
+                  activeTab === "companyInformation" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("companyInformation")}
+              >
+                <i className="bi bi-building-fill"></i> Company Information
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link ${
+                  activeTab === "jobVacancies" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("jobVacancies")}
+              >
+                <i className="bi bi-suitcase-lg-fill"></i> Job Vacancies
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div className="card-body">
+          {activeTab === "companyInformation" && (
+            <CompanyInformation company={company} />
+          )}
+
+          {activeTab === "jobVacancies" && (
+            <CompanyJobVacanciesList
+              companyId={companyId}
+              companyName={company?.companyInformation?.businessName}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default CompanyInformation;
+export default CompanyProfile;

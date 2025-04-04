@@ -19,6 +19,7 @@ import {
   getAllJobSeekerJobInvitations,
   deleteJobInvitation,
   updateJobVacancy,
+  getAllEmployerJobVacanciesByCompanyId,
 } from "../controllers/jobVacancy.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { isAccredited } from "../middlewares/isAccredited.js";
@@ -32,6 +33,10 @@ router.get(
   "/get-all-employer-job-vacancies",
   isAuthenticated,
   getAllEmployerJobVacancies
+);
+router.get(
+  "/get-all-employer-job-vacancies-by-company-id/:companyId",
+  getAllEmployerJobVacanciesByCompanyId
 );
 router.get("/get-single-job-vacancy/:jobVacancyId", getSingleJobVacancy);
 router.get("/search", searchJobVacancies);

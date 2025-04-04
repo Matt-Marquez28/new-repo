@@ -179,9 +179,6 @@ body {
   transition: all 0.3s ease;
 }
 
-
-
-
 /* Jobseeker Card with Permanent Primary Left Border */
 .jobseeker-card {
   transition: all 0.3s ease;
@@ -213,12 +210,6 @@ body {
 .jobseeker-card .btn-outline-light {
   transition: all 0.3s ease;
 }
-
-
-
-
-
-
 
 /* Preferences Card with Primary Left Border */
 .preferences-card {

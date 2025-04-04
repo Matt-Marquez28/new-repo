@@ -82,7 +82,6 @@ const ApplicationDetail = () => {
 
   return (
     <div className="container">
-      <h5></h5>
       <div className="d-flex my-2 justify-content-between">
         <div className="d-flex gap-2 align-items-center">
           <button
