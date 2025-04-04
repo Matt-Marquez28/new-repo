@@ -111,10 +111,16 @@ body {
   }
 }
 
+.job-list {
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent !important;
+  background: linear-gradient(to right, transparent, transparent);
+}
+
 .job-list:hover {
   border-left: 4px solid #0d6efd !important;
+  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transition: all 0.3s ease;
-  position: relative;
 }
 
 .job-list:hover .btn-info {
@@ -127,17 +133,111 @@ body {
   transition: transform 0.3s ease;
 }
 
-.job-list:hover .badge {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
-
-.job-list {
+/* New: Enhanced description border effect */
+.job-list .bg-white.rounded.border {
+  border: 1px solid rgba(13, 110, 253, 0.2) !important;
   transition: all 0.3s ease;
-  border-left: 4px solid transparent !important;
 }
 
-.job-list img,
-.job-list .badge {
+.job-list:hover .bg-white.rounded.border {
+  border: 1px solid rgba(13, 110, 253, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1); /* Subtle outer glow */
+}
+
+.job-list img {
   transition: transform 0.3s ease;
+}
+
+/* Company Profile Card with Permanent Primary Left Border */
+.company-profile-card {
+  transition: all 0.3s ease;
+  border-left: 4px solid #0d6efd; /* Primary blue left border */
+}
+
+/* Keep all hover effects except border changes */
+.company-profile-card:hover {
+  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
+  transform: translateY(-2px);
+}
+
+.company-profile-card:hover .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
+}
+
+.company-profile-card:hover img {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.1);
+}
+
+.company-profile-card img {
+  transition: all 0.3s ease;
+}
+
+.company-profile-card .btn-outline-light {
+  transition: all 0.3s ease;
+}
+
+
+
+
+/* Jobseeker Card with Permanent Primary Left Border */
+.jobseeker-card {
+  transition: all 0.3s ease;
+  border-left: 4px solid #0d6efd; /* Primary blue left border */
+}
+
+/* Hover effects */
+.jobseeker-card:hover {
+  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
+  transform: translateY(-2px);
+}
+
+.jobseeker-card:hover .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
+}
+
+.jobseeker-card:hover img {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.1);
+}
+
+/* Transitions */
+.jobseeker-card img {
+  transition: all 0.3s ease;
+}
+
+.jobseeker-card .btn-outline-light {
+  transition: all 0.3s ease;
+}
+
+
+
+
+
+
+
+/* Preferences Card with Primary Left Border */
+.preferences-card {
+  transition: all 0.3s ease;
+  border-left: 4px solid #0d6efd; /* Primary blue left border */
+}
+
+.preferences-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(13, 110, 253, 0.1) !important;
+}
+
+.preferences-card:hover .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
+}
+
+/* Smooth transitions */
+.preferences-card .btn-outline-light {
+  transition: all 0.3s ease;
 }

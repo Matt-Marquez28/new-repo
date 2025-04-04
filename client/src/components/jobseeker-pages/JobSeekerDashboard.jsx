@@ -127,14 +127,17 @@ const JobSeekerDashboard = () => {
         </div>
         <div className="col-sm-12 col-xl-3">
           {/* Profile Card */}
-          <div className="card text-center mb-3 shadow-sm">
+          <div className="card text-center mb-3 shadow-sm jobseeker-card">
             <div className="card-body">
               <h5 className="card-title mb-2 text-primary">
                 <i className="bi bi-person-circle"></i> Profile
               </h5>
               <hr />
               <img
-                src={user?.profileData?.personalInformation?.photo || default_profile}
+                src={
+                  user?.profileData?.personalInformation?.photo ||
+                  default_profile
+                }
                 className="border shadow-sm"
                 alt="Avatar"
                 style={{
@@ -158,7 +161,7 @@ const JobSeekerDashboard = () => {
           </div>
 
           {/* Job Preferences Card */}
-          <div className="card text-start mb-4 shadow-sm">
+          <div className="card text-start mb-4 shadow-sm preferences-card">
             <div className="card-body">
               <h5 className="card-title mb-3 text-center text-primary">
                 <i className="bi bi-sliders"></i> Job Preferences

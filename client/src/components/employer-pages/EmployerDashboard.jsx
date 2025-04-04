@@ -172,7 +172,7 @@ const EmployerDashboard = () => {
           </div>
         </div>
         <div className="col-sm-12 col-xl-3">
-          <div className="card shadow-sm text-center mb-3">
+          <div className="card shadow-sm text-center mb-3 company-profile-card">
             <div className="card-body">
               <h5 className="card-title mb-2 text-primary">
                 <i className="bi bi-building-fill"></i> Company Profile
@@ -204,7 +204,7 @@ const EmployerDashboard = () => {
             </div>
           </div>
 
-          <div className="card mb-4 shadow-sm">
+          <div className="card mb-4 shadow-sm preferences-card">
             <div className="card-header bg-white border-0 py-3">
               <h5 className="card-title mb-0 d-flex align-items-center justify-content-center text-primary">
                 <i className="bi bi-sliders me-2"></i> Preferences
