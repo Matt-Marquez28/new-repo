@@ -129,6 +129,13 @@ export const JobSeekerHeader = () => {
             >
               <i className="bi bi-person-fill"></i> Profile
             </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/jobseeker/search-companies"
+              className="px-3 text-primary"
+            >
+              <i className="bi bi-building-fill"></i> Companies
+            </Nav.Link>
           </Nav>
 
           <Button
@@ -249,6 +256,14 @@ export const JobSeekerHeader = () => {
                   onClick={() => setShowOffcanvas(false)}
                 >
                   <i className="bi bi-person-fill me-2"></i> Profile
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  to="/jobseeker/search-companies"
+                  className="px-3 py-2 rounded text-primary"
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-building-fill me-2"></i> Companies
                 </Nav.Link>
                 <Nav.Link
                   as={Link}

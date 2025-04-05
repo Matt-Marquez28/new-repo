@@ -7,7 +7,6 @@ import {
   getCompanyDocument,
   updateExpirationDates,
   updateAboutUs,
-
   getCompanyDocumentByCompanyId,
   accreditCompany,
   getAllCompanies,
@@ -18,6 +17,7 @@ import {
   getAccreditedCompanies,
   getRenewals,
   getCompanyRankings,
+  searchCompanies,
 } from "../controllers/company.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
@@ -78,12 +78,18 @@ router.patch("/accredit-company/:companyId", isAuthenticated, accreditCompany);
 // decline company
 router.patch("/decline-company/:companyId", isAuthenticated, declineCompany);
 
-router.patch("/update-candidate-preferences", isAuthenticated, updateCandidatePreferences);
+router.patch(
+  "/update-candidate-preferences",
+  isAuthenticated,
+  updateCandidatePreferences
+);
 
 router.get("/get-accredited-companies", getAccreditedCompanies);
 
-router.get("/get-renewals", getRenewals)
+router.get("/get-renewals", getRenewals);
 
 router.get("/get-company-rankings", getCompanyRankings);
+
+router.get("/search-companies", searchCompanies);
 
 export default router;

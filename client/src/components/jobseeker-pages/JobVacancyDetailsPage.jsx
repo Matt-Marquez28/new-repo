@@ -213,85 +213,148 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   Job Details
                 </Link>
                 <div class="card-body">
-                  <div className="my-2">
-                    <h4
-                      className=" text-center fw-bold"
-                      style={{ color: "#555555" }}
-                    >
+                  <div className="my-3">
+                    <h4 className="text-center fw-bold text-dark mb-2">
+                      {" "}
+                      {/* Reduced margin-bottom */}
                       {jobVacancy?.jobTitle}
                     </h4>
-                    {/* short details */}
-                    <div className="my-4">
-                      <div className="row gap-2 justify-content-center">
-                        {/* First Row */}
-                        <div className="col-12 col-md-5 d-flex justify-content-center">
-                          {/* Applicants Button */}
-                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
-                            <i className="bi bi-people-fill fs-6"></i>
-                            <span>
-                              {jobVacancy?.applicants.length || 0} Applicants
-                            </span>
-                          </button>
-                        </div>
 
-                        <div className="col-12 col-md-5 d-flex justify-content-center">
-                          {/* Vacancies Button */}
-                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
-                            <i className="bi bi-clipboard-check-fill fs-6"></i>
-                            <span>{jobVacancy?.vacancies || 1} Vacancies</span>
-                          </button>
+                    {/* Compact Card Grid */}
+                    <div className="row g-2 justify-content-center my-3">
+                      {" "}
+                      {/* Reduced gap to g-2 */}
+                      {/* Applicants */}
+                      <div className="col-6 col-md-3">
+                        <div className="d-flex align-items-center bg-white p-2 rounded border h-100 ">
+                          {" "}
+                          {/* Reduced padding to p-2 */}
+                          <div
+                            className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center "
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              minWidth: "32px",
+                            }}
+                          >
+                            <i className="bi bi-people-fill text-primary fs-6"></i>
+                          </div>
+                          <div className="ms-2 ">
+                            <div className="text-muted small">Applicants</div>
+                            <div className="fw-semibold">
+                              {jobVacancy?.applicants.length || 0}
+                            </div>
+                          </div>
                         </div>
-
-                        {/* Second Row */}
-                        <div className="col-12 col-md-5 d-flex justify-content-center">
-                          {/* Salary Range Button */}
-                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
-                            <span>
-                              {`₱ ${jobVacancy?.salaryMin.toLocaleString()} - ${jobVacancy?.salaryMax.toLocaleString()} ${
-                                jobVacancy?.salaryType === "monthly"
-                                  ? "[mo]"
-                                  : "[hr]"
-                              }`}
-                            </span>
-                          </button>
+                      </div>
+                      {/* Vacancies */}
+                      <div className="col-6 col-md-3">
+                        <div className="d-flex align-items-center bg-white p-2 rounded border h-100">
+                          <div
+                            className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              minWidth: "32px",
+                            }}
+                          >
+                            <i className="bi bi-clipboard-check-fill text-primary fs-6"></i>
+                          </div>
+                          <div className="ms-2">
+                            <div className="text-muted small">Vacancies</div>
+                            <div className="fw-semibold">
+                              {jobVacancy?.vacancies || 1}
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="col-12 col-md-5 d-flex justify-content-center">
-                          {/* Employment Type Button */}
-                          <button className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 p-2 w-100 fs-6">
-                            <i className="bi bi-briefcase-fill fs-6"></i>
-                            <span>{jobVacancy?.employmentType}</span>
-                          </button>
+                      </div>
+                      {/* Salary */}
+                      <div className="col-6 col-md-3">
+                        <div className="d-flex align-items-center bg-white p-2 rounded border h-100">
+                          <div
+                            className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              minWidth: "32px",
+                            }}
+                          >
+                            <i className="bi bi-cash-stack text-primary fs-6"></i>
+                          </div>
+                          <div className="ms-2" style={{ minWidth: 0 }}>
+                            <div className="text-muted small">Salary</div>
+                            <div
+                              className="fw-semibold text-truncate"
+                              style={{ fontSize: "0.8rem" }}
+                            >
+                              {" "}
+                              {/* Custom smaller size */}₱
+                              {jobVacancy?.salaryMin?.toLocaleString()}-
+                              {jobVacancy?.salaryMax?.toLocaleString()}
+                              <span
+                                className="text-muted"
+                                style={{ fontSize: "0.7rem" }}
+                              >
+                                {" "}
+                                {/* Even smaller for unit */}
+                                {jobVacancy?.salaryType === "monthly"
+                                  ? "/mo"
+                                  : "/hr"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Employment Type */}
+                      <div className="col-6 col-md-3">
+                        <div className="d-flex align-items-center bg-white p-2 rounded border h-100">
+                          <div
+                            className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              minWidth: "32px",
+                            }}
+                          >
+                            <i className="bi bi-briefcase-fill text-primary fs-6"></i>
+                          </div>
+                          <div className="ms-2">
+                            <div className="text-muted small">Type</div>
+                            <div className="fw-semibold text-capitalize">
+                              {jobVacancy?.employmentType}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <p className="text-secondary small m-0">
-                        <i className="bi bi-clipboard-fill"></i> Posted on{" "}
-                        {formatDate(jobVacancy?.createdAt)}
-                      </p>
+
+                    {/* Compact Date Info */}
+                    <div className="d-flex flex-wrap justify-content-between gap-1 small mt-2">
+                      {" "}
+                      {/* Reduced gap to g-1 */}
+                      <div className="d-flex align-items-center text-muted">
+                        <i className="bi bi-calendar-check me-1 text-primary"></i>
+                        <span>Posted: {formatDate(jobVacancy?.createdAt)}</span>
+                      </div>
+                      <div className="d-flex align-items-center text-muted">
+                        <i className="bi bi-calendar-x me-1 text-danger"></i>
+                        <span>
+                          Closes: {formatDate(jobVacancy?.applicationDeadline)}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="small m-0 text-secondary">
-                        <i className="bi bi-clipboard2-x-fill"></i> Deadline on{" "}
-                        {formatDate(jobVacancy?.applicationDeadline)}
-                      </p>
-                    </div>
-                    {/* Other component code */}
                   </div>
 
                   <hr />
 
-                  <div className="mb-4">
+                  <div className="mb-3 border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 class="card-title m-0 text-primary">Job Description</h5>
                     <p class="card-text text-secondary small">
                       {`${jobVacancy?.description}`}
                     </p>
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 className="m-0 text-primary">
                       Required Qualifications
                     </h5>
@@ -312,7 +375,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                     )}
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 className="card-title m-0 text-primary">
                       Skills Required
                     </h5>
@@ -329,7 +392,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                     )}
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 className="card-title m-0 text-primary">
                       Responsibilities
                     </h5>
@@ -348,7 +411,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                     )}
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-2  border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 class="card-title m-0 text-primary">Work Location</h5>
                     <p className="text-secondary small">
                       {jobVacancy?.workLocation ||
@@ -362,7 +425,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
           {/* About the Company Section */}
           <div className="col-md-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm about-company-card">
               <Link class="card-header bg-primary text-decoration-none text-center fw-normal text-light">
                 About the company
               </Link>
@@ -398,42 +461,82 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                       )}
                     </p>
                   </div>
+                  <div className="d-flex justify-content-center my-3">
+                    <button
+                      className="btn btn-outline-light btn-sm text-secondary"
+                      onClick={() =>
+                        navigate(
+                          `/jobseeker/company-information/${jobVacancy?.companyId?._id}`
+                        )
+                      }
+                    >
+                      <i className="bi bi-info-circle"></i> Company Details
+                    </button>
+                  </div>
                 </div>
 
                 <hr />
 
-                <div className="mb-3">
-                  <h5 class="card-title m-0 text-primary">Industry</h5>
-                  <p class="card-text text-secondary small">
-                    {jobVacancy?.companyId?.companyInformation?.industry}
-                  </p>
-                </div>
+                <div className="row g-3">
+                  <div className="col-12">
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <i className="bi bi-building fs-6"></i>
+                      </div>
+                      <div className="ms-3">
+                        <div className="text-muted small text-uppercase">
+                          Industry
+                        </div>
+                        <div className="fw-medium text-primary">
+                          {jobVacancy?.companyId?.companyInformation
+                            ?.industry || "Not specified"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="mb-3">
-                  <h5 class="card-title m-0 text-primary">Company Size</h5>
-                  <p class="card-text text-secondary small">
-                    {jobVacancy?.companyId?.companyInformation?.companySize}
-                  </p>
-                </div>
+                  <div className="col-12">
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <i className="bi bi-people fs-6"></i>
+                      </div>
+                      <div className="ms-3">
+                        <div className="text-muted small text-uppercase">
+                          Company Size
+                        </div>
+                        <div className="fw-medium text-capitalize text-primary">
+                          {jobVacancy?.companyId?.companyInformation
+                            ?.companySize || "Not specified"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="mb-3">
-                  <h5 class="card-title m-0 text-primary">Office Type</h5>
-                  <p class="card-text text-secondary small">
-                    {jobVacancy?.companyId?.companyInformation?.officeType}
-                  </p>
-                </div>
-
-                <div className="d-flex justify-content-center">
-                  <button
-                    className="btn btn-light btn-sm text-secondary"
-                    onClick={() =>
-                      navigate(
-                        `/jobseeker/company-information/${jobVacancy?.companyId?._id}`
-                      )
-                    }
-                  >
-                    Company Details
-                  </button>
+                  <div className="col-12">
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <i className="bi bi-briefcase fs-6"></i>
+                      </div>
+                      <div className="ms-3">
+                        <div className="text-muted small text-uppercase">
+                          Office Type
+                        </div>
+                        <div className="fw-medium text-capitalize text-primary">
+                          {jobVacancy?.companyId?.companyInformation
+                            ?.officeType || "Not specified"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

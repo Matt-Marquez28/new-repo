@@ -1525,3 +1525,89 @@ export const getCompanyRankings = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// search companies
+export const searchCompanies = async (req, res) => {
+  try {
+    const { companyName, industry, companySize, location } = req.query;
+
+    // Text search with Atlas Search (if companyName is provided)
+    const searchQuery = companyName
+      ? {
+          $search: {
+            index: "company_search_index", // Your Atlas Search index name
+            text: {
+              query: companyName,
+              path: "companyInformation.businessName",
+              fuzzy: {
+                maxEdits: 2,
+                prefixLength: 3, // Require first 3 characters to match
+              },
+            },
+          },
+        }
+      : {};
+
+    // Define the aggregation pipeline
+    const pipeline = [
+      ...(companyName ? [searchQuery] : []),
+      {
+        $match: {
+          status: "accredited",
+          ...(industry && industry !== "all"
+            ? { "companyInformation.industry": industry }
+            : {}),
+          ...(companySize && companySize !== "all"
+            ? { "companyInformation.companySize": companySize }
+            : {}),
+          ...(location
+            ? {
+                $or: [
+                  {
+                    "companyInformation.cityMunicipality": new RegExp(
+                      location,
+                      "i"
+                    ),
+                  },
+                  { "companyInformation.province": new RegExp(location, "i") },
+                ],
+              }
+            : {}),
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          businessName: "$companyInformation.businessName",
+          industry: "$companyInformation.industry",
+          description: "$companyInformation.description",
+          companySize: "$companyInformation.companySize",
+          location: {
+            cityMunicipality: "$companyInformation.cityMunicipality",
+            province: "$companyInformation.province",
+          },
+          companyLogo: "$companyInformation.companyLogo",
+          website: "$aboutUs.companyWebsite",
+          accreditation: 1,
+          score: { $meta: "searchScore" }, // Include search relevance score
+        },
+      },
+      { $limit: 50 },
+    ];
+
+    const companies = await Company.aggregate(pipeline);
+
+    res.status(200).json({
+      success: true,
+      count: companies.length,
+      data: companies,
+    });
+  } catch (error) {
+    console.error("Company search error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error while searching for companies",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};

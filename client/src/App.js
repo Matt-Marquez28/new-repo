@@ -48,6 +48,7 @@ import RegularUsers from "./components/admin-pages/RegularUsers";
 import Notification from "./components/shared-pages/Notification";
 import BrowseJobs from "./components/shared-ui/BrowseJobs";
 import CompanyInformation from "./components/jobseeker-pages/CompanyInformation";
+import SearchCompanies from "./components/shared-pages/SearchCompanies";
 
 function App() {
   return (
@@ -98,7 +99,11 @@ const AppRoutes = () => {
         <Route path="notification" element={<Notification />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
-        <Route path="company-information/:companyId" element={<CompanyInformation />} />
+        <Route path="search-companies" element={<SearchCompanies />} />
+        <Route
+          path="company-information/:companyId"
+          element={<CompanyInformation />}
+        />
         <Route
           path="job-vacancy-details/:jobVacancyId"
           element={<JobVacancyDetailsPage />}

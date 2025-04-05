@@ -148,6 +148,8 @@ body {
   transition: transform 0.3s ease;
 }
 
+/********************************* company profile card styles ******************************/
+
 /* Company Profile Card with Permanent Primary Left Border */
 .company-profile-card {
   transition: all 0.3s ease;
@@ -158,6 +160,12 @@ body {
 .company-profile-card:hover {
   background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transform: translateY(-2px);
+}
+
+.company-profile-card .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
 }
 
 .company-profile-card:hover .btn-outline-light {
@@ -179,6 +187,8 @@ body {
   transition: all 0.3s ease;
 }
 
+/********************************* jobseeker profile card styles ******************************/
+
 /* Jobseeker Card with Permanent Primary Left Border */
 .jobseeker-card {
   transition: all 0.3s ease;
@@ -189,6 +199,12 @@ body {
 .jobseeker-card:hover {
   background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transform: translateY(-2px);
+}
+
+.jobseeker-card .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
 }
 
 .jobseeker-card:hover .btn-outline-light {
@@ -222,6 +238,12 @@ body {
   box-shadow: 0 6px 12px rgba(13, 110, 253, 0.1) !important;
 }
 
+.preferences-card .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
+}
+
 .preferences-card:hover .btn-outline-light {
   background-color: rgba(13, 110, 253, 0.1);
   border-color: rgba(13, 110, 253, 0.2);
@@ -231,4 +253,10 @@ body {
 /* Smooth transitions */
 .preferences-card .btn-outline-light {
   transition: all 0.3s ease;
+}
+
+.about-company-card .btn-outline-light {
+  background-color: rgba(13, 110, 253, 0.1);
+  border-color: rgba(13, 110, 253, 0.2);
+  color: #0d6efd !important;
 }
