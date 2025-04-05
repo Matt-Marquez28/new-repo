@@ -101,7 +101,7 @@ const LegalDocuments = ({
   return (
     <div className="container-fluid">
       <form onSubmit={formik.handleSubmit}>
-        <div className="alert alert-info" role="alert">
+        <div className="alert alert-primary" role="alert">
           <i className="bi bi-info-circle-fill"></i> Ensure all document
           expiration dates are updated and accurate before proceeding with
           verification.

@@ -241,7 +241,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                           </div>
                           <div className="ms-2 ">
                             <div className="text-muted small">Applicants</div>
-                            <div className="fw-semibold">
+                            <div className="fw-semibold text-primary">
                               {jobVacancy?.applicants.length || 0}
                             </div>
                           </div>
@@ -262,7 +262,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                           </div>
                           <div className="ms-2">
                             <div className="text-muted small">Vacancies</div>
-                            <div className="fw-semibold">
+                            <div className="fw-semibold text-primary">
                               {jobVacancy?.vacancies || 1}
                             </div>
                           </div>
@@ -284,7 +284,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                           <div className="ms-2" style={{ minWidth: 0 }}>
                             <div className="text-muted small">Salary</div>
                             <div
-                              className="fw-semibold text-truncate"
+                              className="fw-semibold text-truncate text-primary"
                               style={{ fontSize: "0.8rem" }}
                             >
                               {" "}
@@ -316,11 +316,11 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                               minWidth: "32px",
                             }}
                           >
-                            <i className="bi bi-briefcase-fill text-primary fs-6"></i>
+                            <i className="bi bi-suitcase-lg-fill text-primary fs-6"></i>
                           </div>
                           <div className="ms-2">
                             <div className="text-muted small">Type</div>
-                            <div className="fw-semibold text-capitalize">
+                            <div className="fw-semibold text-capitalize text-primary">
                               {jobVacancy?.employmentType}
                             </div>
                           </div>
@@ -344,8 +344,6 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                       </div>
                     </div>
                   </div>
-
-                  <hr />
 
                   <div className="mb-3 border border-primary border-opacity-25 p-3 rounded bg-light">
                     <h5 class="card-title m-0 text-primary">Job Description</h5>
@@ -484,7 +482,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
                         style={{ width: "40px", height: "40px" }}
                       >
-                        <i className="bi bi-building fs-6"></i>
+                        <i className="bi bi-building-fill fs-6"></i>
                       </div>
                       <div className="ms-3">
                         <div className="text-muted small text-uppercase">
@@ -504,7 +502,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
                         style={{ width: "40px", height: "40px" }}
                       >
-                        <i className="bi bi-people fs-6"></i>
+                        <i className="bi bi-people-fill fs-6"></i>
                       </div>
                       <div className="ms-3">
                         <div className="text-muted small text-uppercase">
@@ -524,7 +522,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         className="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
                         style={{ width: "40px", height: "40px" }}
                       >
-                        <i className="bi bi-briefcase fs-6"></i>
+                        <i className="bi bi-suitcase-lg-fill fs-6"></i>
                       </div>
                       <div className="ms-3">
                         <div className="text-muted small text-uppercase">
