@@ -21,6 +21,9 @@ import { createNotification } from "./utils/notification.js";
 import { sendEmail } from "./utils/email.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import JobSeeker from "./models/jobSeeker.model.js";
+import Application from "./models/application.model.js";
+import JobInvitation from "./models/jobInvitation.model.js";
 
 // Equivalent to __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -501,7 +504,7 @@ const deleteExpiredAccounts = async () => {
         });
 
         if (jobSeeker) {
-          await Application.deleteMany({ jobSeekerId: jobSeeker._id });
+          // await Application.deleteMany({ jobSeekerId: jobSeeker._id });
           await JobInvitation.deleteMany({ jobSeekerId: jobSeeker._id });
           console.log(
             `Deleted jobseeker-related data for: ${account.emailAddress}`

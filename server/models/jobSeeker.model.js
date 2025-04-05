@@ -171,7 +171,7 @@ const jobSeekerSchema = new mongoose.Schema(
       salaryType: {
         type: String,
         enum: ["hourly", "monthly"],
-        default: "", // Default to an array with one empty string
+        default: "monthly", // Default to an array with one empty string
       },
       salaryMin: {
         type: Number,
