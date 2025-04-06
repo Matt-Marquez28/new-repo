@@ -55,8 +55,10 @@ const AuditTrail = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h5 className="text-primary mb-4">Audit Trail</h5>
+    <div className="container">
+      <h4 className="text-primary mb-4">
+        <i className="bi bi-pen-fill"></i>Audit Trail
+      </h4>
 
       {loading && (
         <div className="text-center my-4">
@@ -83,7 +85,6 @@ const AuditTrail = () => {
             {/* Minimum width to trigger horizontal scroll */}
             <table className="table table-hover table-striped">
               <thead
-                
                 style={{
                   position: "sticky",
                   top: 0,

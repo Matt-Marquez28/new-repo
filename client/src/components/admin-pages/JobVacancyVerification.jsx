@@ -104,9 +104,9 @@ const JobVacancyVerification = () => {
 
   return (
     <div className="container">
-      <h5 className="text-primary mb-3 mx-1">
+      <h4 className="text-primary mb-3 mx-1">
         <i className="bi bi-clipboard-check-fill"></i> Job Vacancy Verification
-      </h5>
+      </h4>
       <section className="mb-3">
         <div className="row g-2 g-md-3">
           {statsData.map((stat, index) => (

@@ -103,9 +103,9 @@ const UserManagementPage = () => {
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i class="bi bi-arrow-left"></i>
         </button>
-        <h5 className="my-2 text-primary">
+        <h4 className="my-2 text-primary">
           <i className="bi bi-people-fill"></i> Manage Staff
-        </h5>
+        </h4>
       </div>
 
       <div className="d-flex justify-content-end">

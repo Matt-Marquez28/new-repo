@@ -8,7 +8,7 @@ import CompanyRankings from "../admin-ui/CompanyRankings";
 const AdminDashboard = () => {
   return (
     <div className="container">
-      <h5 className="text-primary"><i className="bi bi-speedometer"></i> Admin Dashboard</h5>
+      <h4 className="text-primary"><i className="bi bi-speedometer"></i> Admin Dashboard</h4>
       <div className="row">
         {/* Accredited Companies Card */}
         <CompanyStatisticsCard />

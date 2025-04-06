@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Table, Pagination, Form, Spinner, Alert } from "react-bootstrap";
 
 // Register ChartJS components
 ChartJS.register(
@@ -76,6 +77,11 @@ const CompanyRankings = () => {
       labels: barChartData.labels.slice(0, 15),
       datasets: barChartData.datasets.map((dataset) => ({
         ...dataset,
+        backgroundColor: "#007bff",
+        borderColor: "#0056b3",
+        borderWidth: 1,
+        hoverBackgroundColor: "#0056b3",
+        hoverBorderColor: "#003d7a",
         data: dataset.data.slice(0, 15),
       })),
     };
@@ -85,176 +91,197 @@ const CompanyRankings = () => {
 
   if (loading) {
     return (
-      <div className="p-4 flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        <span className="ml-3">Loading rankings...</span>
+      <div className="d-flex justify-content-center align-items-center py-5">
+        <Spinner animation="border" variant="primary" />
+        <span className="ms-3">Loading rankings...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
-        <p>Error: {error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Retry
-        </button>
-      </div>
+      <Alert variant="danger" className="mx-3">
+        <Alert.Heading>Error Loading Data</Alert.Heading>
+        <p>{error}</p>
+        <hr />
+        <div className="d-flex justify-content-end">
+          <button
+            onClick={() => window.location.reload()}
+            className="btn btn-danger"
+          >
+            Retry
+          </button>
+        </div>
+      </Alert>
     );
   }
 
   return (
-    <div className="w-full max-w-full px-0">
-      <div className="mx-auto w-full px-4 py-6 bg-light rounded">
-        <h4 className="text-2xl font-bold mb-6">Top Companies</h4>
+    <div className="container-fluid px-0">
+      <div className="card shadow-sm border rounded">
+        <div className="card-body">
+          <h4 className="card-title mb-4">Top Companies Ranking</h4>
 
-        {/* Search Input */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search companies..."
-            className="w-full md:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reset to first page when searching
-            }}
-          />
-        </div>
+          {/* Search Input */}
+          <div className="mb-4">
+            <Form.Control
+              type="text"
+              placeholder="Search companies..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-100 w-md-50"
+            />
+          </div>
 
-        {/* Bar Chart - Showing only top 15 */}
-        {optimizedChartData && (
-          <div className="mb-8 w-full">
-            <Bar
-              data={optimizedChartData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: "top",
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: function (context) {
-                        return `${context.dataset.label}: ${context.raw}`;
+          {/* Bar Chart - Showing only top 15 */}
+          {optimizedChartData && (
+            <div className="mb-5" style={{ height: "400px" }}>
+              <Bar
+                data={optimizedChartData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      labels: {
+                        font: {
+                          size: 14,
+                        },
+                      },
+                    },
+                    tooltip: {
+                      backgroundColor: "#2c3e50",
+                      titleFont: {
+                        size: 14,
+                        weight: "bold",
+                      },
+                      bodyFont: {
+                        size: 12,
+                      },
+                      callbacks: {
+                        label: (context) => {
+                          return `${context.dataset.label}: ${context.raw}`;
+                        },
                       },
                     },
                   },
-                },
-                scales: {
-                  x: {
-                    ticks: {
-                      maxRotation: 45,
-                      minRotation: 30,
-                      autoSkip: true,
+                  scales: {
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                      ticks: {
+                        maxRotation: 45,
+                        minRotation: 30,
+                        font: {
+                          size: 12,
+                        },
+                      },
+                    },
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        precision: 0,
+                      },
+                      grid: {
+                        color: "rgba(0, 0, 0, 0.05)",
+                      },
                     },
                   },
-                  y: {
-                    beginAtZero: true,
-                  },
-                },
-              }}
-            />
-            {barChartData?.labels?.length > 15 && (
-              <p className="text-sm text-gray-500 mt-2">
-                Showing top 15 of {barChartData.labels.length} companies
-              </p>
-            )}
-          </div>
-        )}
+                }}
+              />
+              {barChartData?.labels?.length > 15 && (
+                <p className="text-muted small mt-2 text-center">
+                  Showing top 15 of {barChartData.labels.length} companies
+                </p>
+              )}
+            </div>
+          )}
 
-        {/* Rankings Table */}
-        <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-full bg-white border">
-            {" "}
-            {/* Ensure table expands to full width */}
-            <thead className="bg-gray-50 sticky top-0">
-              <tr>
-                {/* Distribute columns proportionally */}
-                <th className="w-[5%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Rank
-                </th>
-                <th className="w-[30%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Company
-                </th>
-                <th className="w-[10%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Jobs
-                </th>
-                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Applicants
-                </th>
-                <th className="w-[10%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Hires
-                </th>
-                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Hire Rate
-                </th>
-                <th className="w-[15%] py-2 px-3 text-left text-sm font-medium text-gray-700">
-                  Score
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {paginatedRankings.map((company, index) => (
-                <tr key={company.companyId} className="hover:bg-gray-50">
-                  <td className="w-[5%] py-2 px-3 text-sm">
-                    {(currentPage - 1) * itemsPerPage + index + 1}
-                  </td>
-                  <td className="w-[30%] py-2 px-3 text-sm font-medium truncate">
-                    {company.companyName}
-                  </td>
-                  <td className="w-[10%] py-2 px-3 text-sm">
-                    {company.vacancies}
-                  </td>
-                  <td className="w-[15%] py-2 px-3 text-sm">
-                    {company.totalApplicants}
-                  </td>
-                  <td className="w-[10%] py-2 px-3 text-sm">
-                    {company.hiredApplicants}
-                  </td>
-                  <td className="w-[15%] py-2 px-3 text-sm">
-                    {(company.hireRate * 100).toFixed(1)}%
-                  </td>
-                  <td className="w-[15%] py-2 px-3 text-sm font-semibold text-blue-600">
-                    {company.score}
-                  </td>
+          {/* Rankings Table */}
+          <div className="table-responsive">
+            <Table striped bordered hover className="mb-4">
+              <thead>
+                <tr>
+                  <th style={{ width: "5%" }}>Rank</th>
+                  <th style={{ width: "30%" }}>Company</th>
+                  <th style={{ width: "10%" }}>Jobs</th>
+                  <th style={{ width: "15%" }}>Applicants</th>
+                  <th style={{ width: "10%" }}>Hires</th>
+                  <th style={{ width: "15%" }}>Hire Rate</th>
+                  <th style={{ width: "15%" }}>Score</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Controls */}
-        {filteredRankings.length > itemsPerPage && (
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
+              </thead>
+              <tbody>
+                {paginatedRankings.map((company, index) => (
+                  <tr key={company.companyId}>
+                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                    <td className="text-truncate" style={{ maxWidth: "200px" }}>
+                      {company.companyName}
+                    </td>
+                    <td>{company.vacancies}</td>
+                    <td>{company.totalApplicants}</td>
+                    <td>{company.hiredApplicants}</td>
+                    <td>{(company.hireRate * 100).toFixed(1)}%</td>
+                    <td className="fw-semibold text-primary">
+                      {company.score}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
-        )}
 
-        {/* Results Count */}
-        <div className="mt-4 text-sm text-gray-500">
-          Showing {paginatedRankings.length} of {filteredRankings.length}{" "}
-          companies
-          {searchTerm && ` matching "${searchTerm}"`}
+          {/* Pagination */}
+          {filteredRankings.length > itemsPerPage && (
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="text-muted">
+                Showing {paginatedRankings.length} of {filteredRankings.length}{" "}
+                companies {searchTerm && `matching "${searchTerm}"`}
+              </div>
+
+              <Pagination>
+                <Pagination.Prev
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                />
+
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <Pagination.Item
+                      key={pageNum}
+                      active={pageNum === currentPage}
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Pagination.Item>
+                  );
+                })}
+
+                <Pagination.Next
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
+            </div>
+          )}
         </div>
       </div>
     </div>

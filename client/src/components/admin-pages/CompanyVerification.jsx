@@ -158,9 +158,9 @@ const CompanyVerification = () => {
 
   return (
     <div className="container">
-      <h5 className="text-primary mb-3 mx-1">
+      <h4 className="text-primary mb-3 mx-1">
         <i className="bi bi-building-fill-check"></i> Company Verification
-      </h5>
+      </h4>
       <section className="mb-3">
         <div className="row justify-content-center">
           <div>

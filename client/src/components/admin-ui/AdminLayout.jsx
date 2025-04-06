@@ -19,13 +19,18 @@ const AdminLayout = () => {
       <div className="d-flex flex-grow-1 overflow-hidden">
         {/* Sidebar - hidden on mobile, visible on md+ */}
         {isSidebarOpen && (
-          <div className="d-none d-md-flex h-100" style={{ minWidth: "250px" }}>
+          
             <AdminSidebar />
-          </div>
+        
         )}
 
         {/* Main content - always visible */}
-        <main className="flex-grow-1 overflow-auto p-3">
+        <main
+          className="flex-grow-1 overflow-auto p-3"
+          style={{
+            backgroundColor: "white",
+          }}
+        >
           <Outlet />
         </main>
       </div>

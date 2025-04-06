@@ -5,8 +5,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Dropdown, DropdownButton, Modal, Button } from "react-bootstrap";
 import Footer from "../shared-ui/Footer";
+import { useToast } from "../../contexts/toast.context";
 
 const JobVacancyVerificationDetails = () => {
+  const triggerToast = useToast();
   const navigate = useNavigate();
   const { jobVacancyId } = useParams();
   const [jobVacancy, setJobVacancy] = useState(null);
@@ -41,31 +43,50 @@ const JobVacancyVerificationDetails = () => {
       const res = await axios.patch(
         `${JOB_VACANCY_API_END_POINT}/approve-job-vacancy/${jobVacancyId}`,
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
+
       console.log(`Approval action confirmed for job vacancy ${jobVacancyId}`);
+
+      // Add null checks and fallbacks
+      triggerToast(
+        res?.data?.message || "Job vacancy approved successfully!",
+        "primary"
+      );
+
       handleCloseApproveModal();
-      getSingleJobVacancy(); // Refresh the job vacancy details
+      getSingleJobVacancy();
     } catch (error) {
-      console.log(error);
+      console.error("Approval error:", error);
+
+      // More robust error message handling
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to approve job vacancy";
+
+      triggerToast(errorMessage, "danger");
     }
   };
 
   const handleConfirmDecline = async () => {
     try {
-      await axios.patch(
+      const res = await axios.patch(
         `${JOB_VACANCY_API_END_POINT}/decline-job-vacancy/${jobVacancyId}`,
         { reason: declineReason },
         { withCredentials: true }
       );
+      triggerToast(res?.data?.message || "Job vacancy declined!", "primary");
       console.log(
         `Decline action confirmed for job vacancy ${jobVacancyId} with reason: ${declineReason}`
       );
       handleCloseDeclineModal();
       getSingleJobVacancy(); // Refresh the job vacancy details
     } catch (error) {
+      triggerToast(
+        error?.response?.data?.message || "Failed to decline job vacancy",
+        "danger"
+      );
       console.log(error);
     }
   };

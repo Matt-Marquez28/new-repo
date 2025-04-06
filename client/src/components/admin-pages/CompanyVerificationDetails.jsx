@@ -78,7 +78,7 @@ const CompanyVerificationDetails = () => {
         }
       );
       getCompanyDataById();
-      triggerToast(res?.data?.message, "success");
+      triggerToast(res?.data?.message, "primary");
     } catch (error) {
       triggerToast(error?.response?.data?.message, "danger");
     } finally {

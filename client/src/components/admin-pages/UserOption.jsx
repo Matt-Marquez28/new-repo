@@ -6,7 +6,7 @@ const UserOption = () => {
 
   return (
     <div className="container p-3">
-      <h5 className="text-primary mb-3 mx-1"> <i className="bi bi-people-fill"></i> Manage Users</h5>
+      <h4 className="text-primary mb-3 mx-1"> <i className="bi bi-people-fill"></i> Manage Users</h4>
       <div className="row g-4">
         <div className="col-md-6">
           <div className="card text-center shadow-sm border-0 rounded bg-light">
