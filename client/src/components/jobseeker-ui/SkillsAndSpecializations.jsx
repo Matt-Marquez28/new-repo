@@ -70,8 +70,7 @@ const SkillsAndSpecializations = () => {
         ...prev,
         profileData: {
           ...prev.profileData,
-          skillsAndSpecializations:
-            response?.data?.skillsAndSpecializations,
+          skillsAndSpecializations: response?.data?.skillsAndSpecializations,
         },
       }));
       fetchSkillsAndSpecialization();

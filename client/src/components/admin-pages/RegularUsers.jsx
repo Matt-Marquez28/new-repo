@@ -88,7 +88,6 @@ const RegularUsers = () => {
   return (
     <div className="container">
       <Tabs
-        
         defaultActiveKey="users"
         id="user-tabs"
         className="mb-3"
@@ -247,44 +246,22 @@ const RegularUsers = () => {
 
                   {/* Card Body */}
                   <div className="card-body pt-3 bg-light">
-                    {/* Reports Accordion */}
-                    <div className="accordion" id={`accordion-${report._id}`}>
+                    {/* Reports List */}
+                    <div className="mb-3">
                       {report.reports.map((r, i) => (
-                        <div key={i} className="accordion-item border-0 mb-2">
-                          <h2
-                            className="accordion-header"
-                            id={`heading-${report._id}-${i}`}
-                          >
-                            <button
-                              className="accordion-button collapsed bg-white py-2"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target={`#collapse-${report._id}-${i}`}
-                              aria-expanded="false"
-                              aria-controls={`collapse-${report._id}-${i}`}
-                            >
-                              <div className="d-flex flex-column">
-                                <span className="fw-medium">{r.reason}</span>
-                                <small className="text-muted">
-                                  Reported by{" "}
-                                  {r.reportedBy?.firstName || "Anonymous"} •{" "}
-                                  {new Date(r.createdAt).toLocaleDateString()}
-                                </small>
-                              </div>
-                            </button>
-                          </h2>
-                          <div
-                            id={`collapse-${report._id}-${i}`}
-                            className="accordion-collapse collapse"
-                            aria-labelledby={`heading-${report._id}-${i}`}
-                            data-bs-parent={`#accordion-${report._id}`}
-                          >
-                            <div className="accordion-body bg-white pt-2">
-                              <p className="mb-0 text-muted small">
-                                {r.details}
-                              </p>
-                            </div>
+                        <div key={i} className="mb-3 p-3 bg-white rounded">
+                          <div className="d-flex justify-content-between">
+                            <span className="fw-medium">{r.reason}</span>
+                            <small className="text-muted">
+                              {new Date(r.createdAt).toLocaleDateString()}
+                            </small>
                           </div>
+                          <p className="mb-0 text-muted small mt-1">
+                            {r.details}
+                          </p>
+                          <small className="text-muted">
+                            Reported by {r.reportedBy?.firstName || "Anonymous"}
+                          </small>
                         </div>
                       ))}
                     </div>

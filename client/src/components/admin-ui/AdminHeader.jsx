@@ -156,43 +156,125 @@ const AdminHeader = () => {
             trigger="click"
             placement="bottom"
             overlay={
-              <Popover id="account-popover">
-                <Popover.Header as="h5">Account</Popover.Header>
-                <Popover.Body>
-                  <ul className="list-unstyled mb-0">
-                    <li>
-                      <Button
-                        variant="link"
-                        onClick={() => handleNavigation("/admin/settings")}
-                        className="text-decoration-none w-100 text-dark"
+              <Popover
+                id="account-popover"
+                style={{
+                  width: "280px",
+                  borderRadius: "10px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+              >
+                <Popover.Header
+                  as="div"
+                  className="bg-light"
+                  style={{
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  }}
+                >
+                  <div className="d-flex align-items-center">
+                    <div className="me-3">
+                      <div
+                        className="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          fontSize: "1.25rem",
+                          color: "white",
+                          background:
+                            "linear-gradient(135deg, #4e73df 0%, #224abe 100%)",
+                        }}
                       >
-                        <i className="bi bi-gear-fill text-secondary"></i>{" "}
-                        Settings
-                      </Button>
-                    </li>
-                    <li>
-                      <Button
-                        variant="link"
-                        className="text-decoration-none w-100 text-start text-dark"
-                        onClick={handleLogout}
+                        {user?.accountData?.firstName
+                          ?.charAt(0)
+                          ?.toUpperCase() || "U"}
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="mb-0 fw-semibold">
+                        {user?.accountData?.firstName || "John"}{" "}
+                        {user?.accountData?.lastName || "Doe"}
+                      </h5>
+                      <small
+                        className="text-muted text-truncate d-block"
+                        style={{ maxWidth: "200px" }}
                       >
-                        <i className="bi bi-box-arrow-left text-danger"></i>{" "}
-                        Logout
-                      </Button>
-                    </li>
-                  </ul>
+                        {user?.accountData?.emailAddress ||
+                          "john.doe@example.com"}
+                      </small>
+                    </div>
+                  </div>
+                </Popover.Header>
+                <Popover.Body className="p-2">
+                  <div className="list-group list-group-flush">
+                    <button
+                      className="list-group-item list-group-item-action border-0 py-2 px-3 d-flex align-items-center hover-bg-light"
+                      onClick={() => handleNavigation("/admin/profile")}
+                    >
+                      <i className="bi bi-person-fill text-info me-3 fs-5"></i>
+                      <div>
+                        <div className="fw-medium">My Profile</div>
+                        <small className="text-muted">
+                          View and edit profile
+                        </small>
+                      </div>
+                    </button>
+                    <button
+                      className="list-group-item list-group-item-action border-0 py-2 px-3 d-flex align-items-center hover-bg-light"
+                      onClick={() => handleNavigation("/admin/settings")}
+                    >
+                      <i className="bi bi-gear-fill text-primary me-3 fs-5"></i>
+                      <div>
+                        <div className="fw-medium">Settings</div>
+                        <small className="text-muted">
+                          Account preferences
+                        </small>
+                      </div>
+                    </button>
+                    <div className="dropdown-divider my-1"></div>
+                    <button
+                      className="list-group-item list-group-item-action border-0 py-2 px-3 d-flex align-items-center hover-bg-light"
+                      onClick={handleLogout}
+                    >
+                      <i className="bi bi-box-arrow-left text-danger me-3 fs-5"></i>
+                      <div>
+                        <div className="fw-medium">Logout</div>
+                        <small className="text-muted">
+                          Sign out of your account
+                        </small>
+                      </div>
+                    </button>
+                  </div>
                 </Popover.Body>
               </Popover>
             }
             rootClose
           >
-            <div>
-              <img
-                src={defaultProfile}
-                alt="Dropdown"
-                style={{ width: "55px", height: "55px" }}
-              />
-            </div>
+            <Button
+              variant="link"
+              className="text-decoration-none p-0 d-flex align-items-center"
+              style={{ outline: "none" }}
+            >
+              <div
+                className="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2"
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  fontSize: "1rem",
+                  color: "white",
+                  background:
+                    "linear-gradient(135deg, #4e73df 0%, #224abe 100%)",
+                }}
+              >
+                {user?.accountData?.firstName?.charAt(0)?.toUpperCase() || "U"}
+              </div>
+              <div className="d-flex align-items-center">
+                <span className="d-none d-md-inline text-dark fw-medium">
+                  {user?.accountData?.firstName || "User"}
+                </span>
+                <i className="bi bi-chevron-down ms-1 text-secondary"></i>
+              </div>
+            </Button>
           </OverlayTrigger>
         </div>
 
