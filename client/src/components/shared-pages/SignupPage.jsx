@@ -296,8 +296,114 @@ const SignupPage = () => {
         <Modal.Header closeButton>
           <Modal.Title>Terms and Conditions</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p>Here are the terms and conditions...</p>
+        <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <h5>Acceptance of Terms</h5>
+          <p>
+            By creating an account or using the services provided by the PESO
+            Job Portal, users (including job seekers, employers, and
+            administrators) agree to comply with these Terms and Conditions. If
+            you do not agree to any part of these terms, you must not access or
+            use the system.
+          </p>
+
+          <h5>Account Registration and Responsibilities</h5>
+          <ul>
+            <li>
+              Users must provide accurate and complete information during
+              registration.
+            </li>
+            <li>
+              Employers are responsible for submitting valid and authentic
+              accreditation documents, such as DTI/SEC registration, BIR TIN,
+              and business permits.
+            </li>
+            <li>
+              Any unauthorized use of an account must be reported immediately to
+              the administrators.
+            </li>
+          </ul>
+
+          <h5>Use of the System</h5>
+          <ul>
+            <li>
+              The system is designed solely for employment-related purposes: job
+              posting, job seeking, employer accreditation, and PESO
+              administrative functions.
+            </li>
+            <li>
+              Users must not use the platform for fraudulent, illegal, or
+              harmful activities.
+            </li>
+            <li>
+              Job seekers must only apply for jobs they are qualified for and
+              avoid submitting misleading resumes.
+            </li>
+            <li>
+              Employers must post only legitimate job offers and are prohibited
+              from any form of misrepresentation or exploitation.
+            </li>
+          </ul>
+
+          <h5>Document Verification and Accreditation</h5>
+          <ul>
+            <li>
+              All submitted documents are subject to manual verification by the
+              PESO administrators.
+            </li>
+            <li>
+              The system reserves the right to revoke accreditation or restrict
+              access if documents are found to be expired, tampered with, or
+              fake.
+            </li>
+            <li>
+              Certificates of accreditation are only visible to verified
+              employers and may be hidden or disabled once accreditation becomes
+              invalid.
+            </li>
+          </ul>
+
+          <h5>Notification System</h5>
+          <ul>
+            <li>
+              Users will receive important system updates, job postings, and
+              account-related notifications through in-system alerts and, where
+              applicable, through registered email addresses.
+            </li>
+          </ul>
+
+          <h5>Data Privacy</h5>
+          <ul>
+            <li>
+              All personal and company data submitted to the system will be
+              handled in accordance with the Data Privacy Act of 2012.
+            </li>
+            <li>
+              Information will only be used for employment facilitation and
+              system management and will not be shared with third parties
+              without consent.
+            </li>
+          </ul>
+
+          <h5>System Availability</h5>
+          <ul>
+            <li>
+              While efforts will be made to ensure system availability, the
+              administrators reserve the right to suspend or modify system
+              access for maintenance or updates.
+            </li>
+            <li>
+              PESO Taguig City is not liable for data loss due to unexpected
+              technical issues or external factors.
+            </li>
+          </ul>
+
+          <h5>Termination and Suspension</h5>
+          <ul>
+            <li>
+              Users who violate any part of these Terms and Conditions may have
+              their accounts suspended or permanently removed from the system.
+            </li>
+          </ul>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>

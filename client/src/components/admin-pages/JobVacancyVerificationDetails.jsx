@@ -146,7 +146,7 @@ const JobVacancyVerificationDetails = () => {
             className="btn btn-light text-dark"
             onClick={() => navigate(-1)}
           >
-            <i className="bi bi-arrow-90deg-left"></i> Back
+            <i className="bi bi-arrow-left"></i> Back
           </button>
         </div>
         {getStatus(jobVacancy?.publicationStatus)}

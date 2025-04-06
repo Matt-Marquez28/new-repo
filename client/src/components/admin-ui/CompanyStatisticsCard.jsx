@@ -84,7 +84,7 @@ const CompanyStatisticsCard = () => {
                       backgroundColor: "rgba(0, 123, 255, 0.1) !important",
                     }}
                   >
-                    <i className="bi bi-building me-1"></i> {stats.all} total
+                    <i className="bi bi-building-fill me-1"></i> {stats.all} total
                   </span>
                 </div>
               </div>

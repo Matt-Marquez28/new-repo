@@ -723,6 +723,16 @@ export const approveJobVacancy = async (req, res) => {
 
   try {
     const { jobVacancyId } = req.params;
+
+    const findJobVacancy = await JobVacancy.findById(jobVacancyId);
+
+    if (findJobVacancy.publicationStatus === "approved") {
+      return res.status(400).json({
+        success: false,
+        message: "This job vacancy is already approved!",
+      });
+    }
+
     const jobVacancy = await JobVacancy.findByIdAndUpdate(
       jobVacancyId,
       { publicationStatus: "approved" },
@@ -737,10 +747,6 @@ export const approveJobVacancy = async (req, res) => {
         select: "companyInformation.businessName",
       },
     ]);
-
-    if (!jobVacancy) {
-      return res.status(404).json({ message: "Job vacancy not found" });
-    }
 
     // Audit trail for successful approval
     await auditTrail({
@@ -813,11 +819,11 @@ export const approveJobVacancy = async (req, res) => {
         message: `Your job vacancy, ${jobVacancy?.jobTitle}, has been approved.`,
         type: "success",
       });
+
+      res.status(200).json({ message: "Job vacancy approved", jobVacancy });
     } catch (error) {
       console.error("Error creating notification:", error);
     }
-
-    res.status(200).json({ message: "Job vacancy approved", jobVacancy });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -829,6 +835,15 @@ export const declineJobVacancy = async (req, res) => {
     const accountId = req.accountId;
     const { jobVacancyId } = req.params;
     const { reason } = req.body;
+
+    const findJobVacancy = await JobVacancy.findById(jobVacancyId);
+    
+    if (findJobVacancy.publicationStatus === "declined") {
+      return res.status(400).json({
+        success: false,
+        message: "This job vacancy is already declined!",
+      });
+    }
 
     const jobVacancy = await JobVacancy.findByIdAndUpdate(
       jobVacancyId,
