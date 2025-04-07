@@ -837,7 +837,7 @@ export const declineJobVacancy = async (req, res) => {
     const { reason } = req.body;
 
     const findJobVacancy = await JobVacancy.findById(jobVacancyId);
-    
+
     if (findJobVacancy.publicationStatus === "declined") {
       return res.status(400).json({
         success: false,

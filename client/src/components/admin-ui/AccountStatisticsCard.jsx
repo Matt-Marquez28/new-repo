@@ -213,7 +213,7 @@ const AccountStatistics = () => {
                         borderRadius: "5px",
                       }}
                     />
-                    <div className="mt-3">
+                    {/* <div className="mt-3">
                       <div className="d-flex justify-content-between">
                         <span className="small text-muted">
                           Job Seeker Activity: 72%
@@ -222,7 +222,7 @@ const AccountStatistics = () => {
                           Employer Activity: 65%
                         </span>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
