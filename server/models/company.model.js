@@ -48,9 +48,13 @@ const companySchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      unitNumber: {
+        type: String,
+        required: false,
+      },
       street: {
         type: String,
-        required: true,
+        required: false,
       },
       barangay: {
         type: String,

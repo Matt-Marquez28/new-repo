@@ -20,7 +20,8 @@ const FormSchema = Yup.object().shape({
   employerName: Yup.string().required("Employer Name is required"),
   employerPosition: Yup.string().required("Employer Position is required"),
   description: Yup.string().required("Description is required"),
-  street: Yup.string().required("Street is required"),
+  unitNumber: Yup.string(),
+  street: Yup.string(),
   barangay: Yup.string().required("Barangay is required"),
   cityMunicipality: Yup.string().required("City/Municipality is required"),
   province: Yup.string().required("Province is required"),
@@ -142,6 +143,7 @@ const CompanyInformationForm = () => {
         employerName: companyInformation?.employerName || "",
         employerPosition: companyInformation?.employerPosition || "",
         description: companyInformation?.description || "",
+        unitNumber: companyInformation?.unitNumber || "",
         street: companyInformation?.street || "",
         barangay: companyInformation?.barangay || "",
         cityMunicipality: companyInformation?.cityMunicipality || "",
@@ -422,6 +424,22 @@ const CompanyInformationForm = () => {
 
           {/* Address Fields */}
           <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="unitNumber">Unit No:</label>
+              <Field
+                name="unitNumber"
+                type="text"
+                className={`form-control ${
+                  touched.unitNumber &&
+                  (errors.unitNumber ? "is-invalid" : "is-valid")
+                }`}
+              />
+              <ErrorMessage
+                component="div"
+                name="unitNumber"
+                className="invalid-feedback"
+              />
+            </div>
             <div className="col-md-6 mb-3">
               <label htmlFor="street">Street:</label>
               <Field

@@ -237,7 +237,7 @@ const AccountStatistics = () => {
                       </h6>
                       <div className="d-grid gap-2">
                         <Link
-                          to="/manage-users"
+                          to="/admin/user-management/regular-users"
                           className="btn btn-outline-primary text-start d-flex justify-content-between align-items-center py-2 px-3"
                         >
                           <span>Manage Users</span>
