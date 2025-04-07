@@ -687,7 +687,7 @@ const deleteScheduledAccounts = async () => {
   }
 };
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 
   const now = new Date();
