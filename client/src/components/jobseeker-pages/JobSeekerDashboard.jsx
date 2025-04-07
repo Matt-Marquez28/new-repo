@@ -28,6 +28,10 @@ const JobSeekerDashboard = () => {
     navigate("/jobseeker/profile", { state: { activeTab: "personalInfo" } });
   };
 
+  const handlePreferencesEditClick = () => {
+    navigate("/jobseeker/profile", { state: { activeTab: "jobPreferrences" } });
+  };
+
   // Save the active tab to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);
@@ -221,6 +225,7 @@ const JobSeekerDashboard = () => {
               {/* Edit Button */}
               <div className="d-flex justify-content-center">
                 <button
+                onClick={handlePreferencesEditClick}
                   type="button"
                   className="btn btn-sm btn-outline-light text-secondary"
                 >

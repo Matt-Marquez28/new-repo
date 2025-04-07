@@ -8,8 +8,10 @@ import SearchJobSeekers from "../employer-ui/SearchJobSeekers";
 import { useUser } from "../../contexts/user.context";
 import JobInvitationList from "../employer-ui/JobInvitationList";
 import default_company from "../../images/default-company.jpg";
+import { useNavigate } from "react-router-dom";
 
 const EmployerDashboard = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
   const candidatePreferences = user?.companyData?.candidatePreferences;
 
@@ -26,6 +28,14 @@ const EmployerDashboard = () => {
 
   const handleTabClick = (tabName) => {
     setActiveTab(tabName);
+  };
+
+  const handleCompanyProfileEditClick = () => {
+    navigate("/employer/company-profile", { state: { activeTab: "companyProfile" } });
+  };
+
+  const handlePreferencesEditClick = () => {
+    navigate("/employer/company-profile", { state: { activeTab: "candidatePreferences" } });
   };
 
   const getStatusBadge = (status) => {
@@ -196,6 +206,7 @@ const EmployerDashboard = () => {
                 {user?.companyData?.companyInformation?.businessName}
               </h6>
               <button
+                onClick={handleCompanyProfileEditClick}
                 type="button"
                 className="btn btn-sm btn-outline-light text-secondary"
               >
@@ -259,6 +270,7 @@ const EmployerDashboard = () => {
               {/* Edit Button - Original Style */}
               <div className="d-flex justify-content-center">
                 <button
+                  onClick={handlePreferencesEditClick}
                   type="button"
                   className="btn btn-sm btn-outline-light text-secondary"
                 >
