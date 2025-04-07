@@ -62,11 +62,12 @@ export const upsertCompany = async (req, res) => {
 
     // Set HTTP-only cookie and send JSON response in a single response
     res
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      })
+    .cookie("token", token, {
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    })
       .status(200)
       .json({
         message: company.isNew
