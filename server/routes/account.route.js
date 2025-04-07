@@ -19,6 +19,7 @@ import {
   markForDeletion,
   reportAccount,
   getReportedAccounts,
+  getAccountStatistics,
 } from "../controllers/account.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
@@ -46,5 +47,6 @@ router.delete("/delete-user/:accountId", isAuthenticated, deleteUser);
 router.put("/mark-for-deletion", isAuthenticated, markForDeletion);
 router.post("/report-account", isAuthenticated, reportAccount);
 router.get("/get-reported-accounts", getReportedAccounts);
+router.get("/account-stats", getAccountStatistics);
 
 export default router;

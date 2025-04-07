@@ -81,9 +81,103 @@ export const upsertCompany = async (req, res) => {
 };
 
 // get all companies
+// export const getAllCompanies = async (req, res) => {
+//   try {
+//     const { status, isRenewal } = req.query;
+
+//     // Base filter excludes 'incomplete' status
+//     const baseFilter = { status: { $ne: "incomplete" } };
+
+//     // Add renewal filter to the base filter if it's set to true
+//     let filter = baseFilter;
+//     if (status && status !== "all") {
+//       filter = { ...filter, status };
+//     }
+
+//     if (isRenewal === "true") {
+//       filter = { ...filter, isRenewal: true };
+//     } else if (isRenewal === "false") {
+//       filter = { ...filter, isRenewal: false };
+//     }
+
+//     // Fetch companies and enhanced statistics concurrently
+//     const [companies, statusStats, renewalStats] = await Promise.all([
+//       Company.find(filter).sort({ createdAt: -1 }),
+//       // Regular status statistics
+//       Company.aggregate([
+//         { $match: baseFilter },
+//         {
+//           $group: {
+//             _id: "$status",
+//             count: { $sum: 1 },
+//           },
+//         },
+//       ]),
+//       // Renewal statistics
+//       Company.aggregate([
+//         { $match: baseFilter },
+//         {
+//           $group: {
+//             _id: "$isRenewal",
+//             count: { $sum: 1 },
+//             // Subgroups by status for renewal
+//             statusBreakdown: {
+//               $push: {
+//                 status: "$status",
+//                 isRenewal: "$isRenewal",
+//               },
+//             },
+//           },
+//         },
+//       ]),
+//     ]);
+
+//     // Format status stats
+//     const statsFormatted = statusStats.reduce(
+//       (acc, { _id, count }) => {
+//         acc[_id] = count;
+//         acc.all += count;
+//         return acc;
+//       },
+//       { pending: 0, accredited: 0, declined: 0, revoked: 0, all: 0 }
+//     );
+
+//     // Add renewal stats
+//     const renewalCounts = renewalStats.reduce(
+//       (acc, { _id, count, statusBreakdown }) => {
+//         if (_id === true) {
+//           acc.renewal = count;
+//           // Count renewal by status
+//           acc.renewalByStatus = statusBreakdown.reduce((statAcc, item) => {
+//             statAcc[item.status] = (statAcc[item.status] || 0) + 1;
+//             return statAcc;
+//           }, {});
+//         }
+//         return acc;
+//       },
+//       { renewal: 0, renewalByStatus: {} }
+//     );
+
+//     // Combine all stats
+//     const combinedStats = {
+//       ...statsFormatted,
+//       ...renewalCounts,
+//     };
+
+//     res.status(200).json({
+//       success: true,
+//       companies,
+//       stats: combinedStats,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ success: false, message: "Internal server error!" });
+//   }
+// };
+
 export const getAllCompanies = async (req, res) => {
   try {
-    const { status, isRenewal } = req.query;
+    const { status, isRenewal, latest } = req.query;
 
     // Base filter excludes 'incomplete' status
     const baseFilter = { status: { $ne: "incomplete" } };
@@ -100,9 +194,21 @@ export const getAllCompanies = async (req, res) => {
       filter = { ...filter, isRenewal: false };
     }
 
+    // Create query for companies with optional latest filter
+    let companiesQuery = Company.find(filter).sort({ createdAt: -1 });
+
+    if (latest) {
+      const days = parseInt(latest);
+      if (!isNaN(days)) {
+        const dateLimit = new Date();
+        dateLimit.setDate(dateLimit.getDate() - days);
+        companiesQuery = companiesQuery.where("createdAt").gte(dateLimit);
+      }
+    }
+
     // Fetch companies and enhanced statistics concurrently
     const [companies, statusStats, renewalStats] = await Promise.all([
-      Company.find(filter).sort({ createdAt: -1 }),
+      companiesQuery.exec(),
       // Regular status statistics
       Company.aggregate([
         { $match: baseFilter },

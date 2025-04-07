@@ -75,7 +75,7 @@ router.patch(
 
 router.post("/hire-applicant/:applicationId", isAuthenticated, checkBlocked, hireApplicant);
 
-router.post("/decline-applicant/:applicationId", declineApplicant);
+router.post("/decline-applicant/:applicationId", isAuthenticated, declineApplicant);
 
 router.get("/get-applicant-statistics", getApplicantStatistics);
 

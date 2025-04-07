@@ -117,13 +117,15 @@ body {
   background: linear-gradient(to right, transparent, transparent);
 }
 
-.job-list:hover {
+/* hover */
+.job-list {
   border-left: 4px solid #0d6efd !important;
   background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transition: all 0.3s ease;
 }
 
-.job-list:hover .btn-info {
+/* hover */
+.job-list .btn-info {
   background-color: #0d6efd !important;
   border-color: #0d6efd !important;
 }

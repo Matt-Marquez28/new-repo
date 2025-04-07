@@ -94,10 +94,7 @@ export const EmployerHeader = () => {
     >
       <Container fluid>
         <Navbar.Brand>
-          <Link
-            to="/"
-            className="d-flex align-items-center link-body-emphasis text-decoration-none"
-          >
+          <Link className="d-flex align-items-center link-body-emphasis text-decoration-none">
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s"
               alt="Logo"
@@ -183,7 +180,7 @@ export const EmployerHeader = () => {
                           fontSize: "1.25rem",
                           color: "white",
                           background:
-                            "linear-gradient(135deg, #4e73df 0%, #224abe 100%)",
+                            "linear-gradient(135deg, #6ea8fe 0%, #0d6efd 100%)  ",
                         }}
                       >
                         {user?.accountData?.firstName
@@ -266,7 +263,7 @@ export const EmployerHeader = () => {
                   fontSize: "1rem",
                   color: "white",
                   background:
-                    "linear-gradient(135deg, #4e73df 0%, #224abe 100%)",
+                    "linear-gradient(135deg, #6ea8fe 0%, #0d6efd 100%)  ",
                 }}
               >
                 {user?.accountData?.firstName?.charAt(0)?.toUpperCase() || "U"}

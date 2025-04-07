@@ -981,3 +981,42 @@ export const getReportedAccounts = async (req, res) => {
     res.status(500).json({ message: "Server error while fetching reports." });
   }
 };
+
+// get account statistics
+export const getAccountStatistics = async (req, res) => {
+  try {
+    // Count jobseekers
+    const jobseekerCount = await Account.countDocuments({
+      role: "jobseeker",
+      deletedAt: null // Exclude soft-deleted accounts
+    });
+
+    // Count employers
+    const employerCount = await Account.countDocuments({
+      role: "employer",
+      deletedAt: null // Exclude soft-deleted accounts
+    });
+
+    // Count all active accounts (optional)
+    const totalActiveAccounts = await Account.countDocuments({
+      deletedAt: null,
+      isActive: true
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        jobseekers: jobseekerCount,
+        employers: employerCount,
+        totalActiveAccounts: totalActiveAccounts // Optional
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching account statistics:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch account statistics",
+      error: error.message
+    });
+  }
+};

@@ -23,11 +23,12 @@ import {
 } from "../controllers/jobVacancy.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { isAccredited } from "../middlewares/isAccredited.js";
+import { checkBlocked } from "../middlewares/checkBlocked.js";
 
 const router = express.Router();
 
 // routes
-router.post("/post-job-vacancy", isAuthenticated, isAccredited, postJobVacancy);
+router.post("/post-job-vacancy", isAuthenticated, isAccredited, checkBlocked, postJobVacancy);
 router.get("/get-all-job-vacancies", getAllJobVacancies);
 router.get(
   "/get-all-employer-job-vacancies",
@@ -69,6 +70,7 @@ router.post(
   "/send-job-invitation/:jobSeekerId",
   isAuthenticated,
   isAccredited,
+  checkBlocked,
   sendJobInvitation
 );
 router.get(

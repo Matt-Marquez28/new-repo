@@ -4,6 +4,7 @@ import Heroes from "../shared-ui/Heroes";
 import Footer from "../shared-ui/Footer";
 import Features from "../shared-ui/Features";
 import ContactForm from "./ContactForm";
+import AccountStatistics from "../shared-ui/AccountStatistics";
 
 const LandingPage = () => {
   return (
@@ -11,6 +12,7 @@ const LandingPage = () => {
       <Header />
       <Heroes />
       <Features/>
+      <AccountStatistics />
       <ContactForm/>
       <Footer />
     </div>
