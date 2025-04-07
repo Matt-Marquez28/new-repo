@@ -199,30 +199,28 @@ const AccountStatistics = () => {
                       >
                         User Activity Overview
                       </h6>
-                      <span className="badge bg-primary">
+                      <span className="badge bg-info">
                         {activePercentage}% Active
                       </span>
                     </div>
                     <ProgressBar
                       now={activePercentage}
                       label={`${stats.totalActiveAccounts.toLocaleString()} active users`}
-                      variant="primary"
+                      variant="info"
                       animated
                       style={{
                         height: "20px",
                         borderRadius: "5px",
                       }}
                     />
-                    {/* <div className="mt-3">
+                    <div className="mt-3">
                       <div className="d-flex justify-content-between">
                         <span className="small text-muted">
-                          Job Seeker Activity: 72%
+                          {stats.totalActiveAccounts.toLocaleString()} Active Users
                         </span>
-                        <span className="small text-muted">
-                          Employer Activity: 65%
-                        </span>
+                       
                       </div>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
 
