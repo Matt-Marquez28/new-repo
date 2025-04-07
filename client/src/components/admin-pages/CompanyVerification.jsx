@@ -336,7 +336,10 @@ const CompanyVerification = () => {
                       className="small text-muted align-middle"
                       style={{ width: "15%" }}
                     >
-                      {`${company?.companyInformation?.tinNumber}`}
+                      {company?.companyInformation?.tinNumber?.replace(
+                        /(\d{3})(\d{3})(\d{3})(\d{3})/,
+                        "$1-$2-$3-$4"
+                      )}
                     </td>
                     <td
                       className="small text-muted align-middle text-center"

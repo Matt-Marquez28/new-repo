@@ -145,7 +145,7 @@ const AdminSidebar = () => {
         <hr />
         <div className="text-center">
           <div style={{ padding: "20px 5px" }}>
-            {!isCollapsed && "Sidebar Footer"}
+            {!isCollapsed && <h5 className="text-capitalize text-primary">{user?.accountData?.role}</h5>}
           </div>
         </div>
       </div>

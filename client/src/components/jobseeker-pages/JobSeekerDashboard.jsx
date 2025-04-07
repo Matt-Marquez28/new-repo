@@ -202,7 +202,7 @@ const JobSeekerDashboard = () => {
               </div>
 
               {/* Salary Range */}
-              <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
+              {/* <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Salary Expectations</h6>
                 <p
                   className="m-0 text-info fw-semibold"
@@ -216,7 +216,7 @@ const JobSeekerDashboard = () => {
                       }`
                     : "Not specified"}
                 </p>
-              </div>
+              </div> */}
 
               {/* Edit Button */}
               <div className="d-flex justify-content-center">

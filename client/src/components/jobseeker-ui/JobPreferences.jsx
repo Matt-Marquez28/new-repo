@@ -190,6 +190,44 @@ const JobPreferences = () => {
       </div>
 
       <div className="row mb-4">
+        {/* Preferred Industries */}
+        <div className="col-md-4 mb-3">
+          <label>Preferred Industries:</label>
+          {industries.map((industry, index) => (
+            <div key={index} className="input-group mb-2">
+              <select
+                className="form-select"
+                value={industry}
+                onChange={(e) =>
+                  handleArrayChange(setIndustries, index, e.target.value)
+                }
+              >
+                <option value="">Select Industry</option>
+                {industryOptions.map((option, i) => (
+                  <option key={i} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn btn-info"
+                onClick={() => handleRemoveField(setIndustries, index)}
+                disabled={industries.length === 1}
+              >
+                <i className="bi bi-x"></i>
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={() => handleAddField(setIndustries)}
+          >
+            <i className="bi bi-plus-circle"></i> Add More
+          </button>
+        </div>
+
         {/* Preferred Job Positions */}
         <div className="col-md-4 mb-3">
           <label>Preferred Job Positions:</label>
@@ -270,44 +308,6 @@ const JobPreferences = () => {
             <option value="contractual">Contract</option>
             <option value="temporary">Temporary</option>
           </select>
-        </div>
-
-        {/* Preferred Industries */}
-        <div className="col-md-4 mb-3">
-          <label>Preferred Industries:</label>
-          {industries.map((industry, index) => (
-            <div key={index} className="input-group mb-2">
-              <select
-                className="form-select"
-                value={industry}
-                onChange={(e) =>
-                  handleArrayChange(setIndustries, index, e.target.value)
-                }
-              >
-                <option value="">Select Industry</option>
-                {industryOptions.map((option, i) => (
-                  <option key={i} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="btn btn-info"
-                onClick={() => handleRemoveField(setIndustries, index)}
-                disabled={industries.length === 1}
-              >
-                <i className="bi bi-x"></i>
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={() => handleAddField(setIndustries)}
-          >
-            <i className="bi bi-plus-circle"></i> Add More
-          </button>
         </div>
 
         {/* Salary Type */}

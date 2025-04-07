@@ -212,15 +212,61 @@ const CompanyInformationForm = () => {
           <div className="row">
             <div className="col-md-6 mb-3">
               <label htmlFor="tinNumber">TIN Number:</label>
-              <Field
-                disabled={isAccredited}
-                name="tinNumber"
-                type="text"
-                className={`form-control ${
-                  touched.tinNumber &&
-                  (errors.tinNumber ? "is-invalid" : "is-valid")
-                }`}
-              />
+              <Field name="tinNumber">
+                {({ field, form }) => {
+                  const handleChange = (e) => {
+                    // Remove all non-digit characters
+                    let value = e.target.value.replace(/\D/g, "");
+
+                    // Apply formatting (XXX-XXX-XXX-XXX)
+                    if (value.length > 9) {
+                      value = `${value.slice(0, 3)}-${value.slice(
+                        3,
+                        6
+                      )}-${value.slice(6, 9)}-${value.slice(9, 12)}`;
+                    } else if (value.length > 6) {
+                      value = `${value.slice(0, 3)}-${value.slice(
+                        3,
+                        6
+                      )}-${value.slice(6)}`;
+                    } else if (value.length > 3) {
+                      value = `${value.slice(0, 3)}-${value.slice(3)}`;
+                    }
+
+                    // Update formik field value (storing the unformatted version)
+                    form.setFieldValue(
+                      field.name,
+                      e.target.value.replace(/\D/g, "")
+                    );
+
+                    // Return the formatted value for display
+                    return value;
+                  };
+
+                  // Get the current value and format it for display
+                  const displayValue = field.value
+                    ? field.value.replace(
+                        /(\d{3})(\d{3})(\d{3})(\d{3})/,
+                        "$1-$2-$3-$4"
+                      )
+                    : "";
+
+                  return (
+                    <input
+                      {...field}
+                      disabled={isAccredited}
+                      type="text"
+                      className={`form-control ${
+                        touched.tinNumber &&
+                        (errors.tinNumber ? "is-invalid" : "is-valid")
+                      }`}
+                      value={displayValue}
+                      onChange={handleChange}
+                      maxLength={15} // 12 digits + 3 hyphens
+                    />
+                  );
+                }}
+              </Field>
               <ErrorMessage
                 component="div"
                 name="tinNumber"

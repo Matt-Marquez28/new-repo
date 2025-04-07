@@ -988,19 +988,19 @@ export const getAccountStatistics = async (req, res) => {
     // Count jobseekers
     const jobseekerCount = await Account.countDocuments({
       role: "jobseeker",
-      deletedAt: null // Exclude soft-deleted accounts
+      deletedAt: null, // Exclude soft-deleted accounts
     });
 
     // Count employers
     const employerCount = await Account.countDocuments({
       role: "employer",
-      deletedAt: null // Exclude soft-deleted accounts
+      deletedAt: null, // Exclude soft-deleted accounts
     });
 
     // Count all active accounts (optional)
     const totalActiveAccounts = await Account.countDocuments({
       deletedAt: null,
-      isActive: true
+      isActive: true,
     });
 
     res.status(200).json({
@@ -1008,15 +1008,15 @@ export const getAccountStatistics = async (req, res) => {
       data: {
         jobseekers: jobseekerCount,
         employers: employerCount,
-        totalActiveAccounts: totalActiveAccounts // Optional
-      }
+        totalActiveAccounts: totalActiveAccounts, // Optional
+      },
     });
   } catch (error) {
     console.error("Error fetching account statistics:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch account statistics",
-      error: error.message
+      error: error.message,
     });
   }
 };

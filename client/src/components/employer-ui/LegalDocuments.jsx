@@ -172,7 +172,7 @@ const LegalDocuments = () => {
         <div className="row">
           {typeOfBusiness === "sole proprietorship" ? (
             <div className="col-md-4 mb-3">
-              <div className="rounded shadow-sm p-3 bg-light">
+              <div className="rounded shadow-sm p-3">
                 <label htmlFor="dti" className="form-label">
                   <h5 className="fw-bold" style={{ color: "#555555" }}>
                     DTI
@@ -213,7 +213,7 @@ const LegalDocuments = () => {
           ) : null}
 
           <div className="col-md-4 mb-3">
-            <div className="rounded shadow-sm bg-light p-3">
+            <div className="rounded shadow-sm p-3">
               <label htmlFor="mayorsPermit" className="form-label">
                 <h5 className="fw-bold" style={{ color: "#555555" }}>
                   Mayor's Business Permit
@@ -252,7 +252,7 @@ const LegalDocuments = () => {
           </div>
 
           <div className="col-md-4 mb-3">
-            <div className="rounded shadow-sm bg-light p-3">
+            <div className="rounded shadow-sm p-3">
               <label htmlFor="birRegistration" className="form-label">
                 <h5 className="fw-bold" style={{ color: "#555555" }}>
                   BIR Registration
@@ -293,7 +293,7 @@ const LegalDocuments = () => {
 
           {typeOfBusiness === "sole proprietorship" ? null : (
             <div className="col-md-4 mb-3">
-              <div className="rounded shadow-sm bg-light p-3">
+              <div className="rounded shadow-sm p-3">
                 <label htmlFor="secCertificate" className="form-label">
                   <h5 className="fw-bold" style={{ color: "#555555" }}>
                     SEC Certificate
@@ -336,7 +336,7 @@ const LegalDocuments = () => {
 
           {typeOfBusiness === "sole proprietorship" ? null : (
             <div className="col-md-4 mb-3">
-              <div className="rounded shadow-sm bg-light p-3">
+              <div className="rounded shadow-sm p-3">
                 <label htmlFor="pagibigRegistration" className="form-label">
                   <h5 className="fw-bold" style={{ color: "#555555" }}>
                     Pag-IBIG Fund Registration
@@ -381,7 +381,7 @@ const LegalDocuments = () => {
 
           {typeOfBusiness === "sole proprietorship" ? null : (
             <div className="col-md-4 mb-3">
-              <div className="rounded shadow-sm bg-light p-3">
+              <div className="rounded shadow-sm p-3">
                 <label htmlFor="philhealthRegistration" className="form-label">
                   <h5 className="fw-bold" style={{ color: "#555555" }}>
                     PhilHealth Registration
@@ -426,7 +426,7 @@ const LegalDocuments = () => {
 
           {typeOfBusiness === "sole proprietorship" ? null : (
             <div className="col-md-4 mb-3">
-              <div className="rounded shadow-sm bg-light p-3">
+              <div className="rounded shadow-sm p-3">
                 <label htmlFor="sss" className="form-label">
                   <h5 className="fw-bold" style={{ color: "#555555" }}>
                     SSS

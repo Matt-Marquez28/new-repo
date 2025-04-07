@@ -206,18 +206,6 @@ const AdminHeader = () => {
                   <div className="list-group list-group-flush">
                     <button
                       className="list-group-item list-group-item-action border-0 py-2 px-3 d-flex align-items-center hover-bg-light"
-                      onClick={() => handleNavigation("/admin/profile")}
-                    >
-                      <i className="bi bi-person-fill text-info me-3 fs-5"></i>
-                      <div>
-                        <div className="fw-medium">My Profile</div>
-                        <small className="text-muted">
-                          View and edit profile
-                        </small>
-                      </div>
-                    </button>
-                    <button
-                      className="list-group-item list-group-item-action border-0 py-2 px-3 d-flex align-items-center hover-bg-light"
                       onClick={() => handleNavigation("/admin/settings")}
                     >
                       <i className="bi bi-gear-fill text-primary me-3 fs-5"></i>

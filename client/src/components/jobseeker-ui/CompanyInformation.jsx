@@ -11,6 +11,34 @@ const CompanyInformation = ({ company }) => {
     </div>
   );
 
+  const TaxInfoItem = ({ label, value, type = "text" }) => {
+    const formatValue = () => {
+      if (type === "tin") return formatTIN(value);
+      return value || "-";
+    };
+
+    return (
+      <div className="mb-2">
+        {label}: {formatValue()}
+      </div>
+    );
+  };
+
+  const formatTIN = (tin) => {
+    if (!tin) return "-"; // Return dash if empty/null
+
+    // Remove any existing hyphens and non-digits
+    const cleaned = tin.toString().replace(/\D/g, "");
+
+    // Format as XXX-XXX-XXX-XXX only if we have 12 digits
+    if (cleaned.length === 12) {
+      return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{3})/, "$1-$2-$3-$4");
+    }
+
+    // Return raw value if not 12 digits (or handle differently if needed)
+    return cleaned;
+  };
+
   return (
     <div className="company-information">
       <div className="row">
@@ -42,7 +70,10 @@ const CompanyInformation = ({ company }) => {
           {/* Description Section */}
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title text-primary mb-3">About Us</h5>
+              <h5 className="card-title text-primary mb-3">
+                {" "}
+                <i className="bi bi-info-circle-fill"></i> About Us
+              </h5>
               <p className="card-text">
                 {companyInformation?.description || "No description provided."}
               </p>
@@ -53,7 +84,7 @@ const CompanyInformation = ({ company }) => {
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
               <h5 className="card-title text-primary mb-3">
-                Employer Information
+                <i className="bi bi-person-fill"></i> Employer Information
               </h5>
               <InfoItem
                 label="Employer Name"
@@ -69,7 +100,9 @@ const CompanyInformation = ({ company }) => {
           {/* Address Section */}
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title text-primary mb-3">Company Address</h5>
+              <h5 className="card-title text-primary mb-3">
+                <i className="bi bi-geo-alt-fill"></i> Company Address
+              </h5>
               <div className="row">
                 <div className="col-md-6">
                   <InfoItem
@@ -115,7 +148,7 @@ const CompanyInformation = ({ company }) => {
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
               <h5 className="card-title text-primary mb-3">
-                Contact Information
+                <i className="bi bi-telephone-fill"></i> Contact Information
               </h5>
               <InfoItem
                 label="Email Address"
@@ -135,7 +168,9 @@ const CompanyInformation = ({ company }) => {
           {/* Office Details */}
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title text-primary mb-3">Company Details</h5>
+              <h5 className="card-title text-primary mb-3">
+                <i className="bi bi-building-fill"></i> Company Details
+              </h5>
               <div className="row">
                 <div className="col-md-6">
                   <InfoItem
@@ -169,9 +204,10 @@ const CompanyInformation = ({ company }) => {
           <div className="card mb-4 border-0 shadow-sm">
             <div className="card-body">
               <h5 className="card-title text-primary mb-3">Tax Information</h5>
-              <InfoItem
+              <TaxInfoItem
                 label="TIN Number"
                 value={companyInformation?.tinNumber}
+                type="tin"
               />
             </div>
           </div>
