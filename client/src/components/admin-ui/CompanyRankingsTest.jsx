@@ -23,6 +23,60 @@ ChartJS.register(
   Legend
 );
 
+// Color generator for bars
+const generateColors = (count) => {
+  const colors = [];
+  const hueStep = 360 / count;
+  for (let i = 0; i < count; i++) {
+    const hue = i * hueStep;
+    colors.push(`hsl(${hue}, 70%, 60%)`);
+  }
+  return colors;
+};
+
+// Sample data generator
+const generateSampleData = (count = 20) => {
+  const companyNames = [
+    "TechCorp", "InnoSoft", "DataSystems", "CloudNine", "FutureTech",
+    "AlphaSolutions", "QuantumLeap", "NexusEnterprises", "ByteMasters", "DigitalFrontiers",
+    "AIInnovations", "WebCrafters", "CodeHive", "PixelPerfect", "CyberNest",
+    "AppVenture", "SoftCircle", "DataForge", "LogicCubes", "BitWizards",
+    "NeuralPath", "CloudHive", "VectorSoft", "DeepMind Labs", "Algorithm Inc"
+  ].slice(0, count);
+
+  const rankings = companyNames.map((name, index) => ({
+    companyId: index + 1,
+    companyName: name,
+    vacancies: Math.floor(Math.random() * 50) + 5,
+    totalApplicants: Math.floor(Math.random() * 500) + 50,
+    hiredApplicants: Math.floor(Math.random() * 100) + 5,
+    hireRate: parseFloat((Math.random() * 0.3 + 0.1).toFixed(2)),
+    score: Math.floor(Math.random() * 900) + 100
+  }));
+
+  // Sort by score descending
+  rankings.sort((a, b) => b.score - a.score);
+
+  const colors = generateColors(count);
+  
+  const barChartData = {
+    labels: rankings.map(company => company.companyName),
+    datasets: [
+      {
+        label: "Company Score",
+        data: rankings.map(company => company.score),
+        backgroundColor: colors,
+        borderColor: colors.map(color => color.replace('60%)', '40%)')),
+        borderWidth: 1,
+        hoverBackgroundColor: colors.map(color => color.replace('60%)', '50%)')),
+        hoverBorderColor: colors.map(color => color.replace('60%)', '30%)'))
+      }
+    ]
+  };
+
+  return { rankings, barChartData };
+};
+
 const CompanyRankings = () => {
   const [rankings, setRankings] = useState([]);
   const [barChartData, setBarChartData] = useState(null);
@@ -31,30 +85,57 @@ const CompanyRankings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [useSampleData, setUseSampleData] = useState(false);
 
   useEffect(() => {
     const fetchCompanyRankings = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${COMPANY_API_END_POINT}/get-company-rankings`
-        );
-
-        setRankings(response.data.rankings);
-        setBarChartData(response.data.barChartData);
+        
+        if (useSampleData) {
+          // Use sample data
+          const sampleData = generateSampleData(15);
+          setRankings(sampleData.rankings);
+          setBarChartData(sampleData.barChartData);
+        } else {
+          // Original API call
+          const response = await axios.get(
+            `${COMPANY_API_END_POINT}/get-company-rankings`
+          );
+          
+          // Process real data with colors
+          const realData = response.data;
+          if (realData.barChartData) {
+            const colors = generateColors(realData.barChartData.labels.length);
+            realData.barChartData.datasets = realData.barChartData.datasets.map(dataset => ({
+              ...dataset,
+              backgroundColor: colors,
+              borderColor: colors.map(color => color.replace('60%)', '40%)')),
+              borderWidth: 1,
+              hoverBackgroundColor: colors.map(color => color.replace('60%)', '50%)')),
+              hoverBorderColor: colors.map(color => color.replace('60%)', '30%)'))
+            }));
+          }
+          
+          setRankings(realData.rankings || []);
+          setBarChartData(realData.barChartData || null);
+        }
+        
         setError(null);
       } catch (err) {
-        setError(
-          err.response?.data?.message || "Failed to fetch company rankings"
-        );
         console.error("API Error:", err);
+        // Fall back to sample data
+        const sampleData = generateSampleData(15);
+        setRankings(sampleData.rankings);
+        setBarChartData(sampleData.barChartData);
+        setError("Failed to fetch company rankings. Showing sample data instead.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchCompanyRankings();
-  }, []);
+  }, [useSampleData]);
 
   // Filter and paginate data
   const filteredRankings = useMemo(() => {
@@ -77,8 +158,11 @@ const CompanyRankings = () => {
       labels: barChartData.labels.slice(0, 15),
       datasets: barChartData.datasets.map((dataset) => ({
         ...dataset,
-
         data: dataset.data.slice(0, 15),
+        backgroundColor: dataset.backgroundColor.slice(0, 15),
+        borderColor: dataset.borderColor?.slice(0, 15) || dataset.backgroundColor.slice(0, 15),
+        hoverBackgroundColor: dataset.hoverBackgroundColor?.slice(0, 15) || dataset.backgroundColor.slice(0, 15),
+        hoverBorderColor: dataset.hoverBorderColor?.slice(0, 15) || dataset.backgroundColor.slice(0, 15)
       })),
     };
   }, [barChartData]);
@@ -94,57 +178,25 @@ const CompanyRankings = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Alert variant="danger" className="mx-3">
-        <Alert.Heading>Error Loading Data</Alert.Heading>
-        <p>{error}</p>
-        <hr />
-        <div className="d-flex justify-content-end">
-          <button
-            onClick={() => window.location.reload()}
-            className="btn btn-danger"
-          >
-            Retry
-          </button>
-        </div>
-      </Alert>
-    );
-  }
-
   return (
     <div className="container-fluid px-0">
-      <div
-        className="card shadow-sm rounded "
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "1.5rem",
-          borderLeft: "4px solid #007bff",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-        }}
-      >
+      <div className="card shadow-sm border rounded">
         <div className="card-body">
-          <div className="d-flex align-items-center mb-4">
-            <div
-              className="rounded-circle d-flex align-items-center justify-content-center"
-              style={{
-                width: "40px",
-                height: "40px",
-                backgroundColor: "rgba(0, 123, 255, 0.1)",
-              }}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h4 className="card-title mb-0">Top Companies Ranking</h4>
+            <button 
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => setUseSampleData(!useSampleData)}
             >
-              <i
-                className="bi bi-award-fill"
-                style={{ color: "#007bff", fontSize: "1rem" }}
-              ></i>
-            </div>
-            <h5
-              className="card-title mb-0 ms-3 fw-semibold"
-              style={{ color: "#495057" }}
-            >
-              Company Rankings
-            </h5>
+              {useSampleData ? 'Use Real Data' : 'Use Sample Data'}
+            </button>
           </div>
+
+          {error && (
+            <Alert variant="warning" className="mb-4">
+              {error}
+            </Alert>
+          )}
 
           {/* Search Input */}
           <div className="mb-4">
@@ -160,7 +212,7 @@ const CompanyRankings = () => {
             />
           </div>
 
-          {/* Bar Chart - Showing only top 15 */}
+          {/* Bar Chart */}
           {optimizedChartData && (
             <div className="mb-5" style={{ height: "400px" }}>
               <Bar

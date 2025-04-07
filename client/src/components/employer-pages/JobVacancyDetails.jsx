@@ -438,7 +438,7 @@ const JobVacancyDetails = () => {
                   <div className="mb-3">
                     <label htmlFor="description">Job Description:</label>
                     <Field
-                      readOnly={isVerified}
+                      // readOnly={isVerified}
                       name="description"
                       as="textarea"
                       rows="3"

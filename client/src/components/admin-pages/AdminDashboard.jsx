@@ -5,6 +5,7 @@ import LineChart from "../admin-ui/LineChart";
 import Footer from "../shared-ui/Footer";
 import CompanyRankings from "../admin-ui/CompanyRankings";
 import AccountStatisticsCard from "../admin-ui/AccountStatisticsCard";
+import CompanyRankingsTest from "../admin-ui/CompanyRankingsTest";
 
 const AdminDashboard = () => {
   return (
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
       <AccountStatisticsCard />
       <LineChart />
       <CompanyRankings />
+      {/* <CompanyRankingsTest/> */}
       <Footer />
     </div>
   );

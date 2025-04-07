@@ -28,8 +28,18 @@ ChartJS.register(
 const LineChart = () => {
   const [chartData, setChartData] = useState({
     labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ],
     datasets: [
       {
@@ -44,7 +54,7 @@ const LineChart = () => {
         pointBorderWidth: 3, // Increased from 2 to 3
         pointRadius: 5, // Increased from 4 to 5
         pointHoverRadius: 7, // Increased from 6 to 7
-        fill: true
+        fill: true,
       },
     ],
   });
@@ -60,7 +70,7 @@ const LineChart = () => {
           `${APPLICATION_API_END_POINT}/get-hired-applicants`
         );
         const hiredApplicants = response.data.hiredApplicants || [];
-        
+
         const currentYear = new Date().getFullYear();
         const monthlyCounts = Array(12).fill(0);
         let total = 0;
@@ -106,75 +116,102 @@ const LineChart = () => {
           padding: 20,
           font: {
             size: 12,
-            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-          }
-        }
+            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          },
+        },
       },
       tooltip: {
         backgroundColor: "#2c3e50",
         titleFont: {
           size: 14,
-          weight: "bold"
+          weight: "bold",
         },
         bodyFont: {
-          size: 12
+          size: 12,
         },
         padding: 10,
         usePointStyle: true,
         callbacks: {
           label: (context) => {
             return `${context.dataset.label}: ${context.raw}`;
-          }
-        }
+          },
+        },
       },
       title: {
-        display: false
-      }
+        display: false,
+      },
     },
     maintainAspectRatio: false,
     scales: {
       x: {
         grid: {
           display: false,
-          drawBorder: false
+          drawBorder: false,
         },
         ticks: {
-          color: "#6c757d"
-        }
+          color: "#6c757d",
+        },
       },
       y: {
         beginAtZero: true,
         grid: {
           color: "rgba(0, 0, 0, 0.05)",
-          drawBorder: false
+          drawBorder: false,
         },
         ticks: {
           color: "#6c757d",
           stepSize: 1,
-          precision: 0
-        }
-      }
+          precision: 0,
+        },
+      },
     },
     elements: {
       line: {
         cubicInterpolationMode: "monotone",
-        borderWidth: 3 // Added line element border width
+        borderWidth: 3, // Added line element border width
       },
       point: {
         radius: 5, // Consolidated point size configuration
-        hoverRadius: 7
-      }
-    }
+        hoverRadius: 7,
+      },
+    },
   };
 
   return (
-    <div className="card rounded-3 border shadow-sm my-3" style={{ borderColor: '#e9ecef' }}>
+    <div
+      className="card rounded-3 shadow-sm my-3"
+      style={{
+        backgroundColor: "#ffffff",
+        padding: "1.5rem",
+        borderLeft: "4px solid #007bff",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+      }}
+    >
       <div className="card-body p-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h5 className="card-title mb-1 fw-semibold" style={{ color: "#2c3e50" }}>
-              Hiring Trends
-            </h5>
+            <div className="d-flex align-items-center mb-4">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  backgroundColor: "rgba(0, 123, 255, 0.1)",
+                }}
+              >
+                <i
+                  className="bi-suitcase-lg-fill"
+                  style={{ color: "#007bff", fontSize: "1rem" }}
+                ></i>
+              </div>
+              <h5
+                className="card-title mb-0 ms-3 fw-semibold"
+                style={{ color: "#495057" }}
+              >
+                Hiring Trends
+              </h5>
+            </div>
+
             <p className="text-muted small mb-0">
               Monthly hiring patterns for {new Date().getFullYear()}
             </p>
@@ -189,24 +226,29 @@ const LineChart = () => {
         </div>
 
         {loading ? (
-          <div className="d-flex justify-content-center align-items-center" style={{ height: "350px" }}>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "350px" }}
+          >
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
           </div>
         ) : (
           <div style={{ height: "350px", position: "relative" }}>
-            <Line 
-              data={chartData} 
-              options={options} 
-              plugins={[{
-                id: "customCanvasBackground",
-                beforeDraw: (chart) => {
-                  const { ctx, width, height } = chart;
-                  ctx.fillStyle = "white";
-                  ctx.fillRect(0, 0, width, height);
-                }
-              }]}
+            <Line
+              data={chartData}
+              options={options}
+              plugins={[
+                {
+                  id: "customCanvasBackground",
+                  beforeDraw: (chart) => {
+                    const { ctx, width, height } = chart;
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, width, height);
+                  },
+                },
+              ]}
             />
           </div>
         )}

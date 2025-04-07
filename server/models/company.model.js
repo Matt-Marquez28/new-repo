@@ -13,6 +13,7 @@ const companySchema = new mongoose.Schema(
       tinNumber: {
         type: String,
         required: true,
+        unique: true,
       },
       businessName: {
         type: String,
