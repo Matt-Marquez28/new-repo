@@ -81,6 +81,7 @@ const CompanyVerificationDetails = () => {
       triggerToast(res?.data?.message, "primary");
     } catch (error) {
       triggerToast(error?.response?.data?.message, "danger");
+      console.log(error)
     } finally {
       setIsSubmitting(false);
     }

@@ -1329,26 +1329,26 @@ export const accreditCompany = async (req, res) => {
     `;
 
     // Generate PDF using Puppeteer
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(htmlContent);
-    const pdfBuffer = await page.pdf({ format: "A4" });
-    await browser.close();
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.setContent(htmlContent);
+    // const pdfBuffer = await page.pdf({ format: "A4" });
+    // await browser.close();
 
-    // Upload PDF to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "company_accreditations", use_filename: true },
-        (error, result) => {
-          if (error) reject(error);
-          resolve(result);
-        }
-      );
-      stream.end(pdfBuffer);
-    });
+    // // Upload PDF to Cloudinary
+    // const result = await new Promise((resolve, reject) => {
+    //   const stream = cloudinary.uploader.upload_stream(
+    //     { folder: "company_accreditations", use_filename: true },
+    //     (error, result) => {
+    //       if (error) reject(error);
+    //       resolve(result);
+    //     }
+    //   );
+    //   stream.end(pdfBuffer);
+    // });
 
     // Update the company with accreditation details
-    company.accreditation = result.secure_url;
+    // company.accreditation = result.secure_url;
     company.status = "accredited";
     company.isRenewal = "false";
     company.accreditationDate = new Date(); // Set the accreditation date
