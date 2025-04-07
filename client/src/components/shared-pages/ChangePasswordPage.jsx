@@ -46,7 +46,7 @@ const ChangePasswordPage = () => {
   });
 
   return (
-    <div>
+    <div className="container">
       <div className="d-flex gap-2 my-2 align-items-center">
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i class="bi bi-arrow-left"></i>

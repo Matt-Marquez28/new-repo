@@ -13,7 +13,7 @@ const LandingPage = () => {
       <Heroes />
       <Features/>
       <AccountStatistics />
-      <ContactForm/>
+      {/* <ContactForm/> */}
       <Footer />
     </div>
   );

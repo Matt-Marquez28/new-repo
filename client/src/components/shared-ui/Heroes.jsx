@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const Heroes = () => {
   const navigate = useNavigate();
   return (
@@ -26,9 +27,9 @@ const Heroes = () => {
           <button
             type="button"
             className="btn btn-primary btn-lg px-4 me-sm-3"
-            onClick={() => navigate("/browse-jobs")}
+            onClick={() => navigate("/login")}
           >
-            <i className="bi bi-search"></i> Browse Jobs
+            <i className="bi bi-align-start"></i> Get Started
           </button>
         </div>
       </div>

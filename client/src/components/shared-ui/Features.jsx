@@ -9,7 +9,7 @@ const Features = () => {
     "https://img.freepik.com/free-photo/business-people-shaking-hands_53876-30568.jpg";
 
   return (
-    <div className="container">
+    <div className="container my-5">
       <h2 className="text-center mb-5 display-5 fw-bold">Features</h2>
       <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
         {/* Card 3 - Networking Hub */}
