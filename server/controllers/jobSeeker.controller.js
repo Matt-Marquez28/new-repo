@@ -986,3 +986,155 @@ export const updateLanguages = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const updateEligibility = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+
+  try {
+    const { civilService, dateTaken } = req.body;
+    const jobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      {
+        $push: {
+          "eligibilities_and_licences.eligibilities": {
+            civilService,
+            dateTaken,
+          },
+        },
+      },
+      { new: true, runValidators: true }
+    ).select("eligibilities_and_licences");
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    res.status(201).json({
+      message: "Eligibility added successfully",
+      eligibilities: jobSeeker.eligibilities_and_licences.eligibilities,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add eligibility",
+      error: error.message,
+    });
+  }
+};
+
+export const updateProfessionalLicense = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+
+  try {
+    const { prc, validUntil } = req.body;
+    const jobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      {
+        $push: {
+          "eligibilities_and_licences.professionalLicenses": {
+            prc,
+            validUntil,
+          },
+        },
+      },
+      { new: true, runValidators: true }
+    ).select("eligibilities_and_licences");
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    res.status(201).json({
+      message: "Professional license added successfully",
+      licenses: jobSeeker.eligibilities_and_licences.professionalLicenses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add professional license",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteEligibility = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  try {
+    const jobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      {
+        $pull: {
+          "eligibilities_and_licences.eligibilities": {
+            _id: req.params.eligibilityId,
+          },
+        },
+      },
+      { new: true }
+    ).select("eligibilities_and_licences");
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "Eligibility not found" });
+    }
+
+    res.status(200).json({
+      message: "Eligibility deleted successfully",
+      remainingEligibilities:
+        jobSeeker.eligibilities_and_licences.eligibilities,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to delete eligibility",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteProfessionalLicense = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  try {
+    const jobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      {
+        $pull: {
+          "eligibilities_and_licences.professionalLicenses": {
+            _id: req.params.licenseId,
+          },
+        },
+      },
+      { new: true }
+    ).select("eligibilities_and_licences");
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "License not found" });
+    }
+
+    res.status(200).json({
+      message: "Professional license deleted successfully",
+      remainingLicenses:
+        jobSeeker.eligibilities_and_licences.professionalLicenses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to delete professional license",
+      error: error.message,
+    });
+  }
+};
+
+export const getAllEligibilitiesAndLicenses = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  try {
+    const jobSeeker = await JobSeeker.findById(jobSeekerId).select(
+      "eligibilities_and_licences"
+    );
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    res.status(200).json(jobSeeker.eligibilities_and_licences);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch eligibilities and licenses",
+      error: error.message,
+    });
+  }
+};

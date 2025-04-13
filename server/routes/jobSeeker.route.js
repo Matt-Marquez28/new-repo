@@ -19,6 +19,11 @@ import {
   updateEmploymentStatus,
   updateDisability,
   updateLanguages,
+  updateEligibility,
+  updateProfessionalLicense,
+  deleteEligibility,
+  deleteProfessionalLicense,
+  getAllEligibilitiesAndLicenses,
 } from "../controllers/jobSeeker.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
@@ -102,5 +107,31 @@ router.put(
 router.put("/update-disability", isAuthenticated, updateDisability);
 
 router.put("/update-languages", isAuthenticated, updateLanguages);
+
+router.put("/update-eligibility", isAuthenticated, updateEligibility);
+
+router.delete(
+  "/delete-eligibility/:eligibilityId",
+  isAuthenticated,
+  deleteEligibility
+);
+
+router.put(
+  "/update-professional-license",
+  isAuthenticated,
+  updateProfessionalLicense
+);
+
+router.delete(
+  "/delete-professional-license/:licenseId",
+  isAuthenticated,
+  deleteProfessionalLicense
+);
+
+router.get(
+  "/get-all-eligibilities-and-licenses",
+  isAuthenticated,
+  getAllEligibilitiesAndLicenses
+);
 
 export default router;

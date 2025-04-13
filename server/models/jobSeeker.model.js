@@ -191,6 +191,24 @@ const jobSeekerSchema = new mongoose.Schema(
         default: [""],
       },
     },
+    eligibilities_and_licences: {
+      eligibilities: [
+        {
+          civilService: { type: String, required: true, trim: true },
+          dateTaken: { type: Date, required: true },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
+
+      professionalLicenses: [
+        {
+          prc: { type: String, required: true, trim: true },
+          validUntil: { type: Date, required: true },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
+    },
+
     workExperience: [
       {
         jobTitle: {

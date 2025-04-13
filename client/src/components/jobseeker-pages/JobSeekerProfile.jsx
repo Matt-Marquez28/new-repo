@@ -18,6 +18,7 @@ import CurriculumVitae from "../jobseeker-ui/CurriculumVitae";
 import EmploymentStatus from "../jobseeker-ui/EmploymentStatus";
 import Disability from "../jobseeker-ui/Disbility";
 import Language from "../jobseeker-ui/Language";
+import EligibilityProfessionalLicence from "../jobseeker-ui/Eligibility_ProfessionalLicence";
 
 const JobSeekerProfile = () => {
   const navigate = useNavigate();
@@ -83,6 +84,7 @@ const JobSeekerProfile = () => {
     },
     { id: "jobPreferences", label: "Job Preferences", icon: "bi-sliders" },
     { id: "language", label: "Language", icon: "bi-translate" },
+    { id: "eligibility/licence", label: "Eligibility / Licence", icon: "bi-translate" },
     { id: "cv", label: "CV", icon: "bi-file-earmark-person-fill" },
   ];
 
@@ -192,6 +194,7 @@ const JobSeekerProfile = () => {
               {activeTab === "workExperience" && <WorkExperience />}
               {activeTab === "jobPreferences" && <JobPreferences />}
               {activeTab === "language" && <Language />}
+              {activeTab === "eligibility/licence" && <EligibilityProfessionalLicence />}
               {activeTab === "cv" && <CurriculumVitae />}
             </Card.Body>
           </Card>
