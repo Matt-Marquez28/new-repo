@@ -40,12 +40,25 @@ const Language = () => {
   };
 
   const handleAddOtherLanguage = () => {
-    if (otherLanguage.trim() === "") return;
+    if (otherLanguage.trim() === "") {
+      triggerToast("Please enter a language name", "error");
+      return;
+    }
+
+    // Check if language already exists
+    if (
+      languages.some(
+        (lang) => lang.name.toLowerCase() === otherLanguage.toLowerCase()
+      )
+    ) {
+      triggerToast("This language already exists", "error");
+      return;
+    }
 
     setLanguages([
       ...languages,
       {
-        name: otherLanguage,
+        name: otherLanguage.trim(),
         read: false,
         write: false,
         speak: false,
@@ -53,6 +66,34 @@ const Language = () => {
       },
     ]);
     setOtherLanguage("");
+  };
+
+  const handleDeleteLanguage = (index) => {
+    const languageToDelete = languages[index];
+
+    // Check if it's a default language
+    const isDefault = defaultLanguages.some(
+      (lang) => lang.name === languageToDelete.name
+    );
+
+    if (isDefault) {
+      // For default languages, just reset the checkboxes
+      const updatedLanguages = [...languages];
+      updatedLanguages[index] = {
+        ...updatedLanguages[index],
+        read: false,
+        write: false,
+        speak: false,
+        understand: false,
+      };
+      setLanguages(updatedLanguages);
+      triggerToast("Default language proficiency reset", "info");
+    } else {
+      // For custom languages, remove them completely
+      const updatedLanguages = languages.filter((_, i) => i !== index);
+      setLanguages(updatedLanguages);
+      triggerToast("Language removed", "success");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -88,20 +129,25 @@ const Language = () => {
         `${JOBSEEKER_API_END_POINT}/get-jobseeker-data`,
         { withCredentials: true }
       );
-      
+
       const savedLanguages = res?.data?.jobSeekerData?.languages || [];
-      
+
       // Merge default languages with saved languages
-      const mergedLanguages = defaultLanguages.map(defaultLang => {
-        const savedLang = savedLanguages.find(l => l.name === defaultLang.name);
+      const mergedLanguages = defaultLanguages.map((defaultLang) => {
+        const savedLang = savedLanguages.find(
+          (l) => l.name === defaultLang.name
+        );
         return savedLang || defaultLang;
       });
-      
+
       // Add any additional languages that aren't in the default list
-      const additionalLanguages = savedLanguages.filter(savedLang => 
-        !defaultLanguages.some(defaultLang => defaultLang.name === savedLang.name)
+      const additionalLanguages = savedLanguages.filter(
+        (savedLang) =>
+          !defaultLanguages.some(
+            (defaultLang) => defaultLang.name === savedLang.name
+          )
       );
-      
+
       setLanguages([...mergedLanguages, ...additionalLanguages]);
     } catch (error) {
       console.log(error);
@@ -109,18 +155,36 @@ const Language = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Language Proficiency</h2>
+    <div className="container mt-3">
+      <div className="row align-items-center my-3">
+        {/* Left side of the horizontal line */}
+        <div className="col">
+          <hr className="border-2 border-primary" />
+        </div>
+
+        {/* Centered title */}
+        <div className="col-auto">
+          <h5 className="position-relative text-primary">
+            <i className="bi bi-translate"></i> Language Proficiency
+          </h5>
+        </div>
+
+        {/* Right side of the horizontal line */}
+        <div className="col">
+          <hr className="border-2 border-primary" />
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <table className="table table-bordered">
           <thead className="thead-light">
             <tr>
-              <th>Language / Dialect</th>
-              <th>Read</th>
-              <th>Write</th>
-              <th>Speak</th>
-              <th>Understand</th>
+              <th className="fw-semibold">Language / Dialect</th>
+              <th className="fw-semibold">Read</th>
+              <th className="fw-semibold">Write</th>
+              <th className="fw-semibold">Speak</th>
+              <th className="fw-semibold">Understand</th>
+              <th className="text-center fw-semibold">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -159,10 +223,26 @@ const Language = () => {
                     onChange={() => handleCheckboxChange(index, "understand")}
                   />
                 </td>
+                <td className="text-center">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => handleDeleteLanguage(index)}
+                    title={
+                      defaultLanguages.some(
+                        (lang) => lang.name === language.name
+                      )
+                        ? "Reset proficiency"
+                        : "Remove language"
+                    }
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </td>
               </tr>
             ))}
             <tr>
-              <td colSpan="5">
+              <td colSpan="6">
                 <div className="input-group">
                   <input
                     type="text"
@@ -170,6 +250,9 @@ const Language = () => {
                     placeholder="Other language: Specify"
                     value={otherLanguage}
                     onChange={(e) => setOtherLanguage(e.target.value)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && handleAddOtherLanguage()
+                    }
                   />
                   <div className="input-group-append">
                     <button

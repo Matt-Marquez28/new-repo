@@ -898,7 +898,7 @@ export const updateEmploymentStatus = async (req, res) => {
       return res.status(404).json({ message: "JobSeeker not found" });
     }
 
-    jobSeeker.disability = payload;
+    jobSeeker.employmentStatus = payload;
     await jobSeeker.save();
 
     res.json({

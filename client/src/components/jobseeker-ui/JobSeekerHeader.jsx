@@ -119,7 +119,7 @@ export const JobSeekerHeader = () => {
               to="/jobseeker/dashboard"
               className="px-3 text-primary"
             >
-              <i className="bi bi-house-door-fill"></i> Home
+              <i class="bi bi-speedometer"></i> Dashboard
             </Nav.Link>
             <Nav.Link
               as={Link}
@@ -328,7 +328,7 @@ export const JobSeekerHeader = () => {
                   className="px-3 py-2 rounded text-primary"
                   onClick={() => setShowOffcanvas(false)}
                 >
-                  <i className="bi bi-house-door-fill me-2"></i> Home
+                  <i className="bi bi-speedometer me-2"></i> Dashboard
                 </Nav.Link>
                 <Nav.Link
                   as={Link}
