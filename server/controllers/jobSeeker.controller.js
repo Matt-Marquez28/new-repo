@@ -178,113 +178,6 @@ export const updateJobPreferences = async (req, res) => {
   }
 };
 
-// add work experience
-// export const addWorkExperience = async (req, res) => {
-//   try {
-//     // Check if files were uploaded
-//     if (!req.files || Object.keys(req.files).length === 0) {
-//       return res.status(400).send("No files were uploaded.");
-//     }
-
-//     // Retrieve the job seeker (or create new if necessary)
-//     const jobSeekerId = req.jobSeekerId;
-
-//     // Cloudinary upload logic
-//     const uploadedFiles = [];
-
-//     // Loop through each file field and upload files to Cloudinary
-//     for (const field in req.files) {
-//       for (const file of req.files[field]) {
-//         const filePath = file.path; // Path to the uploaded file on disk
-
-//         // Read the file buffer from disk
-//         const fileBuffer = await new Promise((resolve, reject) => {
-//           fs.readFile(filePath, (err, data) => {
-//             if (err) {
-//               reject(new Error("Error reading file"));
-//             } else {
-//               resolve(data);
-//             }
-//           });
-//         });
-
-//         // Upload the file buffer to Cloudinary
-//         const result = await new Promise((resolve, reject) => {
-//           cloudinary.uploader
-//             .upload_stream(
-//               { resource_type: "auto" }, // Automatically detect file type
-//               (error, uploadResult) => {
-//                 if (error) {
-//                   reject(new Error("Error uploading to Cloudinary"));
-//                 } else {
-//                   resolve(uploadResult);
-//                 }
-//               }
-//             )
-//             .end(fileBuffer);
-//         });
-
-//         uploadedFiles.push({
-//           url: result.url,
-//           originalName: file.originalname,
-//         }); // Collect the Cloudinary URLs
-//       }
-//     }
-
-//     // Find the JobSeeker by accountId (or another identifier)
-//     const jobSeeker = await JobSeeker.findOne({
-//       accountId: req.accountId,
-//     });
-//     if (!jobSeeker) {
-//       return res.status(404).json({ message: "JobSeeker not found" });
-//     }
-
-//     // Process fields that should be arrays, like achievements and key responsibilities
-//     const achievementsAndContributions = req.body.achievements_and_contributions
-//       ? req.body.achievements_and_contributions
-//           .split(",")
-//           .map((item) => item.trim())
-//       : []; // Split string and convert to array, trimming whitespace
-//     const keyResponsibilities = req.body.keyResponsibilities
-//       ? req.body.keyResponsibilities.split(",").map((item) => item.trim())
-//       : []; // Split string and convert to array, trimming whitespace
-//     const skillsAndToolsUsed = req.body.skills_and_tools_used
-//       ? req.body.skills_and_tools_used.split(",").map((item) => item.trim())
-//       : []; // Split string and convert to array, trimming whitespace
-
-//     const newWorkExperience = {
-//       jobTitle: req.body.jobTitle,
-//       companyName: req.body.companyName,
-//       location: req.body.location,
-//       startDate: req.body.startDate,
-//       endDate: req.body.endDate,
-//       currentlyWorking: req.body.currentlyWorking,
-//       keyResponsibilities: keyResponsibilities, // Now an array
-//       achievements_and_contributions: achievementsAndContributions, // Now an array
-//       skills_and_tools_used: skillsAndToolsUsed, // Now an array
-//       proofOfWorkExperienceDocuments: uploadedFiles, // Assuming uploadedFiles is defined earlier in the code as the Cloudinary URLs
-//     };
-
-//     // Push the new work experience into the workExperience array
-//     jobSeeker.workExperience.push(newWorkExperience);
-
-//     // Save the updated jobSeeker document
-//     await jobSeeker.save();
-
-//     // Return success response
-//     res.status(201).json({
-//       message: "Work experience added successfully!",
-//       data: newWorkExperience,
-//     });
-//   } catch (error) {
-//     console.error("Error adding work experience:", error);
-//     res.status(500).json({
-//       message: "Error adding work experience. Please try again later.",
-//       error: error.message,
-//     });
-//   }
-// };
-
 export const addWorkExperience = async (req, res) => {
   try {
     const jobSeekerId = req.jobSeekerId;
@@ -386,108 +279,6 @@ export const addWorkExperience = async (req, res) => {
     });
   }
 };
-
-// add educational background
-// export const addEducationalBackground = async (req, res) => {
-//   try {
-//     // Check if files were uploaded
-//     if (!req.files || Object.keys(req.files).length === 0) {
-//       return res.status(400).send("No files were uploaded.");
-//     }
-
-//     const jobSeekerId = req.jobSeekerId;
-//     const uploadedFiles = [];
-
-//     // Loop through each file field and upload files to Cloudinary
-//     for (const field in req.files) {
-//       for (const file of req.files[field]) {
-//         const filePath = file.path;
-
-//         // Read file buffer
-//         const fileBuffer = await new Promise((resolve, reject) => {
-//           fs.readFile(filePath, (err, data) => {
-//             if (err) {
-//               reject(new Error("Error reading file"));
-//             } else {
-//               resolve(data);
-//             }
-//           });
-//         });
-
-//         // Upload file buffer to Cloudinary
-//         const result = await new Promise((resolve, reject) => {
-//           cloudinary.uploader
-//             .upload_stream({ resource_type: "auto" }, (error, uploadResult) => {
-//               if (error) {
-//                 reject(new Error("Error uploading to Cloudinary"));
-//               } else {
-//                 resolve(uploadResult);
-//               }
-//             })
-//             .end(fileBuffer);
-//         });
-
-//         // Store Cloudinary URL and original filename
-//         uploadedFiles.push({
-//           url: result.url,
-//           originalName: file.originalname,
-//         });
-//       }
-//     }
-
-//     // Find the job seeker
-//     const jobSeeker = await JobSeeker.findById(jobSeekerId);
-//     if (!jobSeeker) {
-//       return res.status(404).send("Job seeker not found.");
-//     }
-
-//     // Ensure that achievements, relevantCoursework, and certifications are arrays
-//     const achievements =
-//       req.body.achievements && typeof req.body.achievements === "string"
-//         ? req.body.achievements.split(",").map((item) => item.trim()) // Split if string and convert to array
-//         : req.body.achievements || []; // Default to empty array if undefined or null
-
-//     const relevantCoursework =
-//       req.body.relevantCoursework &&
-//       typeof req.body.relevantCoursework === "string"
-//         ? req.body.relevantCoursework.split(",").map((item) => item.trim()) // Split if string and convert to array
-//         : req.body.relevantCoursework || []; // Default to empty array if undefined or null
-
-//     const certifications =
-//       req.body.certifications && typeof req.body.certifications === "string"
-//         ? req.body.certifications.split(",").map((item) => item.trim()) // Split if string and convert to array
-//         : req.body.certifications || []; // Default to empty array if undefined or null
-
-//     // Create a new educational background object
-//     const newEducationalBackground = {
-//       degree_or_qualifications: req.body.degree_or_qualifications,
-//       fieldOfStudy: req.body.fieldOfStudy,
-//       institutionName: req.body.institutionName,
-//       location: req.body.location,
-//       startDate: req.body.startDate,
-//       endDate: req.body.endDate,
-//       currentlyStudying: req.body.currentlyStudying,
-//       achievements, // Store as array
-//       relevantCoursework, // Store as array
-//       certifications, // Store as array
-//       proofOfEducationDocuments: uploadedFiles, // Attach uploaded files with original names
-//     };
-
-//     // Push and save the new educational background to the job seeker's profile
-//     jobSeeker.educationalBackground.push(newEducationalBackground);
-//     await jobSeeker.save();
-
-//     res.status(200).json({
-//       message: "Files uploaded and saved successfully",
-//       updatedJobSeeker: jobSeeker,
-//     });
-//   } catch (err) {
-//     console.error("Error:", err);
-//     res
-//       .status(500)
-//       .json({ message: "Error uploading files", error: err.message });
-//   }
-// };
 
 export const addEducationalBackground = async (req, res) => {
   try {
@@ -1084,5 +875,114 @@ export const recommendCandidates = async (req, res) => {
   } catch (error) {
     console.error("Error recommending candidates:", error);
     res.status(500).json({ message: "Failed to recommend candidates." });
+  }
+};
+
+// update employment status
+export const updateEmploymentStatus = async (req, res) => {
+  try {
+    const jobSeekerId = req.jobSeekerId;
+    const { payload } = req.body;
+
+    if (
+      !payload ||
+      typeof payload !== "object" ||
+      Object.keys(payload).length === 0
+    ) {
+      return res.status(400).json({ message: "Invalid or empty payload" });
+    }
+
+    const jobSeeker = await JobSeeker.findById(jobSeekerId);
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "JobSeeker not found" });
+    }
+
+    jobSeeker.disability = payload;
+    await jobSeeker.save();
+
+    res.json({
+      message: "Employment status updated successfully",
+      jobSeeker,
+    });
+  } catch (error) {
+    console.error("Error updating employment status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateDisability = async (req, res) => {
+  try {
+    const jobSeekerId = req.jobSeekerId;
+    const { payload } = req.body;
+
+    if (!payload || typeof payload !== "object") {
+      return res.status(400).json({ message: "Invalid payload" });
+    }
+
+    const jobSeeker = await JobSeeker.findById(jobSeekerId);
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "JobSeeker not found" });
+    }
+
+    jobSeeker.disability = payload;
+    await jobSeeker.save(); // triggers full schema validation with access to this.parent()
+
+    res.json({
+      message: "Disability information updated successfully!",
+      jobSeeker,
+    });
+  } catch (error) {
+    console.error("Error updating employment status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateLanguages = async (req, res) => {
+  try {
+    const jobSeekerId = req.jobSeekerId;
+    const { languages } = req.body;
+
+    // Validate input
+    if (!Array.isArray(languages)) {
+      return res.status(400).json({ message: "Languages must be an array" });
+    }
+
+    // Validate each language object
+    const isValid = languages.every((lang) => {
+      return (
+        lang.name &&
+        typeof lang.read === "boolean" &&
+        typeof lang.write === "boolean" &&
+        typeof lang.speak === "boolean" &&
+        typeof lang.understand === "boolean"
+      );
+    });
+
+    if (!isValid) {
+      return res
+        .status(400)
+        .json({ message: "Invalid language data structure" });
+    }
+
+    // Update job seeker's languages
+    const updatedJobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      { $set: { languages } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedJobSeeker) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    res.status(200).json({
+      message: "Languages updated successfully",
+      data: updatedJobSeeker.languages,
+    });
+  } catch (error) {
+    console.error("Error updating languages:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

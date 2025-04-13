@@ -410,6 +410,7 @@ export const getAllSavedJobVacancies = async (req, res) => {
   }
 };
 
+// get recommended job vacancies
 export const getRecommendedJobVacancies = async (req, res) => {
   const {
     jobPositions,

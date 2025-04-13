@@ -185,7 +185,7 @@ const WorkExperience = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="row align-items-center my-3">
         <div className="col">
           <hr className="border-2 border-primary" />

@@ -107,51 +107,7 @@ server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running at PORT: ${PORT}`);
 });
 
-// const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
-//   try {
-//     // Find documents that are within the grace period (expire within the next 30 days)
-//     const gracePeriodDocuments = await CompanyDocuments.find({
-//       $or: [
-//         { "dti.expiresAt": { $gt: now, $lte: gracePeriodDate } },
-//         { "mayorsPermit.expiresAt": { $gt: now, $lte: gracePeriodDate } },
-//         { "birRegistration.expiresAt": { $gt: now, $lte: gracePeriodDate } },
-//         { "secCertificate.expiresAt": { $gt: now, $lte: gracePeriodDate } },
-//         {
-//           "pagibigRegistration.expiresAt": { $gt: now, $lte: gracePeriodDate },
-//         },
-//         {
-//           "philhealthRegistration.expiresAt": {
-//             $gt: now,
-//             $lte: gracePeriodDate,
-//           },
-//         },
-//         { "sss.expiresAt": { $gt: now, $lte: gracePeriodDate } },
-//       ],
-//       status: { $ne: "expired" },
-//     });
-
-//     // Update the gracePeriod flag of documents
-//     if (gracePeriodDocuments.length > 0) {
-//       await CompanyDocuments.updateMany(
-//         {
-//           _id: { $in: gracePeriodDocuments.map((doc) => doc._id) },
-//         },
-//         {
-//           $set: { gracePeriod: true },
-//         }
-//       );
-
-//       console.log(
-//         `Marked ${gracePeriodDocuments.length} documents as within the grace period.`
-//       );
-//     } else {
-//       console.log("No documents found within the grace period.");
-//     }
-//   } catch (error) {
-//     console.error("Error while marking grace period documents:", error);
-//   }
-// };
-
+// Function to check and mark documents within the grace period
 const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
   try {
     // Find documents that are within the grace period (expire within the next 30 days)
@@ -260,6 +216,7 @@ const checkAndMarkGracePeriodDocuments = async (now, gracePeriodDate) => {
   }
 };
 
+// Function to check and expire documents
 const checkAndExpireDocuments = async (now) => {
   try {
     // Find documents where any of the specific documents have expired
@@ -373,21 +330,7 @@ const checkAndExpireDocuments = async (now) => {
   }
 };
 
-// const checkAndExpireJobVacancies = async (now) => {
-//   try {
-//     const result = await JobVacancy.updateMany(
-//       { applicationDeadline: { $lt: now }, status: { $ne: "expired" } },
-//       { $set: { status: "expired" } }
-//     );
-
-//     console.log(`${result.modifiedCount} job vacancies marked as expired.`);
-//   } catch (error) {
-//     console.error("Error updating expired job vacancies:", error);
-//   }
-// };
-
-// Schedule the cron job to run daily at midnight
-
+// Function to check and expire job vacancies
 const checkAndExpireJobVacancies = async (now) => {
   try {
     // Find job vacancies that have expired
@@ -479,6 +422,7 @@ const checkAndExpireJobVacancies = async (now) => {
   }
 };
 
+// Function to delete expired accounts and their related data
 const deleteExpiredAccounts = async () => {
   try {
     const now = new Date();
@@ -630,6 +574,7 @@ const deleteAccountWithRelatedData = async (accountId) => {
   }
 };
 
+// Function to delete accounts scheduled for deletion today
 const deleteScheduledAccounts = async () => {
   try {
     const today = new Date();
@@ -687,6 +632,7 @@ const deleteScheduledAccounts = async () => {
   }
 };
 
+// Schedule the cron job to run daily
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
 

@@ -107,7 +107,9 @@ const AddStaffModal = ({ show, onHide, onSave }) => {
 
   // Generate default email based on first and last name
   const generateEmail = () => {
-    return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com` || "";
+    return (
+      `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com` || ""
+    );
   };
 
   const handleSave = () => {
@@ -162,10 +164,7 @@ const AddStaffModal = ({ show, onHide, onSave }) => {
           </Row>
           <Form.Group>
             <Form.Label>Assign Role</Form.Label>
-            <Form.Select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
+            <Form.Select value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="Staff">Staff</option>
               <option value="Manager">Manager</option>
               <option value="Admin">Admin</option>

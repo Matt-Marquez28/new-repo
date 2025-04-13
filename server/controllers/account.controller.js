@@ -403,11 +403,6 @@ export const deleteSystemUser = async (req, res) => {
 export const refreshUserData = async (req, res) => {
   try {
     const { jobSeekerId, companyId, accountId } = req; // Extract from request
-    // if (!jobSeekerId || !companyId) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Missing jobSeekerId or companyId" });
-    // }
 
     // Initialize user data
     const userData = {};

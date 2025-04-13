@@ -16,6 +16,9 @@ import {
   recommendCandidates,
   updateEducationalBackgrounds,
   updateWorkExperiences,
+  updateEmploymentStatus,
+  updateDisability,
+  updateLanguages,
 } from "../controllers/jobSeeker.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
@@ -48,7 +51,11 @@ router.put(
   addEducationalBackground
 );
 
-router.put("/update-educational-backgrounds", isAuthenticated, updateEducationalBackgrounds)
+router.put(
+  "/update-educational-backgrounds",
+  isAuthenticated,
+  updateEducationalBackgrounds
+);
 
 router.put("/update-work-experiences", isAuthenticated, updateWorkExperiences);
 
@@ -86,6 +93,14 @@ router.get("/get-jobseeker-data-by-id/:jobSeekerId", getJobSeekerDataById);
 
 router.post("/recommended-candidates", recommendCandidates);
 
+router.put(
+  "/update-employment-status",
+  isAuthenticated,
+  updateEmploymentStatus
+);
+
+router.put("/update-disability", isAuthenticated, updateDisability);
+
+router.put("/update-languages", isAuthenticated, updateLanguages);
+
 export default router;
-
-

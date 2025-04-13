@@ -263,7 +263,7 @@ const JobPreferences = () => {
 
         {/* Preferred Locations */}
         <div className="col-md-4 mb-3">
-          <label>Preferred Locations:</label>
+          <label>Preferred Locations (City / Municipality):</label>
           {locations.map((location, index) => (
             <div key={index} className="input-group mb-2">
               <input

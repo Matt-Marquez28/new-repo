@@ -17,13 +17,14 @@ const FormSchema = Yup.object().shape({
   civilStatus: Yup.string().required("Civil status is required"),
   birthDate: Yup.date().required("Birth date is required"),
   educationalLevel: Yup.string().required("Educational level is required"),
+  height: Yup.string().required("Height is required"),
   street: Yup.string().required("Street is required"),
   barangay: Yup.string().required("Barangay is required"),
   cityMunicipality: Yup.string().required("City/Municipality is required"),
   province: Yup.string().required("Province is required"),
-  zipCode: Yup.string()
-    .required("ZIP Code is required")
-    .matches(/^\d{4}$/, "ZIP Code must be 4 digits"),
+  // zipCode: Yup.string()
+  //   .required("ZIP Code is required")
+  //   .matches(/^\d{4}$/, "ZIP Code must be 4 digits"),
   emailAddress: Yup.string()
     .email("Invalid email address")
     .required("Email address is required"),
@@ -57,7 +58,7 @@ const PersonalInformationForm = () => {
     }
   };
 
-  const [previewUrl, setPreviewUrl] = useState(null); // State for image preview
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // handle file change
   const handleImageChange = (event, setFieldValue) => {
@@ -65,10 +66,10 @@ const PersonalInformationForm = () => {
     if (file) {
       // Create a temporary preview URL for UI
       const previewUrl = URL.createObjectURL(file);
-      setPreviewUrl(previewUrl); // Store preview URL for UI
+      setPreviewUrl(previewUrl);
 
       // If you plan to upload later, set the file in Formik state
-      setFieldValue("currentPhoto", file); // You can keep the file for form submission
+      setFieldValue("currentPhoto", file);
     }
   };
 
@@ -87,6 +88,7 @@ const PersonalInformationForm = () => {
           ? new Date(personalInformation.birthDate).toISOString().split("T")[0]
           : "",
         educationalLevel: personalInformation?.educationalLevel || "",
+        height: personalInformation?.height || "",
         street: personalInformation?.street || "",
         barangay: personalInformation?.barangay || "",
         cityMunicipality: personalInformation?.cityMunicipality || "",
@@ -126,7 +128,7 @@ const PersonalInformationForm = () => {
               personalInformation: res?.data?.personalInformation,
             },
           }));
-          triggerToast(res?.data?.message, "primary");
+          triggerToast(res?.data?.message, "success");
         } catch (error) {
           console.log(error?.response?.data?.message);
           triggerToast(error?.response?.data?.message, "danger");
@@ -194,7 +196,7 @@ const PersonalInformationForm = () => {
 
             {/* middle name */}
             <div className="col-12 col-sm-6 col-md-4 mb-2">
-              <label htmlFor="middleName">Middle Name (optional):</label>
+              <label htmlFor="middleName">Middle Name:</label>
               <Field
                 name="middleName"
                 type="text"
@@ -212,7 +214,7 @@ const PersonalInformationForm = () => {
 
             {/* suffix */}
             <div className="col-12 col-sm-6 col-md-4 mb-2">
-              <label htmlFor="suffix">Suffix (optional):</label>
+              <label htmlFor="suffix">Suffix (Ex: Sr., Jr., III, etc.):</label>
               <Field
                 name="suffix"
                 type="text"
@@ -263,7 +265,6 @@ const PersonalInformationForm = () => {
                 <option value="">Select</option>
                 <option value="single">Single</option>
                 <option value="married">Married</option>
-                <option value="divorced">Divorced</option>
                 <option value="widowed">Widowed</option>
               </Field>
               <ErrorMessage
@@ -328,6 +329,38 @@ const PersonalInformationForm = () => {
                 className="invalid-feedback"
               />
             </div>
+
+            <div className="col-12 col-sm-6 col-md-4 mb-2">
+              <label htmlFor="height">Height:</label>
+              <Field
+                as="select"
+                name="height"
+                className={`form-control ${
+                  touched.height && errors.height
+                    ? "is-invalid"
+                    : touched.height
+                    ? "is-valid"
+                    : ""
+                }`}
+              >
+                <option value="">Select height</option>
+                {Array.from({ length: 48 }, (_, i) => {
+                  const feet = 4 + Math.floor(i / 12); // Starts at 4 feet
+                  const inches = i % 12; // 0-11 inches
+                  const heightString = `${feet}'${inches}"`; // e.g., "5'8""
+                  return (
+                    <option key={heightString} value={heightString}>
+                      {heightString}
+                    </option>
+                  );
+                })}
+              </Field>
+              <ErrorMessage
+                component="div"
+                name="height"
+                className="invalid-feedback"
+              />
+            </div>
           </div>
 
           {/* title: address information section */}
@@ -351,7 +384,7 @@ const PersonalInformationForm = () => {
           <div className="row">
             {/* street */}
             <div className="col-12 col-sm-6 col-md-6 mb-2">
-              <label htmlFor="street">Street:</label>
+              <label htmlFor="street">House No./ Street Village:</label>
               <Field
                 name="street"
                 type="text"
@@ -421,7 +454,7 @@ const PersonalInformationForm = () => {
             </div>
 
             {/* zip code */}
-            <div className="col-12 col-sm-6 col-md-6 mb-2">
+            {/* <div className="col-12 col-sm-6 col-md-6 mb-2">
               <label htmlFor="zipCode">ZIP Code:</label>
               <Field
                 name="zipCode"
@@ -436,7 +469,7 @@ const PersonalInformationForm = () => {
                 name="zipCode"
                 className="invalid-feedback"
               />
-            </div>
+            </div> */}
           </div>
           {/* contact section title */}
           <div className="row align-items-center my-3">
@@ -557,7 +590,9 @@ const PersonalInformationForm = () => {
             <div className="col-md-6">
               <div className="text-center">
                 <img
-                  src={previewUrl || personalInformation?.photo || default_profile}
+                  src={
+                    previewUrl || personalInformation?.photo || default_profile
+                  }
                   alt="Profile Preview"
                   style={{
                     width: "100px",

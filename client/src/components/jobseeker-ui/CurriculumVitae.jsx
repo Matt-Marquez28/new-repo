@@ -56,7 +56,7 @@ const CurriculumVitae = () => {
           {personalInformation?.photo && (
             <div className="mb-4 text-center">
               <img
-                src={personalInformation.photo || default_profile}
+                src={personalInformation?.photo || default_profile}
                 alt="Profile Preview"
                 style={{
                   width: "100px",

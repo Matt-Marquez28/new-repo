@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { JOBSEEKER_API_END_POINT } from "../utils/constants";
 import { ACCOUNT_API_END_POINT } from "../utils/constants";
 
 const UserContext = createContext();
@@ -8,25 +7,24 @@ const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Initially null, no reliance on local storage
-  const [loading, setLoading] = useState(true); // Tracks whether user data is being loaded
+  const [user, setUser] = useState(null); 
+  const [loading, setLoading] = useState(true); 
 
   // Fetch user data from the API
   const fetchUserData = async () => {
     try {
       const res = await axios.get(`${ACCOUNT_API_END_POINT}/refresh-user-data`, {
-        withCredentials: true, // Ensures cookies (for authentication) are sent
+        withCredentials: true, 
       });
-      setUser(res?.data?.userData); // Update user state with the fetched data
-      console.log("Fetched user data");
+      setUser(res?.data?.userData); 
     } catch (error) {
       console.error(
         "Failed to fetch user data:",
         error.response?.data?.message || error.message
       );
-      setUser(null); // Clear user state if fetching fails
+      setUser(null);
     } finally {
-      setLoading(false); // Stop the loading state
+      setLoading(false); 
     }
   };
 

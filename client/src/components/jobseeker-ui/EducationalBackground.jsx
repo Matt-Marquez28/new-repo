@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import axios from "axios";
 import { useToast } from "../../contexts/toast.context";
 import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
@@ -188,7 +188,7 @@ const EducationalBackground = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="row align-items-center my-3">
         <div className="col">
           <hr className="border-2 border-primary" />

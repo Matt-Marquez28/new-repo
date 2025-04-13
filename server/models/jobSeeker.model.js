@@ -44,6 +44,10 @@ const jobSeekerSchema = new mongoose.Schema(
         type: String,
         required: false,
       },
+      height: {
+        type: String,
+        required: true,
+      },
       street: {
         type: String,
         required: true,
@@ -64,11 +68,11 @@ const jobSeekerSchema = new mongoose.Schema(
         required: true,
         trim: true,
       },
-      zipCode: {
-        type: String,
-        required: true,
-        trim: true,
-      },
+      // zipCode: {
+      //   type: String,
+      //   required: true,
+      //   trim: true,
+      // },
       emailAddress: {
         type: String,
         required: true,
@@ -93,6 +97,86 @@ const jobSeekerSchema = new mongoose.Schema(
         required: false,
       },
     },
+    employmentStatus: {
+      status: {
+        type: String,
+        enum: ["employed", "unemployed"],
+        required: true,
+      },
+      employedDetails: {
+        employmentType: {
+          type: String,
+          enum: ["wage-employed", "self-employed"],
+          required: function () {
+            return this.parent().status === "employed";
+          },
+        },
+        selfEmployment: {
+          detail: {
+            type: String,
+            enum: [
+              "Fisherman / Fisherfolk",
+              "Vendor / Retailer",
+              "Home-based worker",
+              "Transport",
+              "Domestic Worker",
+              "Freelancer",
+              "Artisan / Craft Worker",
+              "Others",
+            ],
+            required: function () {
+              return this.parent().employmentType === "self-employed";
+            },
+          },
+          otherDetail: {
+            type: String,
+            trim: true,
+            required: function () {
+              return this.parent().detail === "Others";
+            },
+          },
+        },
+      },
+      unemployedDetails: {
+        reason: {
+          type: String,
+          enum: [
+            "New Entrant / Fresh Graduate",
+            "Finished Contract",
+            "Resigned",
+            "Retired",
+            "Terminated / Laid off due to calamity",
+            "Terminated / Laid off (local)",
+            "Terminated / Laid off (abroad)",
+            "Others",
+          ],
+          required: function () {
+            return this.parent().parent().status === "unemployed";
+          },
+        },
+        otherReason: {
+          type: String,
+          trim: true,
+          required: function () {
+            return this.parent().reason === "Others";
+          },
+        },
+        monthsLookingForWork: {
+          type: Number,
+          min: 0,
+          max: 120, // 10 years seems reasonable maximum
+          required: function () {
+            return this.parent().parent().status === "unemployed";
+          },
+        },
+      },
+    },
+    disability: {
+      hasDisability: Boolean,
+      types: [String], // Array of specific types (excluding "none")
+      otherDescription: String,
+    },
+    languages: [{ type: Object, required: false }],
     skillsAndSpecializations: {
       specializations: {
         type: [String],
