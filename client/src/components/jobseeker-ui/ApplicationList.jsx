@@ -229,7 +229,10 @@ const ApplicationList = () => {
                     >
                       {company?.companyInformation?.companyLogo && (
                         <img
-                          src={company?.companyInformation.companyLogo || default_company}
+                          src={
+                            company?.companyInformation.companyLogo ||
+                            default_company
+                          }
                           alt={
                             company.companyInformation.businessName ||
                             "Company Logo"

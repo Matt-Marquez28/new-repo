@@ -171,7 +171,10 @@ const EmploymentStatus = () => {
         { payload },
         { withCredentials: true }
       );
-      triggerToast(res?.data?.message || "Employment status updated successfully", "success");
+      triggerToast(
+        res?.data?.message || "Employment status updated successfully",
+        "success"
+      );
     } catch (error) {
       console.error("Update error:", error);
       triggerToast(
@@ -266,17 +269,22 @@ const EmploymentStatus = () => {
   return (
     <div className="container mt-3">
       {/* Section Header */}
-      <div className="row align-items-center my-4">
+      <div className="row align-items-center my-3">
+        {/* Left side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary opacity-75" />
+          <hr className="border-2 border-primary" />
         </div>
+
+        {/* Centered title */}
         <div className="col-auto">
-          <h4 className="text-primary fw-bold">
-            <i className="bi bi-briefcase me-2"></i>Employment Status
-          </h4>
+          <h5 className="position-relative text-primary">
+            <i className="bi bi-briefcase-fill"></i> Employment Status
+          </h5>
         </div>
+
+        {/* Right side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary opacity-75" />
+          <hr className="border-2 border-primary" />
         </div>
       </div>
 
@@ -289,9 +297,9 @@ const EmploymentStatus = () => {
       ) : (
         <>
           {/* Main Employment Options */}
-          <div className="card mb-4">
+          <div className="card mb-4 bg-light">
             <div className="card-body">
-              <h5 className="card-title mb-3">Current Employment Status</h5>
+              <h5 className="card-title mb-3 text">Current Employment Status</h5>
               <div className="d-flex gap-4 mb-3">
                 <div className="form-check">
                   <input
@@ -303,7 +311,10 @@ const EmploymentStatus = () => {
                     checked={employmentStatus === "employed"}
                     onChange={handleEmploymentChange}
                   />
-                  <label className="form-check-label fw-medium" htmlFor="employedRadio">
+                  <label
+                    className="form-check-label"
+                    htmlFor="employedRadio"
+                  >
                     Employed
                   </label>
                 </div>
@@ -317,7 +328,10 @@ const EmploymentStatus = () => {
                     checked={employmentStatus === "unemployed"}
                     onChange={handleEmploymentChange}
                   />
-                  <label className="form-check-label fw-medium" htmlFor="unemployedRadio">
+                  <label
+                    className="form-check-label"
+                    htmlFor="unemployedRadio"
+                  >
                     Unemployed
                   </label>
                 </div>
@@ -327,11 +341,13 @@ const EmploymentStatus = () => {
 
           {/* Employment Type Details */}
           {employmentStatus === "employed" && (
-            <div className="card mb-4">
+            <div className="card mb-4 bg-light">
               <div className="card-body">
                 <h5 className="card-title mb-3">Employment Details</h5>
                 <div className="mb-4">
-                  <label className="form-label fw-medium mb-2">Employment Type:</label>
+                  <label className="form-label fw-medium mb-2">
+                    Employment Type:
+                  </label>
                   <div className="d-flex flex-wrap gap-3">
                     {employmentTypeOptions.map((option) => (
                       <div className="form-check" key={option.value}>
@@ -344,7 +360,10 @@ const EmploymentStatus = () => {
                           checked={employmentType === option.value}
                           onChange={handleEmploymentTypeChange}
                         />
-                        <label className="form-check-label" htmlFor={option.value}>
+                        <label
+                          className="form-check-label"
+                          htmlFor={option.value}
+                        >
                           {option.label}
                         </label>
                       </div>
@@ -355,10 +374,15 @@ const EmploymentStatus = () => {
                 {/* Self-employment details */}
                 {employmentType === "self-employed" && (
                   <div className="mb-3 ps-3 border-start border-3 border-primary">
-                    <label className="form-label fw-medium mb-2">Self-employment Type:</label>
+                    <label className="form-label fw-medium mb-2">
+                      Self-employment Type:
+                    </label>
                     <div className="d-flex flex-column gap-2">
                       {selfEmploymentOptions.map((type, index) => (
-                        <div className="form-check" key={`selfEmpType-${index}`}>
+                        <div
+                          className="form-check"
+                          key={`selfEmpType-${index}`}
+                        >
                           <input
                             className="form-check-input"
                             type="radio"
@@ -388,7 +412,9 @@ const EmploymentStatus = () => {
                               onChange={handleSelfEmploymentOtherChange}
                               placeholder="Enter your occupation"
                             />
-                            <label htmlFor="selfEmploymentOther">Please specify your occupation</label>
+                            <label htmlFor="selfEmploymentOther">
+                              Please specify your occupation
+                            </label>
                           </div>
                         </div>
                       )}
@@ -401,11 +427,13 @@ const EmploymentStatus = () => {
 
           {/* Unemployment Details */}
           {employmentStatus === "unemployed" && (
-            <div className="card mb-4">
+            <div className="card mb-4 bg-light">
               <div className="card-body">
                 <h5 className="card-title mb-3">Unemployment Details</h5>
                 <div className="mb-4">
-                  <label className="form-label fw-medium mb-2">Reason for unemployment:</label>
+                  <label className="form-label fw-medium mb-2">
+                    Reason for unemployment:
+                  </label>
                   <div className="d-flex flex-column gap-2">
                     {unemploymentReasonOptions.map((reason, index) => (
                       <div className="form-check" key={`reason-${index}`}>
@@ -438,7 +466,9 @@ const EmploymentStatus = () => {
                             onChange={handleUnemploymentOtherReasonChange}
                             placeholder="Enter your reason"
                           />
-                          <label htmlFor="otherReasonInput">Please specify your reason</label>
+                          <label htmlFor="otherReasonInput">
+                            Please specify your reason
+                          </label>
                         </div>
                       </div>
                     )}
@@ -446,7 +476,10 @@ const EmploymentStatus = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="monthsLookingInput" className="form-label fw-medium">
+                  <label
+                    htmlFor="monthsLookingInput"
+                    className="form-label fw-medium"
+                  >
                     How long have you been looking for work? (in months)
                   </label>
                   <div className="input-group" style={{ maxWidth: "200px" }}>
@@ -468,19 +501,22 @@ const EmploymentStatus = () => {
           {/* Submit Button */}
           {employmentStatus && (
             <div className="d-flex justify-content-end mt-4">
-              <button 
-                className="btn btn-primary px-4 py-2" 
+              <button
+                className="btn btn-primary"
                 onClick={handleSubmit}
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
                     <span role="status">Saving...</span>
                   </>
                 ) : (
                   <>
-                    <i className="bi bi-save me-2"></i> Save Changes
+                    <i className="bi bi-floppy"></i> Save Changes
                   </>
                 )}
               </button>

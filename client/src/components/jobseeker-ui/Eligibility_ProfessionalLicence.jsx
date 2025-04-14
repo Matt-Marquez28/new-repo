@@ -162,7 +162,26 @@ const EligibilityProfessionalLicence = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="container mt-3">
+      <div className="row align-items-center my-3">
+        {/* Left side of the horizontal line */}
+        <div className="col">
+          <hr className="border-2 border-primary" />
+        </div>
+
+        {/* Centered title */}
+        <div className="col-auto">
+          <h5 className="position-relative text-primary">
+            <i className="bi bi-file-person-fill"></i> Eligibility /
+            Professional License
+          </h5>
+        </div>
+
+        {/* Right side of the horizontal line */}
+        <div className="col">
+          <hr className="border-2 border-primary" />
+        </div>
+      </div>
       {error && (
         <Alert variant="danger" onClose={() => setError(null)} dismissible>
           {error}
@@ -173,12 +192,6 @@ const EligibilityProfessionalLicence = () => {
           {success}
         </Alert>
       )}
-
-      <Row className="mb-4">
-        <Col>
-          <h3>Eligibility & Professional Licenses</h3>
-        </Col>
-      </Row>
 
       <Row className="mb-3">
         <Col>

@@ -4,6 +4,30 @@ import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
 
 const DisabilityForm = ({ initialData, jobSeekerId }) => {
+  const triggerToast = useToast();
+  const [disabilities, setDisabilities] = useState({
+    none: initialData?.hasDisability === false || false,
+    visual: initialData?.types?.includes("visual") || false,
+    speech: initialData?.types?.includes("speech") || false,
+    mental: initialData?.types?.includes("mental") || false,
+    hearing: initialData?.types?.includes("hearing") || false,
+    physical: initialData?.types?.includes("physical") || false,
+    others: initialData?.types?.includes("others") || false,
+    othersText: initialData?.otherDescription || "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const disabilityOptions = [
+    { id: "none", label: "None" },
+    { id: "visual", label: "Visual" },
+    { id: "speech", label: "Speech" },
+    { id: "mental", label: "Mental" },
+    { id: "hearing", label: "Hearing" },
+    { id: "physical", label: "Physical" },
+    { id: "others", label: "Others (Please specify)" },
+  ];
+
   useEffect(() => {
     getJobSeekerData();
   }, []);
@@ -14,7 +38,6 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
         `${JOBSEEKER_API_END_POINT}/get-jobseeker-data`,
         { withCredentials: true }
       );
-      console.log(res?.data?.jobSeekerData?.disability);
       if (res?.data?.jobSeekerData?.disability) {
         setDisabilities({
           none: res?.data?.jobSeekerData?.disability?.hasDisability === false,
@@ -35,66 +58,45 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching disability data:", error);
+      triggerToast("Failed to load disability information", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const triggerToast = useToast();
-  const disabilityOptions = [
-    { id: "none", label: "None" },
-    { id: "visual", label: "Visual" },
-    { id: "speech", label: "Speech" },
-    { id: "mental", label: "Mental" },
-    { id: "hearing", label: "Hearing" },
-    { id: "physical", label: "Physical" },
-    { id: "others", label: "Others (Please specify)" },
-  ];
-
-  // Initialize state with initialData if provided
-  const [disabilities, setDisabilities] = useState({
-    none: initialData?.hasDisability === false || false,
-    visual: initialData?.types?.includes("visual") || false,
-    speech: initialData?.types?.includes("speech") || false,
-    mental: initialData?.types?.includes("mental") || false,
-    hearing: initialData?.types?.includes("hearing") || false,
-    physical: initialData?.types?.includes("physical") || false,
-    others: initialData?.types?.includes("others") || false,
-    othersText: initialData?.otherDescription || "",
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
 
     // If "None" is checked, uncheck all other options
     if (name === "none" && checked) {
-      const newState = { ...disabilities };
-      Object.keys(newState).forEach((key) => {
-        if (key !== "none" && key !== "othersText") {
-          newState[key] = false;
-        }
-      });
-      newState.none = true;
-      setDisabilities(newState);
+      setDisabilities((prev) => ({
+        ...prev,
+        none: true,
+        visual: false,
+        speech: false,
+        mental: false,
+        hearing: false,
+        physical: false,
+        others: false,
+        othersText: "",
+      }));
       return;
     }
 
     // If any other option is checked, uncheck "None"
-    const newState = {
-      ...disabilities,
+    setDisabilities((prev) => ({
+      ...prev,
       [name]: checked,
-      none: name !== "none" && checked ? false : disabilities.none,
-    };
-    setDisabilities(newState);
+      none: name !== "none" && checked ? false : prev.none,
+    }));
   };
 
   const handleOthersTextChange = (e) => {
-    setDisabilities({
-      ...disabilities,
+    setDisabilities((prev) => ({
+      ...prev,
       othersText: e.target.value,
-    });
+    }));
   };
 
   const preparePayload = () => {
@@ -120,29 +122,33 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
-      setError(null);
-
       const payload = preparePayload();
 
       const res = await axios.put(
-        `${JOBSEEKER_API_END_POINT}/update-disability`, // Adjust this endpoint as needed
+        `${JOBSEEKER_API_END_POINT}/update-disability`,
         { payload },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      console.log("Update successful:", res.data);
-      triggerToast(res?.data?.message, "success");
-    } catch (err) {
-      console.error("Update failed:", err);
-      triggerToast(error?.response?.data?.message || "An error occurred");
+
+      triggerToast(
+        res?.data?.message || "Disability information updated successfully",
+        "success"
+      );
+    } catch (error) {
+      console.error("Update failed:", error);
+      triggerToast(
+        error?.response?.data?.message ||
+          "Failed to update disability information",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container">
+    <div className="container mt-3">
+      {/* Section Header */}
       <div className="row align-items-center my-3">
         {/* Left side of the horizontal line */}
         <div className="col">
@@ -152,7 +158,8 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
         {/* Centered title */}
         <div className="col-auto">
           <h5 className="position-relative text-primary">
-            <i className="bi bi-file-person-fill"></i> Disability
+            <i className="bi bi-universal-access-circle"></i> Disability
+            Information
           </h5>
         </div>
 
@@ -161,47 +168,135 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
           <hr className="border-2 border-primary" />
         </div>
       </div>
-      <p className="text-muted mb-4">Please select all that apply:</p>
 
-      {disabilityOptions.map((option) => (
-        <div key={option.id} className="form-check mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id={`${option.id}Checkbox`}
-            name={option.id}
-            checked={disabilities[option.id]}
-            onChange={handleCheckboxChange}
-            disabled={isSubmitting}
-          />
-          <label className="form-check-label" htmlFor={`${option.id}Checkbox`}>
-            {option.label}
-          </label>
-          {option.id === "others" && disabilities.others && (
-            <div className="mt-2 ms-4">
-              <input
-                type="text"
-                className="form-control"
-                value={disabilities.othersText}
-                onChange={handleOthersTextChange}
-                placeholder="Please specify"
-                disabled={isSubmitting}
-              />
-            </div>
-          )}
+      {isLoading ? (
+        <div className="d-flex justify-content-center my-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-      ))}
+      ) : (
+        <>
+          <p className="text-muted mb-4">Please select all that apply:</p>
 
-      <div className="d-flex justify-content-end">
-        <button
-          className="btn btn-primary mt-3"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          <i className="bi bi-floppy"></i>{" "}
-          {isSubmitting ? "Updating..." : "Save Changes"}
-        </button>
-      </div>
+          <div className="p-3 rounded bg-light border">
+            {/* First row with 3 checkboxes */}
+            <div className="row mb-3">
+              {disabilityOptions.slice(0, 3).map((option) => (
+                <div key={option.id} className="col-md-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={`${option.id}Checkbox`}
+                      name={option.id}
+                      checked={disabilities[option.id]}
+                      onChange={handleCheckboxChange}
+                      disabled={isSubmitting}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor={`${option.id}Checkbox`}
+                    >
+                      {option.label}
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Second row with 3 checkboxes */}
+            <div className="row mb-3">
+              {disabilityOptions.slice(3, 6).map((option) => (
+                <div key={option.id} className="col-md-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={`${option.id}Checkbox`}
+                      name={option.id}
+                      checked={disabilities[option.id]}
+                      onChange={handleCheckboxChange}
+                      disabled={isSubmitting}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor={`${option.id}Checkbox`}
+                    >
+                      {option.label}
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Last row with "Others" option */}
+            <div className="row mb-3">
+              <div className="col-md-4">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="othersCheckbox"
+                    name="others"
+                    checked={disabilities.others}
+                    onChange={handleCheckboxChange}
+                    disabled={isSubmitting}
+                  />
+                  <label className="form-check-label" htmlFor="othersCheckbox">
+                    Others (Please specify)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Others text input */}
+            {disabilities.others && (
+              <div className="row mb-4">
+                <div className="col-md-8">
+                  <div className="form-floating">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="othersTextInput"
+                      value={disabilities.othersText}
+                      onChange={handleOthersTextChange}
+                      placeholder="Please specify"
+                      disabled={isSubmitting}
+                    />
+                    <label htmlFor="othersTextInput">
+                      Please specify your disability
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Submit button */}
+          <div className="d-flex justify-content-end mt-4">
+            <button
+              className="btn btn-primary"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                  <span role="status">Saving...</span>
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-floppy"></i> Save Changes
+                </>
+              )}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

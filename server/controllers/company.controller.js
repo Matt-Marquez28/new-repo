@@ -1093,8 +1093,20 @@ export const accreditCompany = async (req, res) => {
 </html>
     `;
 
+    // ===== PUPPETEER CONFIGURATION FOR RENDER.COM =====
+    const browser = await puppeteer.launch({
+      headless: "new",
+      executablePath: "/usr/bin/chromium-browser", // Render's Chromium path
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage", // Crucial for Render's memory limits
+        "--single-process", // Reduces memory usage
+      ],
+    });
+
     // Generate PDF using Puppeteer
-    const browser = await puppeteer.launch();
+    // const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(htmlContent);
     const pdfBuffer = await page.pdf({ format: "A4" });

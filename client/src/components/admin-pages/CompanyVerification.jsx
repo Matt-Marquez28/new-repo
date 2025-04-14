@@ -55,9 +55,9 @@ const CompanyVerification = () => {
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case "pending":
-        return "bg-warning text-dark";
+        return "bg-warning  text-dark";
       case "accredited":
-        return "bg-success text-white";
+        return "bg-success  text-white";
       case "declined":
         return "bg-danger text-white";
       case "revoked":
@@ -172,7 +172,7 @@ const CompanyVerification = () => {
                     <div className="card-body p-2 p-md-3">
                       <div className="d-flex align-items-center">
                         <div
-                          className={`${stat.bgColor} rounded-3 p-1 p-md-2 me-2 me-md-3`}
+                          className={`${stat.bgColor}  rounded-3 p-1 p-md-2 me-2 me-md-3`}
                         >
                           <i
                             className={`${stat.icon} text-white fs-6 fs-md-5`}

@@ -126,6 +126,24 @@ const AdminSidebar = () => {
           <li className="nav-item">
             <NavLink
               exact
+              to="job-fair"
+              className="nav-link"
+              style={({ isActive }) => ({
+                ...(isActive ? activeLinkStyle : {}),
+                margin: "8px 0", // Increased vertical margin
+                padding: "8px 12px", // Padding
+                ...(user.accountData.role === "staff"
+                  ? { pointerEvents: "none", color: "#ccc" } // Disabled styles
+                  : {}),
+              })}
+            >
+              <i className="bi bi-flag me-2"></i>
+              {!isCollapsed && "Job Fair"}
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
               to="user-management/user-option"
               className="nav-link"
               style={({ isActive }) => ({
@@ -145,7 +163,11 @@ const AdminSidebar = () => {
         <hr />
         <div className="text-center">
           <div style={{ padding: "20px 5px" }}>
-            {!isCollapsed && <h5 className="text-capitalize text-primary">{user?.accountData?.role}</h5>}
+            {!isCollapsed && (
+              <h5 className="text-capitalize text-primary">
+                {user?.accountData?.role}
+              </h5>
+            )}
           </div>
         </div>
       </div>

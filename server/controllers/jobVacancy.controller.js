@@ -7,6 +7,7 @@ import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
 import { io, userSocketMap } from "../index.js";
 import { Account } from "../models/account.model.js";
+import JobFairEvent from "../models/jobFairEvent.js";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -1323,6 +1324,208 @@ export const updateJobVacancy = async (req, res) => {
       success: false,
       message: "An error occurred while updating the job vacancy",
       error: error.message,
+    });
+  }
+};
+
+// create job fair event
+export const createJobFairEvent = async (req, res) => {
+  try {
+    const { title, date, venue, time, description, registrationDeadline } =
+      req.body;
+
+    // Check: Verify no duplicate event (same title + date)
+    const existingEvent = await JobFairEvent.findOne({
+      title,
+      date: { $eq: new Date(date) },
+    });
+    if (existingEvent) {
+      return res.status(400).json({
+        success: false,
+        error: "An event with this title and date already exists",
+      });
+    }
+
+    const activeEventExists = await JobFairEvent.findOne({ isActive: true });
+    if (activeEventExists) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Cannot create new event while another event is still active. Please deactivate the current event first.",
+      });
+    }
+
+    // Create new event
+    const newEvent = new JobFairEvent({
+      title,
+      date,
+      time,
+      venue,
+      description,
+      registrationDeadline: registrationDeadline || null,
+      // Defaults will be applied:
+      // registeredJobSeekers: []
+      // registeredEmployers: []
+      // isActive: true
+    });
+
+    const savedEvent = await newEvent.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Job fair event created successfully",
+      data: savedEvent,
+    });
+  } catch (error) {
+    console.error("Error creating job fair event:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server error. Could not create job fair event.",
+    });
+  }
+};
+
+export const deleteJobFairEvent = async (req, res) => {
+  try {
+    const { jobFairEventId } = req.params;
+
+    // Permanent deletion
+    const deletedEvent = await JobFairEvent.findByIdAndDelete(jobFairEventId);
+
+    if (!deletedEvent) {
+      return res.status(404).json({
+        success: false,
+        error: "Job fair event not found",
+      });
+    }
+
+    // Success response
+    res.status(200).json({
+      success: true,
+      message: "Job fair event permanently deleted",
+      data: {
+        id: deletedEvent._id,
+        title: deletedEvent.title,
+        date: deletedEvent.date,
+      },
+    });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server error during deletion",
+    });
+  }
+};
+
+export const getAllJobFairEvents = async (req, res) => {
+  try {
+    const { search, isActive } = req.query;
+
+    // Build the query object
+    let query = {};
+
+    // Search functionality
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { venue: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // Status filter (now matches the model's isActive boolean)
+    if (isActive !== undefined) {
+      query.isActive = isActive === "true"; // Convert string 'true'/'false' to boolean
+    }
+
+    // Get events with filters
+    const events = await JobFairEvent.find(query).sort({ date: -1 });
+
+    res.json({
+      success: true,
+      count: events.length,
+      data: events,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: "Server Error",
+    });
+  }
+};
+
+export const updateJobFairEvent = async (req, res) => {
+  try {
+    const {
+      title,
+      date,
+      time,
+      venue,
+      description,
+      registrationDeadline,
+      isActive,
+    } = req.body;
+
+    // Find the event first to ensure it exists
+    let event = await JobFairEvent.findById(req.params.jobFairEventId);
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        error: "Event not found",
+      });
+    }
+
+    // Prepare update object with only the fields that are passed in
+    const updateFields = {};
+    if (title) updateFields.title = title;
+    if (date) updateFields.date = date;
+    if (time) updateFields.time = time;
+    if (venue) updateFields.venue = venue;
+    if (description) updateFields.description = description;
+    if (registrationDeadline)
+      updateFields.registrationDeadline = registrationDeadline;
+    if (isActive !== undefined) updateFields.isActive = isActive;
+
+    // Perform the update
+    event = await JobFairEvent.findByIdAndUpdate(
+      req.params.jobFairEventId,
+      updateFields,
+      {
+        new: true, // Return the updated document
+        runValidators: true, // Run schema validators on update
+      }
+    ).populate("registeredEmployers registeredJobSeekers");
+
+    res.json({
+      success: true,
+      data: event,
+    });
+  } catch (err) {
+    console.error(err);
+
+    // Handle validation errors
+    if (err.name === "ValidationError") {
+      const messages = Object.values(err.errors).map((val) => val.message);
+      return res.status(400).json({
+        success: false,
+        error: messages,
+      });
+    }
+
+    // Handle cast error (invalid ID format)
+    if (err.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid event ID",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: "Server Error",
     });
   }
 };

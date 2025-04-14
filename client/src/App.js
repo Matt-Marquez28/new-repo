@@ -49,6 +49,7 @@ import Notification from "./components/shared-pages/Notification";
 import BrowseJobs from "./components/shared-ui/BrowseJobs";
 import CompanyInformation from "./components/jobseeker-pages/CompanyInformation";
 import SearchCompanies from "./components/shared-pages/SearchCompanies";
+import JobFairPage from "./components/admin-pages/JobFairPage";
 
 function App() {
   return (
@@ -164,6 +165,7 @@ const AppRoutes = () => {
       >
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="job-fair" element={<JobFairPage />} />
         <Route path="notification" element={<Notification />} />
         <Route
           path="dashboard/accredited-companies"

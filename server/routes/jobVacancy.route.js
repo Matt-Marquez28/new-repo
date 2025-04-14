@@ -20,6 +20,10 @@ import {
   deleteJobInvitation,
   updateJobVacancy,
   getAllEmployerJobVacanciesByCompanyId,
+  createJobFairEvent,
+  deleteJobFairEvent,
+  getAllJobFairEvents,
+  updateJobFairEvent,
 } from "../controllers/jobVacancy.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { isAccredited } from "../middlewares/isAccredited.js";
@@ -28,7 +32,13 @@ import { checkBlocked } from "../middlewares/checkBlocked.js";
 const router = express.Router();
 
 // routes
-router.post("/post-job-vacancy", isAuthenticated, isAccredited, checkBlocked, postJobVacancy);
+router.post(
+  "/post-job-vacancy",
+  isAuthenticated,
+  isAccredited,
+  checkBlocked,
+  postJobVacancy
+);
 router.get("/get-all-job-vacancies", getAllJobVacancies);
 router.get(
   "/get-all-employer-job-vacancies",
@@ -85,5 +95,9 @@ router.get(
 );
 router.delete("/delete-job-invitation/:invitationId", deleteJobInvitation);
 router.put("/update-job-vacancy/:jobVacancyId", updateJobVacancy);
+router.post("/create-job-fair-event", createJobFairEvent);
+router.delete("/delete-job-fair-event/:jobFairEventId", deleteJobFairEvent);
+router.get("/get-all-job-fair-events", getAllJobFairEvents);
+router.put("/update-job-fair-event/:jobFairEventId", updateJobFairEvent);
 
 export default router;
