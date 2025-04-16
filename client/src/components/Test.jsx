@@ -1,70 +1,78 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../utils/constants";
-import { Modal, Spinner, Alert } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 const QRScanner = () => {
-  const [scanning, setScanning] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const scannerRef = useRef(null);
 
   useEffect(() => {
-    if (!scanning) return;
+    // Initialize scanner only once
+    if (!scannerRef.current) {
+      scannerRef.current = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        rememberLastUsedCamera: true,
+        showTorchButtonIfSupported: true,
+      });
 
-    const scanner = new Html5QrcodeScanner("reader", {
-      fps: 10,
-      qrbox: { width: 250, height: 250 },
-      rememberLastUsedCamera: true,
-      showTorchButtonIfSupported: true,
-    });
+      const onScanSuccess = async (decodedText) => {
+        try {
+          setLoading(true);
+          setError(null);
+          const qrData = JSON.parse(decodedText);
 
-    const onScanSuccess = async (decodedText) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const qrData = JSON.parse(decodedText);
+          const res = await axios.post(
+            `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
+            {
+              referenceNumber: qrData.referenceNumber,
+              eventId: qrData.eventId,
+              role: qrData.role,
+              accountId: qrData.accountId,
+              jobSeekerId: qrData.jobseekerId,
+              employerId: qrData.companyId,
+            }
+          );
 
-        const res = await axios.post(
-          `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
-          {
-            referenceNumber: qrData.referenceNumber,
-            eventId: qrData.eventId,
-            role: qrData.role,
-            accountId: qrData.accountId,
-            jobSeekerId: qrData.jobseekerId,
-            employerId: qrData.companyId,
-          }
-        );
+          setResult(res.data.message);
+          // Pause scanner when scan is successful
+          scannerRef.current.pause();
+        } catch (err) {
+          console.error("❌ Error processing QR:", err);
+          setError(
+            err.response?.data?.message || "Something went wrong with the scan."
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        setResult(res.data.message);
-        setScanning(false);
-      } catch (err) {
-        console.error("❌ Error processing QR:", err);
-        setError(
-          err.response?.data?.message || "Something went wrong with the scan."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+      const onScanError = (error) => {
+        console.warn("⛔ QR Scan Error:", error);
+      };
 
-    const onScanError = (error) => {
-      console.warn("⛔ QR Scan Error:", error);
-    };
-
-    scanner.render(onScanSuccess, onScanError);
+      scannerRef.current.render(onScanSuccess, onScanError);
+    }
 
     return () => {
-      scanner.clear().catch(console.error);
+      // Cleanup scanner when component unmounts
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch(console.error);
+        scannerRef.current = null;
+      }
     };
-  }, [scanning]);
+  }, []);
 
   const restartScanner = () => {
     setResult(null);
     setError(null);
-    setScanning(true);
+    if (scannerRef.current) {
+      scannerRef.current.resume();
+    }
   };
 
   return (

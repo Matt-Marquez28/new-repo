@@ -164,7 +164,10 @@ export const JobSeekerHeader = () => {
           </Button>
 
           <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
-            <i className="bi bi-clock-fill fs-6 me-2" style={{ color: "#1a4798" }}></i>
+            <i
+              className="bi bi-clock-fill fs-6 me-2"
+              style={{ color: "#1a4798" }}
+            ></i>
             <span>Office Hours: Mon - Fri 7:00 AM - 5:00 PM</span>
           </Link>
 
@@ -343,7 +346,7 @@ export const JobSeekerHeader = () => {
                 </Nav.Link>
                 <Nav.Link
                   as={Link}
-                  to="/jobseeker/dashboard"
+                  to="/jobseeker/job-fair"
                   className="px-3 py-2 rounded text-primary"
                   onClick={() => setShowOffcanvas(false)}
                 >
