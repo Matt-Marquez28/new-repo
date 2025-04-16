@@ -8,6 +8,10 @@ import { createNotification } from "../utils/notification.js";
 import { io, userSocketMap } from "../index.js";
 import { Account } from "../models/account.model.js";
 import JobFairEvent from "../models/jobFairEvent.js";
+import JobFairPreregistration from "../models/jobFairPreRegistration.js";
+import JobFairAttendance from "../models/jobFairAttendance.js";
+import QRCode from "qrcode";
+import crypto from "crypto";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -1385,6 +1389,22 @@ export const createJobFairEvent = async (req, res) => {
   }
 };
 
+export const getActiveJobFairEvent = async (req, res) => {
+  try {
+    const activeJobFair = await JobFairEvent.findOne({ isActive: true });
+    if (!activeJobFair) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No active job fair event found." });
+    }
+
+    res.status(200).json({ success: true, activeJobFair });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error!" });
+  }
+};
+
 export const deleteJobFairEvent = async (req, res) => {
   try {
     const { jobFairEventId } = req.params;
@@ -1527,5 +1547,148 @@ export const updateJobFairEvent = async (req, res) => {
       success: false,
       error: "Server Error",
     });
+  }
+};
+
+export const preRegisterForJobFair = async (req, res) => {
+  const accountId = req.accountId;
+  const role = req.role;
+
+  try {
+    const { eventId } = req.body;
+
+    if (!["jobseeker", "employer"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role." });
+    }
+
+    // Find associated JobSeeker or Employer
+    let jobseeker = null;
+    let employer = null;
+
+    if (role === "jobseeker") {
+      jobseeker = await JobSeeker.findOne({ accountId });
+      if (!jobseeker)
+        return res.status(404).json({ message: "JobSeeker not found." });
+    }
+
+    if (role === "employer") {
+      employer = await Company.findOne({ accountId });
+      if (!employer)
+        return res.status(404).json({ message: "Employer not found." });
+    }
+
+    // Generate reference number
+    const randomSegment = crypto.randomBytes(3).toString("hex").toUpperCase();
+    const referenceNumber = `JF-${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}-${randomSegment}`;
+
+    // Generate QR Code with additional information
+    const qrCodeData = JSON.stringify({
+      referenceNumber: referenceNumber,
+      eventId: eventId,
+      role: role,
+      accountId: accountId,
+      [role === "jobseeker" ? "jobSeekerId" : "employerId"]:
+        role === "jobseeker" ? jobseeker._id : employer._id,
+    });
+
+    const qrCodeImage = await QRCode.toDataURL(qrCodeData);
+
+    // Create preregistration entry
+    const prereg = new JobFairPreregistration({
+      accountId: accountId,
+      eventId: eventId,
+      role,
+      referenceNumber,
+      qrCode: qrCodeImage,
+      jobSeekerId: jobseeker?._id,
+      employerId: employer?._id,
+    });
+
+    await prereg.save();
+
+    res.status(201).json({
+      message: "Successfully preregistered.",
+      preRegistration: prereg,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res
+        .status(409)
+        .json({ message: "Already preregistered for this event." });
+    }
+    console.error("Preregistration error:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const getPreRegistration = async (req, res) => {
+  const accountId = req.accountId;
+
+  try {
+    const preRegistration = await JobFairPreregistration.findOne({ accountId });
+    if (!preRegistration) {
+      return res.status(404).json({ message: "No preregistration found." });
+    }
+    res.status(200).json({ success: true, preRegistration });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error!" });
+  }
+};
+
+export const markAttendance = async (req, res) => {
+  try {
+    const {
+      referenceNumber,
+      eventId,
+      role,
+      accountId,
+      jobSeekerId,
+      employerId,
+    } = req.body;
+
+    // Step 2: Find matching preregistration
+    const prereg = await JobFairPreregistration.findOne({
+      referenceNumber,
+      eventId,
+      accountId,
+    });
+
+    if (!prereg) {
+      return res.status(404).json({ message: "Preregistration not found." });
+    }
+
+    // Step 3: Check for existing attendance
+    const alreadyAttended = await JobFairAttendance.findOne({
+      preRegistrationId: prereg._id,
+    });
+
+    if (alreadyAttended) {
+      return res.status(409).json({ message: "Already checked in." });
+    }
+
+    // Step 4: Create attendance record
+    const attendance = new JobFairAttendance({
+      eventId,
+      preRegistrationId: prereg._id,
+      accountId,
+      role,
+      jobSeekerId: jobSeekerId || null,
+      employerId: employerId || null,
+      referenceNumber,
+    });
+
+    await attendance.save();
+
+    res.status(201).json({
+      message: "✅ Attendance recorded successfully.",
+      attendance,
+    });
+  } catch (err) {
+    console.error("Attendance error:", err);
+    res.status(500).json({ message: "Internal server error." });
   }
 };

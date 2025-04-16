@@ -10,7 +10,7 @@ const Features = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="text-center mb-5 display-5 fw-bold">Features</h2>
+      <h2 className="text-center mb-5 display-5 fw-bold" style={{ color: "#1a4798" }}>Features</h2>
       <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
         {/* Card 3 - Networking Hub */}
         <div className="col">

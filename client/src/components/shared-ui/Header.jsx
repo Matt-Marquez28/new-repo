@@ -26,12 +26,12 @@ const Header = () => {
           </Link>
         </li>
         <li>
-          <Link to="#" className="nav-link px-2">
+          <Link to="#" className="nav-link px-2" style={{ color: "#1a4798" }}>
             Features
           </Link>
         </li>
         <li>
-          <Link to="#" className="nav-link px-2">
+          <Link to="#" className="nav-link px-2" style={{ color: "#1a4798" }}>
             About
           </Link>
         </li>
@@ -45,7 +45,11 @@ const Header = () => {
           </button>
         </Link>
         <Link to="/signup">
-          <button type="button" className="btn btn-primary">
+          <button
+            type="button"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
+          >
             <i className="bi bi-pen d-none d-md-inline-block"></i> Sign-up
           </button>
         </Link>

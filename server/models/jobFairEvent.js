@@ -7,24 +7,7 @@ const jobFairEventSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     time: { type: String, required: true },
     venue: { type: String, required: true }, // e.g., "Convention Center, Room 101"
-    description: String,
-
-    // Pre-registration
-    registrationDeadline: Date,
-    registeredJobSeekers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Account",
-      },
-    ],
-    registeredEmployers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Account",
-      },
-    ],
-
-    // Status
+    description: { type: String, required: false },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

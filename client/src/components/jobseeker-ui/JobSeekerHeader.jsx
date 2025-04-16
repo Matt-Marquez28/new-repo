@@ -117,21 +117,32 @@ export const JobSeekerHeader = () => {
             <Nav.Link
               as={Link}
               to="/jobseeker/dashboard"
-              className="px-3 text-primary"
+              className="px-3"
+              style={{ color: "#1a4798" }}
             >
               <i class="bi bi-speedometer"></i> Dashboard
             </Nav.Link>
             <Nav.Link
               as={Link}
+              to="/jobseeker/job-fair"
+              className="px-3"
+              style={{ color: "#1a4798" }}
+            >
+              <i className="bi bi-flag-fill"></i> Job Fair
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
               to="/jobseeker/profile"
-              className="px-3 text-primary"
+              className="px-3"
+              style={{ color: "#1a4798" }}
             >
               <i className="bi bi-person-fill"></i> Profile
             </Nav.Link>
             <Nav.Link
               as={Link}
               to="/jobseeker/search-companies"
-              className="px-3 text-primary"
+              className="px-3"
+              style={{ color: "#1a4798" }}
             >
               <i className="bi bi-building-fill"></i> Companies
             </Nav.Link>
@@ -153,7 +164,7 @@ export const JobSeekerHeader = () => {
           </Button>
 
           <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
-            <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
+            <i className="bi bi-clock-fill fs-6 me-2" style={{ color: "#1a4798" }}></i>
             <span>Office Hours: Mon - Fri 7:00 AM - 5:00 PM</span>
           </Link>
 
@@ -332,7 +343,15 @@ export const JobSeekerHeader = () => {
                 </Nav.Link>
                 <Nav.Link
                   as={Link}
-                  to="/jobseeker/profile"
+                  to="/jobseeker/dashboard"
+                  className="px-3 py-2 rounded text-primary"
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-flag-fill me-2"></i> Job Fair
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  to="/jobseeker/job-fair"
                   className="px-3 py-2 rounded text-primary"
                   onClick={() => setShowOffcanvas(false)}
                 >

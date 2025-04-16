@@ -95,7 +95,7 @@ const AccountStatistics = () => {
       <div className="container position-relative" style={{ zIndex: "2" }}>
         <div className="row text-center mb-5">
           <div className="col-12">
-            <h2 className="display-4 fw-bold" style={{ color: "#2c3e50" }}>
+            <h2 className="display-4 fw-bold" style={{ color: "#1a4798" }}>
               Our Growing Community
             </h2>
             <p className="lead" style={{ color: "#34495e" }}>

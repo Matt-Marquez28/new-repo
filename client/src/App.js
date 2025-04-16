@@ -50,6 +50,8 @@ import BrowseJobs from "./components/shared-ui/BrowseJobs";
 import CompanyInformation from "./components/jobseeker-pages/CompanyInformation";
 import SearchCompanies from "./components/shared-pages/SearchCompanies";
 import JobFairPage from "./components/admin-pages/JobFairPage";
+import JobFair from "./components/shared-pages/JobFair";
+import PreRegistrationDetails from "./components/shared-pages/PreRegistrationDetails";
 
 function App() {
   return (
@@ -77,6 +79,8 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/verification" element={<VerificationPage />} />
       <Route path="/test" element={<Test />} />
+      <Route path="/job-fair" element={<JobFair />} />
+
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
 
@@ -98,6 +102,8 @@ const AppRoutes = () => {
           element={<ChangePasswordPage />}
         />
         <Route path="notification" element={<Notification />} />
+        <Route path="job-fair" element={<JobFair/>} />
+        <Route path="job-fair/pre-registration-details" element={<PreRegistrationDetails />} />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
         <Route path="search-companies" element={<SearchCompanies />} />

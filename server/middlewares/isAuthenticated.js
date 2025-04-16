@@ -24,6 +24,7 @@ export const isAuthenticated = async (req, res, next) => {
 
     // attach account id to req
     req.accountId = decode.accountId;
+    req.role = decode.role;
 
     // if role is a jobseeker attach jobSeekerId to req
     if (decode.role === "jobseeker") {
@@ -39,6 +40,8 @@ export const isAuthenticated = async (req, res, next) => {
     if (decode.role === "admin" || decode.role === "staff") {
       req.accountId = decode.accountId;
     }
+
+    
 
     // Proceed to the next middleware or route handler
     next();

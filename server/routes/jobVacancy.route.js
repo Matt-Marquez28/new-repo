@@ -24,6 +24,10 @@ import {
   deleteJobFairEvent,
   getAllJobFairEvents,
   updateJobFairEvent,
+  preRegisterForJobFair,
+  markAttendance,
+  getActiveJobFairEvent,
+  getPreRegistration,
 } from "../controllers/jobVacancy.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { isAccredited } from "../middlewares/isAccredited.js";
@@ -99,5 +103,8 @@ router.post("/create-job-fair-event", createJobFairEvent);
 router.delete("/delete-job-fair-event/:jobFairEventId", deleteJobFairEvent);
 router.get("/get-all-job-fair-events", getAllJobFairEvents);
 router.put("/update-job-fair-event/:jobFairEventId", updateJobFairEvent);
-
+router.post("/pre-register", isAuthenticated, preRegisterForJobFair);
+router.post("/mark-attendance", markAttendance);
+router.get("/get-active-job-fair-event", getActiveJobFairEvent);
+router.get("/get-pre-registration", isAuthenticated, getPreRegistration);
 export default router;

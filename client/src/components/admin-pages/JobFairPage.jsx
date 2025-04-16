@@ -152,7 +152,7 @@ const JobFairAdminPage = () => {
         <div className="mb-3 mb-md-0">
           <h1 className="h3 fw-bold">
             <i className="bi bi-calendar-event me-2 text-primary"></i>
-            Job Fair Events Management
+            Job Fair Event Management
           </h1>
           <p className="text-muted mb-0">
             Manage all upcoming and past job fair events

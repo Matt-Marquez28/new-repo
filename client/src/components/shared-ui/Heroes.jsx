@@ -1,13 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-
 const Heroes = () => {
   const navigate = useNavigate();
   return (
     <div className="px-4 pt-5 my-5 text-center border-bottom">
-      <h1 className="display-4 fw-bold text-body-emphasis">
-        PESO City of Taguig
+      <h1 className="display-4 fw-bold " style={{ color: "#1a4798" }}>
+        <span style={{ color: "#ee1b24" }}>PESO</span> City of Taguig
       </h1>
       <div className="col-lg-6 mx-auto">
         <p className="lead mb-4">
@@ -17,7 +16,7 @@ const Heroes = () => {
           experience for both job seekers and employers, offering an easy-to-use
           interface for posting job openings and browsing available positions.
         </p>
-        <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+        <div className="d-grid gap-3 d-sm-flex justify-content-sm-center mb-5">
           <button
             type="button"
             className="btn btn-outline-secondary btn-lg px-4"
@@ -26,7 +25,8 @@ const Heroes = () => {
           </button>
           <button
             type="button"
-            className="btn btn-primary btn-lg px-4 me-sm-3"
+            className="btn btn-lg px-4 me-sm-3 text-white pulse"
+            style={{ backgroundColor: "#1a4798" }}
             onClick={() => navigate("/login")}
           >
             <i className="bi bi-align-start"></i> Get Started

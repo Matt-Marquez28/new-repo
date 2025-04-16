@@ -89,7 +89,7 @@ const LoginPage = () => {
               className="row g-2 needs-validation border p-3 rounded shadow shadow-sm my-3"
               onSubmit={formik.handleSubmit}
             >
-              <h3 className="text-center fw-normal fw-bold text-primary">
+              <h3 className="text-center fw-normal fw-bold" style={{ color: "#1a4798" }}>
                 <i className="bi bi-box-arrow-in-right"> </i>Log In
               </h3>
 
@@ -172,7 +172,8 @@ const LoginPage = () => {
               <div className="col-12 mt-5">
                 <button
                   type="submit"
-                  className="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                  className="btn w-100 d-flex align-items-center justify-content-center text-white"
+                  style={{ backgroundColor: "#1a4798" }}
                   disabled={formik.isSubmitting}
                 >
                   {formik.isSubmitting ? (

@@ -158,9 +158,17 @@ const CompanyVerification = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary mb-3 mx-1">
-        <i className="bi bi-building-fill-check"></i> Company Verification
-      </h4>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3 mb-md-0">
+          <h1 className="h3 fw-bold" style={{ color: "#1a4798" }}>
+            <i className="bi bi-building me-2" style={{ color: "#1a4798" }}></i>
+            Company Management
+          </h1>
+          <p className="text-muted mb-0">
+            Verify company credentials and manage approval status
+          </p>
+        </div>
+      </div>
       <section className="mb-3">
         <div className="row justify-content-center">
           <div>
@@ -168,7 +176,7 @@ const CompanyVerification = () => {
             <div className="row g-2 g-md-3">
               {statsData.map((stat, index) => (
                 <div key={index} className="col-lg col-md-4 col-6">
-                  <div className="card border-0 shadow-sm h-100 bg-light">
+                  <div className="card border-0 shadow-sm h-100">
                     <div className="card-body p-2 p-md-3">
                       <div className="d-flex align-items-center">
                         <div
