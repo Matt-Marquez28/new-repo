@@ -1107,11 +1107,18 @@ export const accreditCompany = async (req, res) => {
       const stream = cloudinary.uploader.upload_stream(
         { folder: "company_accreditations", use_filename: true },
         (error, result) => {
-          if (error) reject(error);
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            reject(error);
+          }
+          console.log("Upload successful:", result);
           resolve(result);
         }
       );
       stream.end(pdfBuffer);
+    }).catch((error) => {
+      console.error("Failed to upload to Cloudinary:", error);
+      throw error;
     });
 
     // Update the company with accreditation details
