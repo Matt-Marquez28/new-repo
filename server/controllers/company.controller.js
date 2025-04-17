@@ -9,7 +9,7 @@ import { createNotification } from "../utils/notification.js";
 import Application from "../models/application.model.js";
 import AuditTrail from "../models/auditTrail.model.js";
 import jwt from "jsonwebtoken";
-const chromium = require("@sparticuz/chromium");
+import chromium from '@sparticuz/chromium';
 import puppeteer from "puppeteer";
 import { auditTrail } from "../utils/auditTrail.js";
 
