@@ -9,6 +9,7 @@ import { createNotification } from "../utils/notification.js";
 import Application from "../models/application.model.js";
 import AuditTrail from "../models/auditTrail.model.js";
 import jwt from "jsonwebtoken";
+const chromium = require("@sparticuz/chromium");
 import puppeteer from "puppeteer";
 import { auditTrail } from "../utils/auditTrail.js";
 
@@ -1095,7 +1096,9 @@ export const accreditCompany = async (req, res) => {
 
     // Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
     const page = await browser.newPage();
     await page.setContent(htmlContent);
