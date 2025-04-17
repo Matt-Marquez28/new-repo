@@ -29,7 +29,6 @@ const jobFairPreregistrationSchema = new mongoose.Schema(
     referenceNumber: {
       type: String,
       required: true,
-      unique: true,
     },
     qrCode: {
       type: String, // base64 image string (e.g., for frontend use)
@@ -42,9 +41,6 @@ const jobFairPreregistrationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// Avoid duplicate preregistration per account + event
-jobFairPreregistrationSchema.index({ account: 1, event: 1 }, { unique: true });
 
 const JobFairPreregistration = mongoose.model(
   "JobFairPreregistration",

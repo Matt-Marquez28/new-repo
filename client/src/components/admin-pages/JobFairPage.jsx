@@ -11,6 +11,8 @@ const JobFairAdminPage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(null);
+  const [jobSeekerCount, setJobSeekerCount] = useState(0);
+  const [employerCount, setEmployerCount] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -25,7 +27,8 @@ const JobFairAdminPage = () => {
   // Fetch real data from backend
   useEffect(() => {
     fetchEvents();
-  }, []);
+    getAllPreRegistered();
+  }, [events]);
 
   const fetchEvents = async () => {
     try {
@@ -37,6 +40,23 @@ const JobFairAdminPage = () => {
     } catch (error) {
       console.error("Failed to fetch events:", error);
       setLoading(false);
+    }
+  };
+
+  const getAllPreRegistered = async () => {
+    try {
+      const res = await axios.get(
+        `${JOB_VACANCY_API_END_POINT}/get-all-pre-registered`,
+        { withCredentials: true }
+      );
+      console.log(res?.data?.preRegistration);
+      const preregs = res?.data?.preregs || [];
+
+      // Count roles
+      setJobSeekerCount(preregs.filter((p) => p.role === "jobseeker").length);
+      setEmployerCount(preregs.filter((p) => p.role === "employer").length);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -118,17 +138,40 @@ const JobFairAdminPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleEventStatus = async (id) => {
+  // const toggleEventStatus = async (id) => {
+  //   try {
+  //     const event = events.find((e) => e._id === id);
+  //     const response = await axios.patch(`/api/job-fair-events/${id}/status`, {
+  //       isActive: !event.isActive,
+  //     });
+  //     setEvents(
+  //       events.map((event) => (event._id === id ? response.data.data : event))
+  //     );
+  //   } catch (error) {
+  //     console.error("Failed to toggle event status:", error);
+  //   }
+  // };
+
+  const toggleActivation = async (id) => {
     try {
-      const event = events.find((e) => e._id === id);
-      const response = await axios.patch(`/api/job-fair-events/${id}/status`, {
-        isActive: !event.isActive,
-      });
-      setEvents(
-        events.map((event) => (event._id === id ? response.data.data : event))
+      const res = await axios.put(
+        `${JOB_VACANCY_API_END_POINT}/toggle-job-fair-activation/${id}`,
+        {}, // Empty body to satisfy PATCH/PUT request
+        { withCredentials: true } // Needed for session-based APIs
       );
+
+      if (res.status >= 200 && res.status < 300) {
+        console.log("Toggled successfully:", res.data);
+        fetchEvents(); // Refresh your event list
+      } else {
+        console.error("Unexpected response:", res);
+      }
     } catch (error) {
-      console.error("Failed to toggle event status:", error);
+      console.error(
+        "Failed to toggle event status:",
+        error.response?.data || error.message
+      );
+      alert("Failed to toggle status. Please try again.");
     }
   };
 
@@ -203,8 +246,8 @@ const JobFairAdminPage = () => {
                   <i className="bi bi-building text-success fs-4"></i>
                 </div>
                 <div>
-                  <h6 className="mb-1 text-muted">Active Employers</h6>
-                  <h3 className="mb-0">{activeEmployers}</h3>
+                  <h6 className="mb-1 text-muted">Registered Employers</h6>
+                  <h3 className="mb-0">{employerCount}</h3>
                 </div>
               </div>
             </div>
@@ -218,8 +261,8 @@ const JobFairAdminPage = () => {
                   <i className="bi bi-people text-info fs-4"></i>
                 </div>
                 <div>
-                  <h6 className="mb-1 text-muted">Active Job Seekers</h6>
-                  <h3 className="mb-0">{activeJobSeekers}</h3>
+                  <h6 className="mb-1 text-muted">Registered Job Seekers</h6>
+                  <h3 className="mb-0">{jobSeekerCount}</h3>
                 </div>
               </div>
             </div>
@@ -365,8 +408,12 @@ const JobFairAdminPage = () => {
                           <input
                             className="form-check-input"
                             type="checkbox"
+                            role="switch"
                             checked={event.isActive}
-                            onChange={() => toggleEventStatus(event._id)}
+                            onChange={(e) => {
+                              e.preventDefault();
+                              toggleActivation(event._id);
+                            }}
                           />
                           <label className="form-check-label">
                             {event.isActive ? "Active" : "Inactive"}

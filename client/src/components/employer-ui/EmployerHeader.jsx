@@ -123,6 +123,14 @@ export const EmployerHeader = () => {
             </Nav.Link>
             <Nav.Link
               as={Link}
+              to="/employer/job-fair"
+              className="px-3"
+              style={{ color: "#1a4798" }}
+            >
+              <i className="bi bi-flag-fill"></i> Job Fair
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
               to="/employer/company-profile"
               className="px-3 text-primary"
             >
@@ -333,6 +341,14 @@ export const EmployerHeader = () => {
                   onClick={() => setShowOffcanvas(false)}
                 >
                   <i className="bi bi-building-fill me-2"></i> Company Profile
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  to="/employer/job-fair"
+                  className="px-3 py-2 rounded text-primary"
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-flag-fill me-2"></i> Job Fair
                 </Nav.Link>
                 <Nav.Link
                   as={Link}

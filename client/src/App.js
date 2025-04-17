@@ -52,6 +52,7 @@ import SearchCompanies from "./components/shared-pages/SearchCompanies";
 import JobFairPage from "./components/admin-pages/JobFairPage";
 import JobFair from "./components/shared-pages/JobFair";
 import PreRegistrationDetails from "./components/shared-pages/PreRegistrationDetails";
+import JobFairDetails from "./components/admin-pages/JobFairDetails";
 
 function App() {
   return (
@@ -102,8 +103,11 @@ const AppRoutes = () => {
           element={<ChangePasswordPage />}
         />
         <Route path="notification" element={<Notification />} />
-        <Route path="job-fair" element={<JobFair/>} />
-        <Route path="job-fair/pre-registration-details" element={<PreRegistrationDetails />} />
+        <Route path="job-fair" element={<JobFair />} />
+        <Route
+          path="job-fair/pre-registration-details"
+          element={<PreRegistrationDetails />}
+        />
         <Route path="dashboard" element={<JobSeekerDashboard />} />
         <Route path="profile" element={<JobSeekerProfile />} />
         <Route path="search-companies" element={<SearchCompanies />} />
@@ -143,6 +147,11 @@ const AppRoutes = () => {
         />
         <Route path="dashboard" element={<EmployerDashboard />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="job-fair" element={<JobFair />} />
+        <Route
+          path="job-fair/pre-registration-details"
+          element={<PreRegistrationDetails />}
+        />
         <Route
           path="settings/change-password"
           element={<ChangePasswordPage />}
@@ -172,6 +181,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="job-fair" element={<JobFairPage />} />
+        <Route path="job-fair/details" element={<JobFairDetails />} />
         <Route path="notification" element={<Notification />} />
         <Route
           path="dashboard/accredited-companies"

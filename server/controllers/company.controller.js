@@ -770,440 +770,6 @@ export const declineCompany = async (req, res) => {
 };
 
 // accredit company
-// export const accreditCompany = async (req, res) => {
-//   const { companyId } = req.params;
-//   const accountId = req.accountId;
-//   console.log(`ADMINISTRATOR ID = ${accountId}`);
-
-//   try {
-//     // Check if company document is verified
-//     const document = await CompanyDocuments.findOne({
-//       companyId: companyId,
-//     });
-
-//     if (document.status !== "verified") {
-//       return res.status(400).send({
-//         message: "Company document must be verified before accreditation",
-//       });
-//     }
-
-//     // Find the company and populate the accountId to get the email
-//     const company = await Company.findById(companyId).populate("accountId");
-
-//     if (!company) {
-//       return res.status(404).send({ message: "Company not found" });
-//     }
-
-//     if (company.status === "accredited") {
-//       return res.status(400).send({
-//         message: "Company is already accredited. No further action needed.",
-//       });
-//     }
-
-//     // Generate a unique accreditation ID
-//     const accreditationId = `ACC-${new Date().getFullYear()}-${uuidv4()
-//       .slice(0, 8)
-//       .toUpperCase()}`;
-
-//     // Log the populated company object to check the accountId and email
-//     console.log("Populated Company:", company);
-
-//     // Assuming the accountId object has an email field
-//     const companyEmail = company.accountId?.emailAddress; // Use optional chaining to prevent undefined errors
-//     if (!companyEmail) {
-//       return res.status(400).send({ message: "Company email not found" });
-//     }
-
-//     const formatTIN = (tin) => {
-//       if (!tin) return "N/A"; // Handle cases where TIN is not provided
-//       const cleanedTIN = tin.replace(/\D/g, ""); // Remove non-numeric characters
-//       if (cleanedTIN.length === 9) {
-//         return cleanedTIN.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3"); // Format as XXX-XXX-XXX
-//       } else if (cleanedTIN.length === 12) {
-//         return cleanedTIN.replace(
-//           /(\d{3})(\d{3})(\d{3})(\d{3})/,
-//           "$1-$2-$3-$4"
-//         ); // Format as XXX-XXX-XXX-XXX
-//       }
-//       return cleanedTIN; // Return as-is if it doesn't match expected lengths
-//     };
-
-//     // Use the formatted TIN in the HTML content
-//     const formattedTIN = formatTIN(company?.companyInformation?.tinNumber);
-
-//     // Define HTML content for the accreditation certificate
-//     const htmlContent = `
-//     <!DOCTYPE html>
-// <html lang="en">
-// <head>
-//   <meta charset="UTF-8">
-//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//   <style>
-//     @page {
-//       size: A4 portrait;
-//       margin: 0;
-//     }
-//     body {
-//       font-family: 'Arial', sans-serif;
-//       margin: 0;
-//       padding: 0;
-//       background-color: #fff;
-//       width: 210mm; /* A4 width */
-//       height: 297mm; /* A4 height */
-//       min-height: 100vh;
-//       box-sizing: border-box;
-//     }
-//     .document {
-//       padding: 20mm; /* Adjust padding to fit within A4 */
-//       width: 100%;
-//       height: 100%;
-//       box-sizing: border-box;
-//     }
-//     .header {
-//       text-align: center;
-//       padding-bottom: 30px;
-//       border-bottom: 2px solid #1a5f7a;
-//       margin-bottom: 40px;
-//     }
-//     .logo {
-//       width: 100px;
-//       height: 100px;
-//       margin: 0 auto 15px;
-//       display: flex;
-//       justify-content: center;
-//       align-items: center;
-//     }
-//     .logo img {
-//       width: 100%;
-//       height: 100%;
-//       object-fit: contain;
-//     }
-//     .government-title {
-//       color: #333;
-//       margin: 0;
-//       font-size: 14px;
-//     }
-//     .office-title {
-//       color: #1a5f7a;
-//       margin: 8px 0;
-//       font-size: 18px;
-//       font-weight: bold;
-//     }
-//     .document-title {
-//       font-size: 24px;
-//       color: #1a5f7a;
-//       text-transform: uppercase;
-//       letter-spacing: 2px;
-//       margin: 20px 0;
-//       text-align: center;
-//       font-weight: bold;
-//     }
-//     .overview-box {
-//       border: 2px solid #1a5f7a;
-//       border-radius: 8px;
-//       padding: 20px;
-//       margin-bottom: 30px;
-//       background-color: #f8f9fa;
-//     }
-//     .overview-grid {
-//       display: grid;
-//       grid-template-columns: 2fr 1fr;
-//       gap: 20px;
-//     }
-//     .overview-main {
-//       border-right: 1px solid #ddd;
-//       padding-right: 20px;
-//     }
-//     .overview-status {
-//       text-align: center;
-//       display: flex;
-//       flex-direction: column;
-//       justify-content: center;
-//       padding-left: 20px;
-//     }
-//     .status-badge {
-//       background-color: #2e7d32;
-//       color: white;
-//       padding: 10px 20px;
-//       border-radius: 20px;
-//       font-weight: bold;
-//       margin-bottom: 10px;
-//       font-size: 16px;
-//     }
-//     .content-box {
-//       border: 1px solid #ddd;
-//       border-radius: 8px;
-//       padding: 25px;
-//       margin-bottom: 30px;
-//       background-color: #f9f9f9;
-//     }
-//     .section-title {
-//       color: #1a5f7a;
-//       font-size: 18px;
-//       margin-bottom: 20px;
-//       font-weight: bold;
-//       border-bottom: 2px solid #1a5f7a;
-//       padding-bottom: 10px;
-//     }
-//     .info-grid {
-//       display: grid;
-//       grid-template-columns: 1fr 1fr;
-//       gap: 20px;
-//     }
-//     .info-item {
-//       margin-bottom: 15px;
-//     }
-//     .label {
-//       color: #666;
-//       font-size: 13px;
-//       margin-bottom: 3px;
-//       font-weight: 600;
-//       text-transform: uppercase;
-//     }
-//     .value {
-//       color: #333;
-//       font-size: 15px;
-//       font-weight: 500;
-//       padding: 2px 0;
-//     }
-//     .overview-item {
-//       margin-bottom: 12px;
-//     }
-//     .overview-item .label {
-//       font-size: 12px;
-//     }
-//     .overview-item .value {
-//       font-size: 16px;
-//       color: #1a5f7a;
-//     }
-//     .company-name {
-//       font-size: 20px;
-//       color: #1a5f7a;
-//       font-weight: bold;
-//       margin-bottom: 15px;
-//     }
-//     .footer {
-//       margin-top: 40px;
-//       text-align: center;
-//       font-size: 12px;
-//       color: #666;
-//       border-top: 1px solid #ddd;
-//       padding-top: 20px;
-//     }
-//   </style>
-// </head>
-// <body>
-//   <div class="document">
-//     <div class="header">
-//       <div class="logo">
-//         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s" alt="Taguig City Logo" />
-//       </div>
-//       <h4 class="government-title">Republic of the Philippines</h4>
-//       <h3 class="office-title">City Government of Taguig</h3>
-//       <h3 class="office-title">Public Employment Service Office</h3>
-//     </div>
-
-//     <h1 class="document-title">Proof of Accreditation</h1>
-
-//     <div class="overview-box">
-//       <div class="overview-grid">
-//         <div class="overview-main">
-//           <div class="company-name">${
-//             company?.companyInformation?.businessName
-//           }</div>
-//           <div class="overview-item">
-//             <div class="label">Tax Identification Number (TIN)</div>
-//             <div class="value">${formattedTIN}</div>
-//           </div>
-//           <div class="overview-item">
-//             <div class="label">Business Address</div>
-//             <div class="value">
-//     ${
-//       [
-//         company?.companyInformation?.street,
-//         company?.companyInformation?.barangay,
-//         company?.companyInformation?.cityMunicipality,
-//         company?.companyInformation?.province,
-//         company?.companyInformation?.zipCode,
-//       ]
-//         .filter(Boolean) // Remove undefined or null values
-//         .join(", ") // Join with a comma and a space
-//     }
-//   </div>
-//           </div>
-//           <div class="overview-item">
-//             <div class="label">Accreditation ID</div>
-//             <div class="value">${accreditationId}</div>
-//           </div>
-//         </div>
-//         <div class="overview-status">
-//           <div class="status-badge">ACCREDITED</div>
-//           <div style="font-size: 13px; color: #666;">
-//             Date of Accreditation<br/>
-//             ${new Date().toLocaleDateString("en-US", {
-//               day: "numeric",
-//               month: "long",
-//               year: "numeric",
-//             })}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-
-//     <div class="content-box">
-//       <h2 class="section-title">Company Information</h2>
-//       <div class="info-grid">
-//         <div class="info-item">
-//           <div class="label">Type of Business</div>
-//           <div class="value">${
-//             company?.companyInformation?.typeOfBusiness
-//           }</div>
-//         </div>
-//         <div class="info-item">
-//           <div class="label">Industry</div>
-//           <div class="value">${company?.companyInformation?.industry}</div>
-//         </div>
-//         <div class="info-item">
-//           <div class="label">Employer Name</div>
-//           <div class="value">${company?.companyInformation?.employerName}</div>
-//         </div>
-//         <div class="info-item">
-//           <div class="label">Employer Position</div>
-//           <div class="value">${
-//             company?.companyInformation?.employerPosition
-//           }</div>
-//         </div>
-//         <div class="info-item">
-//           <div class="label">Contact Number</div>
-//           <div class="value">${company?.companyInformation?.mobileNumber}</div>
-//         </div>
-//         <div class="info-item">
-//           <div class="label">Email Address</div>
-//           <div class="value">${company?.accountId?.emailAddress}</div>
-//         </div>
-//       </div>
-//     </div>
-
-//     <div class="footer">
-//       <p>This document is officially generated by the City Government of Taguig Public Employment Service Office (PESO).</p>
-//       <p>Date Generated: ${new Date().toLocaleString()}</p>
-//     </div>
-//   </div>
-// </body>
-// </html>
-//     `;
-
-//     // Generate PDF using Puppeteer
-//     const browser = await puppeteer.launch();
-//     const page = await browser.newPage();
-//     await page.setContent(htmlContent);
-//     const pdfBuffer = await page.pdf({ format: "A4" });
-//     await browser.close();
-
-//     // Upload PDF to Cloudinary
-//     const result = await new Promise((resolve, reject) => {
-//       const stream = cloudinary.uploader.upload_stream(
-//         { folder: "company_accreditations", use_filename: true },
-//         (error, result) => {
-//           if (error) reject(error);
-//           resolve(result);
-//         }
-//       );
-//       stream.end(pdfBuffer);
-//     });
-
-//     // Update the company with accreditation details
-//     company.accreditation = result.secure_url;
-//     company.status = "accredited";
-//     company.isRenewal = "false";
-//     company.accreditationDate = new Date(); // Set the accreditation date
-//     company.accreditationId = accreditationId; // Save the accreditation ID
-//     await company.save();
-
-//     // Prepare email content
-//     const emailContent = {
-//       to: companyEmail, // Send to the email associated with the company
-//       subject: `Accreditation Certificate for ${company?.companyInformation?.businessName}`,
-//       text: `Dear ${company?.companyInformation?.businessName},
-
-//     We are pleased to inform you that your company has been accredited. Please find the accreditation certificate attached.
-
-//     Thank you for your cooperation.
-
-//     Best regards,
-//     City Government of Taguig`,
-//       html: `
-//         <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
-//           <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
-//             <h1 style="margin: 0; font-size: 24px;">PESO City Government of Taguig</h1>
-//           </div>
-
-//           <h2 style="color: #2C3E50; text-align: center; margin-top: 20px; font-size: 22px;">Accreditation</h2>
-
-//           <p style="font-size: 16px;">Dear ${company?.companyInformation?.businessName},</p>
-
-//           <p style="font-size: 16px;">We are pleased to inform you that your company has been accredited. Please find the proof of accreditation attached.</p>
-
-//           <p style="font-size: 16px;">If you wish to view or download the proof of document, please click the button below:</p>
-
-//           <p style="text-align: center;">
-//             <a href="" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Accreditation Certificate</a>
-//           </p>
-
-//           <p style="font-size: 16px; text-align: center; margin-top: 30px;">
-//             <strong>Best regards,</strong><br/>
-//             City Government of Taguig
-//           </p>
-
-//           <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
-//             © 2025 | City Government of Taguig
-//           </p>
-//         </div>
-//       `,
-//     };
-
-//     // Send the email notification with the PDF attachment
-//     await sendEmail(emailContent);
-
-//     await auditTrail({
-//       accountId,
-//       action: "accredited a company",
-//       details: {
-//         companyName: company?.companyInformation?.businessName,
-//         newStatus: "accredited",
-//       },
-//     });
-
-//     // Notify the employer
-//     try {
-//       await createNotification({
-//         to: company?.accountId?._id, // Employer ID
-//         from: accountId, // admin / staff ID
-//         title: "Company Accredited",
-//         message: `Your company, ${company?.companyInformation?.businessName}, has been successfully accredited.`,
-//         type: "success",
-//       });
-//     } catch (error) {
-//       console.error("Error creating notification:", error);
-//     }
-
-//     res.status(200).send({
-//       message: "Company Accredited Successfully.",
-//       company,
-//     });
-//   } catch (error) {
-//     console.error("Error accrediting company:", error);
-//     res.status(500).send({ message: "Failed to accredit company" });
-//   }
-// };
-
-import PDFDocument from "pdfkit";
-import fs from "fs";
-import { promisify } from "util";
-
-const writeFileAsync = promisify(fs.writeFile);
-const unlinkAsync = promisify(fs.unlink);
-
 export const accreditCompany = async (req, res) => {
   const { companyId } = req.params;
   const accountId = req.accountId;
@@ -1239,185 +805,302 @@ export const accreditCompany = async (req, res) => {
       .slice(0, 8)
       .toUpperCase()}`;
 
+    // Log the populated company object to check the accountId and email
+    console.log("Populated Company:", company);
+
     // Assuming the accountId object has an email field
-    const companyEmail = company.accountId?.emailAddress;
+    const companyEmail = company.accountId?.emailAddress; // Use optional chaining to prevent undefined errors
     if (!companyEmail) {
       return res.status(400).send({ message: "Company email not found" });
     }
 
     const formatTIN = (tin) => {
-      if (!tin) return "N/A";
-      const cleanedTIN = tin.replace(/\D/g, "");
+      if (!tin) return "N/A"; // Handle cases where TIN is not provided
+      const cleanedTIN = tin.replace(/\D/g, ""); // Remove non-numeric characters
       if (cleanedTIN.length === 9) {
-        return cleanedTIN.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3");
+        return cleanedTIN.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3"); // Format as XXX-XXX-XXX
       } else if (cleanedTIN.length === 12) {
         return cleanedTIN.replace(
           /(\d{3})(\d{3})(\d{3})(\d{3})/,
           "$1-$2-$3-$4"
-        );
+        ); // Format as XXX-XXX-XXX-XXX
       }
-      return cleanedTIN;
+      return cleanedTIN; // Return as-is if it doesn't match expected lengths
     };
 
-    // Format the business address
-    const formattedAddress = [
-      company?.companyInformation?.street,
-      company?.companyInformation?.barangay,
-      company?.companyInformation?.cityMunicipality,
-      company?.companyInformation?.province,
-      company?.companyInformation?.zipCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
+    // Use the formatted TIN in the HTML content
+    const formattedTIN = formatTIN(company?.companyInformation?.tinNumber);
 
-    // Create PDF using PDFKit
-    const doc = new PDFDocument({ size: "A4", margin: 20 });
-
-    // Temporary file path
-    const tempFilePath = `./temp/accreditation_${companyId}_${Date.now()}.pdf`;
-
-    // Ensure temp directory exists
-    if (!fs.existsSync("./temp")) {
-      fs.mkdirSync("./temp");
+    // Define HTML content for the accreditation certificate
+    const htmlContent = `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
     }
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      width: 210mm; /* A4 width */
+      height: 297mm; /* A4 height */
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .document {
+      padding: 20mm; /* Adjust padding to fit within A4 */
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .header {
+      text-align: center;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #1a5f7a;
+      margin-bottom: 40px;
+    }
+    .logo {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .government-title {
+      color: #333;
+      margin: 0;
+      font-size: 14px;
+    }
+    .office-title {
+      color: #1a5f7a;
+      margin: 8px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .document-title {
+      font-size: 24px;
+      color: #1a5f7a;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .overview-box {
+      border: 2px solid #1a5f7a;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      background-color: #f8f9fa;
+    }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    .overview-main {
+      border-right: 1px solid #ddd;
+      padding-right: 20px;
+    }
+    .overview-status {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 20px;
+    }
+    .status-badge {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .content-box {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 30px;
+      background-color: #f9f9f9;
+    }
+    .section-title {
+      color: #1a5f7a;
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-bottom: 2px solid #1a5f7a;
+      padding-bottom: 10px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .info-item {
+      margin-bottom: 15px;
+    }
+    .label {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .value {
+      color: #333;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 2px 0;
+    }
+    .overview-item {
+      margin-bottom: 12px;
+    }
+    .overview-item .label {
+      font-size: 12px;
+    }
+    .overview-item .value {
+      font-size: 16px;
+      color: #1a5f7a;
+    }
+    .company-name {
+      font-size: 20px;
+      color: #1a5f7a;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="document">
+    <div class="header">
+      <div class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s" alt="Taguig City Logo" />
+      </div>
+      <h4 class="government-title">Republic of the Philippines</h4>
+      <h3 class="office-title">City Government of Taguig</h3>
+      <h3 class="office-title">Public Employment Service Office</h3>
+    </div>
 
-    const writeStream = fs.createWriteStream(tempFilePath);
-    doc.pipe(writeStream);
+    <h1 class="document-title">Proof of Accreditation</h1>
 
-    // Add content to PDF
-    // Header
-    doc
-      .image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s", 50, 45, { width: 50 })
-      .fillColor("#444444")
-      .fontSize(10)
-      .text("Republic of the Philippines", 200, 50, { align: "center" })
-      .fontSize(12)
-      .text("City Government of Taguig", 200, 65, { align: "center" })
-      .text("Public Employment Service Office", 200, 80, { align: "center" })
-      .moveDown();
+    <div class="overview-box">
+      <div class="overview-grid">
+        <div class="overview-main">
+          <div class="company-name">${
+            company?.companyInformation?.businessName
+          }</div>
+          <div class="overview-item">
+            <div class="label">Tax Identification Number (TIN)</div>
+            <div class="value">${formattedTIN}</div>
+          </div>
+          <div class="overview-item">
+            <div class="label">Business Address</div>
+            <div class="value">
+    ${
+      [
+        company?.companyInformation?.street,
+        company?.companyInformation?.barangay,
+        company?.companyInformation?.cityMunicipality,
+        company?.companyInformation?.province,
+        company?.companyInformation?.zipCode,
+      ]
+        .filter(Boolean) // Remove undefined or null values
+        .join(", ") // Join with a comma and a space
+    }
+  </div>
+          </div>
+          <div class="overview-item">
+            <div class="label">Accreditation ID</div>
+            <div class="value">${accreditationId}</div>
+          </div>
+        </div>
+        <div class="overview-status">
+          <div class="status-badge">ACCREDITED</div>
+          <div style="font-size: 13px; color: #666;">
+            Date of Accreditation<br/>
+            ${new Date().toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
 
-    // Title
-    doc
-      .fontSize(18)
-      .text("Proof of Accreditation", { align: "center" })
-      .moveDown();
+    <div class="content-box">
+      <h2 class="section-title">Company Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="label">Type of Business</div>
+          <div class="value">${
+            company?.companyInformation?.typeOfBusiness
+          }</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Industry</div>
+          <div class="value">${company?.companyInformation?.industry}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Employer Name</div>
+          <div class="value">${company?.companyInformation?.employerName}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Employer Position</div>
+          <div class="value">${
+            company?.companyInformation?.employerPosition
+          }</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Contact Number</div>
+          <div class="value">${company?.companyInformation?.mobileNumber}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Email Address</div>
+          <div class="value">${company?.accountId?.emailAddress}</div>
+        </div>
+      </div>
+    </div>
 
-    // Company Overview Box
-    doc
-      .rect(50, 120, 500, 100)
-      .stroke("#1a5f7a")
-      .fillColor("#1a5f7a")
-      .fontSize(16)
-      .text(company?.companyInformation?.businessName || "N/A", 60, 130)
-      .fillColor("#444444")
-      .fontSize(10)
-      .text("Tax Identification Number (TIN)", 60, 160)
-      .fontSize(12)
-      .text(formatTIN(company?.companyInformation?.tinNumber), 60, 175)
-      .fontSize(10)
-      .text("Business Address", 60, 195)
-      .fontSize(12)
-      .text(formattedAddress, 60, 210)
-      .fontSize(10)
-      .text("Accreditation ID", 300, 160)
-      .fontSize(12)
-      .text(accreditationId, 300, 175)
-      .fontSize(10)
-      .text("Status", 300, 195)
-      .fontSize(12)
-      .fillColor("#2e7d32")
-      .text("ACCREDITED", 300, 210)
-      .fillColor("#444444")
-      .fontSize(10)
-      .text("Date of Accreditation", 300, 230)
-      .fontSize(12)
-      .text(
-        new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }),
-        300,
-        245
-      );
+    <div class="footer">
+      <p>This document is officially generated by the City Government of Taguig Public Employment Service Office (PESO).</p>
+      <p>Date Generated: ${new Date().toLocaleString()}</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
 
-    // Company Information Section
-    doc
-      .moveTo(50, 250)
-      .lineTo(550, 250)
-      .stroke()
-      .fontSize(14)
-      .text("Company Information", { align: "center" })
-      .moveDown();
-
-    // Two column layout for company info
-    const leftCol = 60;
-    const rightCol = 300;
-    let y = 290;
-
-    doc
-      .fontSize(10)
-      .text("Type of Business", leftCol, y)
-      .fontSize(12)
-      .text(
-        company?.companyInformation?.typeOfBusiness || "N/A",
-        leftCol,
-        y + 15
-      )
-      .fontSize(10)
-      .text("Industry", rightCol, y)
-      .fontSize(12)
-      .text(company?.companyInformation?.industry || "N/A", rightCol, y + 15);
-
-    y += 50;
-    doc
-      .fontSize(10)
-      .text("Employer Name", leftCol, y)
-      .fontSize(12)
-      .text(company?.companyInformation?.employerName || "N/A", leftCol, y + 15)
-      .fontSize(10)
-      .text("Employer Position", rightCol, y)
-      .fontSize(12)
-      .text(
-        company?.companyInformation?.employerPosition || "N/A",
-        rightCol,
-        y + 15
-      );
-
-    y += 50;
-    doc
-      .fontSize(10)
-      .text("Contact Number", leftCol, y)
-      .fontSize(12)
-      .text(company?.companyInformation?.mobileNumber || "N/A", leftCol, y + 15)
-      .fontSize(10)
-      .text("Email Address", rightCol, y)
-      .fontSize(12)
-      .text(company?.accountId?.emailAddress || "N/A", rightCol, y + 15);
-
-    // Footer
-    doc
-      .moveTo(50, 700)
-      .lineTo(550, 700)
-      .stroke()
-      .fontSize(10)
-      .text(
-        "This document is officially generated by the City Government of Taguig Public Employment Service Office (PESO).",
-        50,
-        710,
-        { align: "center", width: 500 }
-      )
-      .text(`Date Generated: ${new Date().toLocaleString()}`, 50, 730, {
-        align: "center",
-      });
-
-    doc.end();
-
-    // Wait for the PDF to be generated
-    await new Promise((resolve) => writeStream.on("finish", resolve));
-
-    // Read the generated PDF
-    const pdfBuffer = fs.readFileSync(tempFilePath);
+    // Generate PDF using Puppeteer
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.setContent(htmlContent);
+    const pdfBuffer = await page.pdf({ format: "A4" });
+    await browser.close();
 
     // Upload PDF to Cloudinary
     const result = await new Promise((resolve, reject) => {
@@ -1431,63 +1114,54 @@ export const accreditCompany = async (req, res) => {
       stream.end(pdfBuffer);
     });
 
-    // Delete the temporary file
-    await unlinkAsync(tempFilePath);
-
     // Update the company with accreditation details
     company.accreditation = result.secure_url;
     company.status = "accredited";
     company.isRenewal = "false";
-    company.accreditationDate = new Date();
-    company.accreditationId = accreditationId;
+    company.accreditationDate = new Date(); // Set the accreditation date
+    company.accreditationId = accreditationId; // Save the accreditation ID
     await company.save();
 
     // Prepare email content
     const emailContent = {
-      to: companyEmail,
+      to: companyEmail, // Send to the email associated with the company
       subject: `Accreditation Certificate for ${company?.companyInformation?.businessName}`,
       text: `Dear ${company?.companyInformation?.businessName},
-    
-We are pleased to inform you that your company has been accredited. Please find the accreditation certificate attached.
 
-Thank you for your cooperation.
+    We are pleased to inform you that your company has been accredited. Please find the accreditation certificate attached.
 
-Best regards,
-City Government of Taguig`,
+    Thank you for your cooperation.
+
+    Best regards,
+    City Government of Taguig`,
       html: `
         <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
           <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
             <h1 style="margin: 0; font-size: 24px;">PESO City Government of Taguig</h1>
           </div>
-    
+
           <h2 style="color: #2C3E50; text-align: center; margin-top: 20px; font-size: 22px;">Accreditation</h2>
-    
+
           <p style="font-size: 16px;">Dear ${company?.companyInformation?.businessName},</p>
-    
+
           <p style="font-size: 16px;">We are pleased to inform you that your company has been accredited. Please find the proof of accreditation attached.</p>
-    
+
           <p style="font-size: 16px;">If you wish to view or download the proof of document, please click the button below:</p>
-    
+
           <p style="text-align: center;">
             <a href="" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Accreditation Certificate</a>
           </p>
-    
+
           <p style="font-size: 16px; text-align: center; margin-top: 30px;">
             <strong>Best regards,</strong><br/>
             City Government of Taguig
           </p>
-    
+
           <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
             © 2025 | City Government of Taguig
           </p>
         </div>
       `,
-      attachments: [
-        {
-          filename: `Accreditation_Certificate_${company?.companyInformation?.businessName}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
     };
 
     // Send the email notification with the PDF attachment
@@ -1505,8 +1179,8 @@ City Government of Taguig`,
     // Notify the employer
     try {
       await createNotification({
-        to: company?.accountId?._id,
-        from: accountId,
+        to: company?.accountId?._id, // Employer ID
+        from: accountId, // admin / staff ID
         title: "Company Accredited",
         message: `Your company, ${company?.companyInformation?.businessName}, has been successfully accredited.`,
         type: "success",
@@ -1524,6 +1198,327 @@ City Government of Taguig`,
     res.status(500).send({ message: "Failed to accredit company" });
   }
 };
+
+// export const accreditCompany = async (req, res) => {
+//   const { companyId } = req.params;
+//   const accountId = req.accountId;
+//   console.log(`ADMINISTRATOR ID = ${accountId}`);
+
+//   try {
+//     // Check if company document is verified
+//     const document = await CompanyDocuments.findOne({
+//       companyId: companyId,
+//     });
+
+//     if (document.status !== "verified") {
+//       return res.status(400).send({
+//         message: "Company document must be verified before accreditation",
+//       });
+//     }
+
+//     // Find the company and populate the accountId to get the email
+//     const company = await Company.findById(companyId).populate("accountId");
+
+//     if (!company) {
+//       return res.status(404).send({ message: "Company not found" });
+//     }
+
+//     if (company.status === "accredited") {
+//       return res.status(400).send({
+//         message: "Company is already accredited. No further action needed.",
+//       });
+//     }
+
+//     // Generate a unique accreditation ID
+//     const accreditationId = `ACC-${new Date().getFullYear()}-${uuidv4()
+//       .slice(0, 8)
+//       .toUpperCase()}`;
+
+//     // Assuming the accountId object has an email field
+//     const companyEmail = company.accountId?.emailAddress;
+//     if (!companyEmail) {
+//       return res.status(400).send({ message: "Company email not found" });
+//     }
+
+//     const formatTIN = (tin) => {
+//       if (!tin) return "N/A";
+//       const cleanedTIN = tin.replace(/\D/g, "");
+//       if (cleanedTIN.length === 9) {
+//         return cleanedTIN.replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3");
+//       } else if (cleanedTIN.length === 12) {
+//         return cleanedTIN.replace(
+//           /(\d{3})(\d{3})(\d{3})(\d{3})/,
+//           "$1-$2-$3-$4"
+//         );
+//       }
+//       return cleanedTIN;
+//     };
+
+//     // Format the business address
+//     const formattedAddress = [
+//       company?.companyInformation?.street,
+//       company?.companyInformation?.barangay,
+//       company?.companyInformation?.cityMunicipality,
+//       company?.companyInformation?.province,
+//       company?.companyInformation?.zipCode,
+//     ]
+//       .filter(Boolean)
+//       .join(", ");
+
+//     // Create PDF using PDFKit
+//     const doc = new PDFDocument({ size: "A4", margin: 20 });
+
+//     // Temporary file path
+//     const tempFilePath = `./temp/accreditation_${companyId}_${Date.now()}.pdf`;
+
+//     // Ensure temp directory exists
+//     if (!fs.existsSync("./temp")) {
+//       fs.mkdirSync("./temp");
+//     }
+
+//     const writeStream = fs.createWriteStream(tempFilePath);
+//     doc.pipe(writeStream);
+
+//     // Add content to PDF
+//     // Header
+//     doc
+//       .image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOeEApKV3HZv0HZLbBXvhOB0icqfJk5qfdw&s", 50, 45, { width: 50 })
+//       .fillColor("#444444")
+//       .fontSize(10)
+//       .text("Republic of the Philippines", 200, 50, { align: "center" })
+//       .fontSize(12)
+//       .text("City Government of Taguig", 200, 65, { align: "center" })
+//       .text("Public Employment Service Office", 200, 80, { align: "center" })
+//       .moveDown();
+
+//     // Title
+//     doc
+//       .fontSize(18)
+//       .text("Proof of Accreditation", { align: "center" })
+//       .moveDown();
+
+//     // Company Overview Box
+//     doc
+//       .rect(50, 120, 500, 100)
+//       .stroke("#1a5f7a")
+//       .fillColor("#1a5f7a")
+//       .fontSize(16)
+//       .text(company?.companyInformation?.businessName || "N/A", 60, 130)
+//       .fillColor("#444444")
+//       .fontSize(10)
+//       .text("Tax Identification Number (TIN)", 60, 160)
+//       .fontSize(12)
+//       .text(formatTIN(company?.companyInformation?.tinNumber), 60, 175)
+//       .fontSize(10)
+//       .text("Business Address", 60, 195)
+//       .fontSize(12)
+//       .text(formattedAddress, 60, 210)
+//       .fontSize(10)
+//       .text("Accreditation ID", 300, 160)
+//       .fontSize(12)
+//       .text(accreditationId, 300, 175)
+//       .fontSize(10)
+//       .text("Status", 300, 195)
+//       .fontSize(12)
+//       .fillColor("#2e7d32")
+//       .text("ACCREDITED", 300, 210)
+//       .fillColor("#444444")
+//       .fontSize(10)
+//       .text("Date of Accreditation", 300, 230)
+//       .fontSize(12)
+//       .text(
+//         new Date().toLocaleDateString("en-US", {
+//           day: "numeric",
+//           month: "long",
+//           year: "numeric",
+//         }),
+//         300,
+//         245
+//       );
+
+//     // Company Information Section
+//     doc
+//       .moveTo(50, 250)
+//       .lineTo(550, 250)
+//       .stroke()
+//       .fontSize(14)
+//       .text("Company Information", { align: "center" })
+//       .moveDown();
+
+//     // Two column layout for company info
+//     const leftCol = 60;
+//     const rightCol = 300;
+//     let y = 290;
+
+//     doc
+//       .fontSize(10)
+//       .text("Type of Business", leftCol, y)
+//       .fontSize(12)
+//       .text(
+//         company?.companyInformation?.typeOfBusiness || "N/A",
+//         leftCol,
+//         y + 15
+//       )
+//       .fontSize(10)
+//       .text("Industry", rightCol, y)
+//       .fontSize(12)
+//       .text(company?.companyInformation?.industry || "N/A", rightCol, y + 15);
+
+//     y += 50;
+//     doc
+//       .fontSize(10)
+//       .text("Employer Name", leftCol, y)
+//       .fontSize(12)
+//       .text(company?.companyInformation?.employerName || "N/A", leftCol, y + 15)
+//       .fontSize(10)
+//       .text("Employer Position", rightCol, y)
+//       .fontSize(12)
+//       .text(
+//         company?.companyInformation?.employerPosition || "N/A",
+//         rightCol,
+//         y + 15
+//       );
+
+//     y += 50;
+//     doc
+//       .fontSize(10)
+//       .text("Contact Number", leftCol, y)
+//       .fontSize(12)
+//       .text(company?.companyInformation?.mobileNumber || "N/A", leftCol, y + 15)
+//       .fontSize(10)
+//       .text("Email Address", rightCol, y)
+//       .fontSize(12)
+//       .text(company?.accountId?.emailAddress || "N/A", rightCol, y + 15);
+
+//     // Footer
+//     doc
+//       .moveTo(50, 700)
+//       .lineTo(550, 700)
+//       .stroke()
+//       .fontSize(10)
+//       .text(
+//         "This document is officially generated by the City Government of Taguig Public Employment Service Office (PESO).",
+//         50,
+//         710,
+//         { align: "center", width: 500 }
+//       )
+//       .text(`Date Generated: ${new Date().toLocaleString()}`, 50, 730, {
+//         align: "center",
+//       });
+
+//     doc.end();
+
+//     // Wait for the PDF to be generated
+//     await new Promise((resolve) => writeStream.on("finish", resolve));
+
+//     // Read the generated PDF
+//     const pdfBuffer = fs.readFileSync(tempFilePath);
+
+//     // Upload PDF to Cloudinary
+//     const result = await new Promise((resolve, reject) => {
+//       const stream = cloudinary.uploader.upload_stream(
+//         { folder: "company_accreditations", use_filename: true },
+//         (error, result) => {
+//           if (error) reject(error);
+//           resolve(result);
+//         }
+//       );
+//       stream.end(pdfBuffer);
+//     });
+
+//     // Delete the temporary file
+//     await unlinkAsync(tempFilePath);
+
+//     // Update the company with accreditation details
+//     company.accreditation = result.secure_url;
+//     company.status = "accredited";
+//     company.isRenewal = "false";
+//     company.accreditationDate = new Date();
+//     company.accreditationId = accreditationId;
+//     await company.save();
+
+//     // Prepare email content
+//     const emailContent = {
+//       to: companyEmail,
+//       subject: `Accreditation Certificate for ${company?.companyInformation?.businessName}`,
+//       text: `Dear ${company?.companyInformation?.businessName},
+
+// We are pleased to inform you that your company has been accredited. Please find the accreditation certificate attached.
+
+// Thank you for your cooperation.
+
+// Best regards,
+// City Government of Taguig`,
+//       html: `
+//         <div style="font-family: 'Roboto', Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
+//           <div style="text-align: center; background-color: #007BFF; color: #fff; padding: 15px; border-radius: 8px 8px 0 0;">
+//             <h1 style="margin: 0; font-size: 24px;">PESO City Government of Taguig</h1>
+//           </div>
+
+//           <h2 style="color: #2C3E50; text-align: center; margin-top: 20px; font-size: 22px;">Accreditation</h2>
+
+//           <p style="font-size: 16px;">Dear ${company?.companyInformation?.businessName},</p>
+
+//           <p style="font-size: 16px;">We are pleased to inform you that your company has been accredited. Please find the proof of accreditation attached.</p>
+
+//           <p style="font-size: 16px;">If you wish to view or download the proof of document, please click the button below:</p>
+
+//           <p style="text-align: center;">
+//             <a href="" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Accreditation Certificate</a>
+//           </p>
+
+//           <p style="font-size: 16px; text-align: center; margin-top: 30px;">
+//             <strong>Best regards,</strong><br/>
+//             City Government of Taguig
+//           </p>
+
+//           <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
+//             © 2025 | City Government of Taguig
+//           </p>
+//         </div>
+//       `,
+//       attachments: [
+//         {
+//           filename: `Accreditation_Certificate_${company?.companyInformation?.businessName}.pdf`,
+//           content: pdfBuffer,
+//         },
+//       ],
+//     };
+
+//     // Send the email notification with the PDF attachment
+//     await sendEmail(emailContent);
+
+//     await auditTrail({
+//       accountId,
+//       action: "accredited a company",
+//       details: {
+//         companyName: company?.companyInformation?.businessName,
+//         newStatus: "accredited",
+//       },
+//     });
+
+//     // Notify the employer
+//     try {
+//       await createNotification({
+//         to: company?.accountId?._id,
+//         from: accountId,
+//         title: "Company Accredited",
+//         message: `Your company, ${company?.companyInformation?.businessName}, has been successfully accredited.`,
+//         type: "success",
+//       });
+//     } catch (error) {
+//       console.error("Error creating notification:", error);
+//     }
+
+//     res.status(200).send({
+//       message: "Company Accredited Successfully.",
+//       company,
+//     });
+//   } catch (error) {
+//     console.error("Error accrediting company:", error);
+//     res.status(500).send({ message: "Failed to accredit company" });
+//   }
+// };
 
 // update candidate preferences
 export const updateCandidatePreferences = async (req, res) => {

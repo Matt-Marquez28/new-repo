@@ -11,6 +11,10 @@ const JobFair = () => {
   const navigate = useNavigate();
   const [jobFairData, setJobFairData] = useState(null);
   const [preRegistrationData, setPreRegistrationData] = useState(null);
+  const [allPreRegistered, setAllPreRegistered] = useState(null);
+  const [jobSeekerCount, setJobSeekerCount] = useState(0);
+  const [employerCount, setEmployerCount] = useState(0);
+
   // Sample data
   const stats = {
     jobSeekers: 1245,
@@ -21,11 +25,14 @@ const JobFair = () => {
 
   useEffect(() => {
     getActiveJobFair();
+    getAllPreRegistered();
   }, []);
 
   useEffect(() => {
-    getPreRegistration();
-  }, []);
+    if (jobFairData?._id) {
+      getPreRegistration();
+    }
+  }, [jobFairData]);
 
   const getActiveJobFair = async () => {
     try {
@@ -47,6 +54,25 @@ const JobFair = () => {
       );
       console.log(res?.data?.preRegistration);
       setPreRegistrationData(res?.data?.preRegistration);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllPreRegistered = async () => {
+    try {
+      const res = await axios.get(
+        `${JOB_VACANCY_API_END_POINT}/get-all-pre-registered`,
+        { withCredentials: true }
+      );
+      console.log(res?.data?.preRegistration);
+      const preregs = res?.data?.preregs || [];
+
+      setAllPreRegistered(preregs);
+
+      // Count roles
+      setJobSeekerCount(preregs.filter((p) => p.role === "jobseeker").length);
+      setEmployerCount(preregs.filter((p) => p.role === "employer").length);
     } catch (error) {
       console.log(error);
     }
@@ -143,9 +169,7 @@ const JobFair = () => {
                   ></i>
                 </div>
                 <div>
-                  <h3 className="mb-0 fw-bold">
-                    {stats.jobSeekers.toLocaleString()}
-                  </h3>
+                  <h3 className="mb-0 fw-bold">{jobSeekerCount}</h3>
                   <p className="text-muted mb-0">Pre-Registered Job Seekers</p>
                 </div>
               </Card.Body>
@@ -162,9 +186,7 @@ const JobFair = () => {
                   ></i>
                 </div>
                 <div>
-                  <h3 className="mb-0 fw-bold">
-                    {stats.employers.toLocaleString()}
-                  </h3>
+                  <h3 className="mb-0 fw-bold">{employerCount}</h3>
                   <p className="text-muted mb-0">Pre-Registered Employers</p>
                 </div>
               </Card.Body>

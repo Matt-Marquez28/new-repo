@@ -1,63 +1,84 @@
-<div className="ms-4">
-<div className="mb-3">
-  <p className="mb-2">Reason for unemployment:</p>
-  <div className="d-flex flex-column gap-2">
-    {[
-      "New Entrant / Fresh Graduate",
-      "Finished Contract",
-      "Resigned",
-      "Retired",
-      "Terminated / Laid off due to calamity",
-      "Terminated / Laid off (local)",
-      "Terminated / Laid off (abroad)",
-      "Others",
-    ].map((reason, index) => (
-      <div className="form-check" key={`reason-${index}`}>
-        <input
-          className="form-check-input"
-          type="radio"
-          name="unemploymentReason"
-          id={`reason${index + 1}`}
-          value={reason}
-          checked={unemploymentReason === reason}
-          onChange={handleUnemploymentReasonChange}
-        />
-        <label className="form-check-label" htmlFor={`reason${index + 1}`}>
-          {reason}
-        </label>
+<div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3 mb-md-0">
+          <h1 className="h3 fw-bold">
+            <i className="bi bi-calendar-event me-2 text-primary"></i>
+            Job Fair Event Details
+          </h1>
+          <p className="text-muted mb-0">
+            Track pre-registrations, attendance rates, and participant
+            demographics
+          </p>
+        </div>
       </div>
-    ))}
 
-    {unemploymentReason === "Others" && (
-      <div className="mt-2 ms-4">
-        <label htmlFor="otherReasonInput" className="form-label">
-          Please specify:
-        </label>
-        <input
-          type="text"
-          className="form-control"
-          id="otherReasonInput"
-          value={unemploymentOtherReason}
-          onChange={handleUnemploymentOtherReasonChange}
-          placeholder="Enter your reason..."
-        />
+      {/* Statistics Cards */}
+      <div className="row mb-4">
+        <div className="col-md-3 mb-3 mb-md-0">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex align-items-center">
+                <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
+                  <i className="bi bi-person-plus text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h6 className="mb-1 text-muted">Total Pre-Registrations</h6>
+                  <h3 className="mb-0">{stats.totalPreRegs}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-3 mb-3 mb-md-0">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex align-items-center">
+                <div className="bg-info bg-opacity-10 p-3 rounded me-3">
+                  <i className="bi bi-people text-info fs-4"></i>
+                </div>
+                <div>
+                  <h6 className="mb-1 text-muted">Job Seekers</h6>
+                  <h3 className="mb-0">{stats.jobSeekersPreRegs}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-3 mb-3 mb-md-0">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex align-items-center">
+                <div className="bg-success bg-opacity-10 p-3 rounded me-3">
+                  <i className="bi bi-building text-success fs-4"></i>
+                </div>
+                <div>
+                  <h6 className="mb-1 text-muted">Employers</h6>
+                  <h3 className="mb-0">{stats.employersPreRegs}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex align-items-center">
+                <div className="bg-warning bg-opacity-10 p-3 rounded me-3">
+                  <i className="bi bi-calendar-check text-warning fs-4"></i>
+                </div>
+                <div>
+                  <h6 className="mb-1 text-muted">Attendance</h6>
+                  <h3 className="mb-0">
+                    {stats.totalAttendance}{" "}
+                    <small className="text-muted fs-6">
+                      ({stats.attendanceRate}%)
+                    </small>
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    )}
-  </div>
-</div>
-
-<div className="mb-3">
-  <label htmlFor="monthsLookingInput" className="form-label">
-    How long have you been looking for work? (in months)
-  </label>
-  <input
-    type="text"
-    className="form-control"
-    id="monthsLookingInput"
-    value={monthsLookingForWork}
-    onChange={handleMonthsLookingChange}
-    placeholder="Enter number of months"
-    style={{ maxWidth: "150px" }}
-  />
-</div>
-</div>

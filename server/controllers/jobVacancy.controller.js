@@ -1517,10 +1517,11 @@ export const updateJobFairEvent = async (req, res) => {
         new: true, // Return the updated document
         runValidators: true, // Run schema validators on update
       }
-    ).populate("registeredEmployers registeredJobSeekers");
+    );
 
     res.json({
       success: true,
+      message: "Job fair event details updated.",
       data: event,
     });
   } catch (err) {
@@ -1578,7 +1579,7 @@ export const preRegisterForJobFair = async (req, res) => {
     }
 
     // Generate reference number
-    const randomSegment = crypto.randomBytes(3).toString("hex").toUpperCase();
+    const randomSegment = crypto.randomBytes(4).toString("hex").toUpperCase();
     const referenceNumber = `JF-${new Date()
       .toISOString()
       .slice(0, 10)
@@ -1628,7 +1629,14 @@ export const getPreRegistration = async (req, res) => {
   const accountId = req.accountId;
 
   try {
-    const preRegistration = await JobFairPreregistration.findOne({ accountId });
+    const activeJobFair = await JobFairEvent.findOne({ isActive: true });
+    if (!activeJobFair) {
+      return res.status(404).json({ message: "No active job fair found." });
+    }
+    const preRegistration = await JobFairPreregistration.findOne({
+      accountId,
+      eventId: activeJobFair._id,
+    });
     if (!preRegistration) {
       return res.status(404).json({ message: "No preregistration found." });
     }
@@ -1690,5 +1698,81 @@ export const markAttendance = async (req, res) => {
   } catch (err) {
     console.error("Attendance error:", err);
     res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const getAllPreRegistered = async (req, res) => {
+  try {
+    const activeJobFair = await JobFairEvent.findOne({ isActive: true });
+    if (!activeJobFair) {
+      return res.status(404).json({ message: "No active job fair found." });
+    }
+    const preregs = await JobFairPreregistration.find({
+      eventId: activeJobFair._id,
+    });
+    res.status(200).json({ preregs });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+export const getAllPreRegisteredByEventId = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const preregs = await JobFairPreregistration.find({
+      eventId,
+    });
+    res.status(200).json({ preregs });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+export const getAllAttendance = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const attendance = await JobFairAttendance.find({
+      eventId,
+    });
+    res.status(200).json({ attendance });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+export const toggleJobFairActivation = async (req, res) => {
+  const { eventId } = req.params;
+
+  try {
+    const current = await JobFairEvent.findById(eventId);
+    if (!current) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Job fair not found." });
+    }
+
+    if (!current.isActive) {
+      // Deactivate any other active job fairs
+      await JobFairEvent.updateMany({ isActive: true }, { isActive: false });
+    }
+
+    current.isActive = !current.isActive;
+    await current.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Job fair has been ${
+        current.isActive ? "activated" : "deactivated"
+      }.`,
+      data: current,
+    });
+  } catch (error) {
+    console.error("Error toggling job fair:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error." });
   }
 };

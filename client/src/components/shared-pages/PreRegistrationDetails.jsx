@@ -4,14 +4,33 @@ import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { ClipLoader } from "react-spinners";
 
 const PreRegistrationDetails = () => {
+  const [jobFairData, setJobFairData] = useState(null);
   const [preRegistrationData, setPreRegistrationData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    getPreRegistration();
+    getActiveJobFair();
   }, []);
+
+  useEffect(() => {
+    if (jobFairData?._id) {
+      getPreRegistration();
+    }
+  }, [jobFairData]);
+
+  const getActiveJobFair = async () => {
+    try {
+      const res = await axios.get(
+        `${JOB_VACANCY_API_END_POINT}/get-active-job-fair-event`
+      );
+
+      setJobFairData(res?.data?.activeJobFair);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getPreRegistration = async () => {
     try {
