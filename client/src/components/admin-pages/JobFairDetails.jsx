@@ -4,7 +4,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const JobFairDetails = () => {
-  const eventId = "67fce88e9f79b7c79667e9dc";
+  const {eventId} = useParams();
+  
   const [activeTab, setActiveTab] = useState("preregs");
   const [preRegs, setPreRegs] = useState([]);
   const [attendance, setAttendance] = useState([]);

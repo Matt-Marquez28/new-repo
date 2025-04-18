@@ -181,7 +181,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="job-fair" element={<JobFairPage />} />
-        <Route path="job-fair/details" element={<JobFairDetails />} />
+        <Route path="job-fair/details/:eventId" element={<JobFairDetails />} />
         <Route path="notification" element={<Notification />} />
         <Route
           path="dashboard/accredited-companies"

@@ -1366,7 +1366,7 @@ export const createJobFairEvent = async (req, res) => {
       time,
       venue,
       description,
-      registrationDeadline: registrationDeadline || null,
+      registrationDeadline,
       // Defaults will be applied:
       // registeredJobSeekers: []
       // registeredEmployers: []

@@ -4,8 +4,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { useToast } from "../../contexts/toast.context";
+import { useNavigate } from "react-router-dom";
 
 const JobFairAdminPage = () => {
+  const navigate = useNavigate();
   const triggerToast = useToast();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -426,14 +428,19 @@ const JobFairAdminPage = () => {
                             className="btn btn-sm btn-outline-primary me-2 d-flex align-items-center"
                             onClick={() => handleEdit(event)}
                           >
-                            <i className="bi bi-pencil me-1"></i>
-                            Edit
+                            <i className="bi bi-pencil"></i>
                           </button>
                           <button
-                            className="btn btn-sm btn-outline-danger d-flex align-items-center"
+                            className="btn btn-sm btn-outline-danger d-flex align-items-center me-2"
                             onClick={() => handleDelete(event._id)}
                           >
-                            <i className="bi bi-trash me-1"></i>
+                            <i className="bi bi-trash"></i>
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-info d-flex align-items-center"
+                            onClick={() => navigate(`details/${event._id}`)}
+                          >
+                            <i className="bi bi-info-circle"></i>
                           </button>
                         </div>
                       </td>

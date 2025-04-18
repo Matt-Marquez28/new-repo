@@ -36,7 +36,7 @@ const CompanyStatisticsCard = () => {
         style={{
           backgroundColor: "#ffffff",
           padding: "1.5rem",
-          borderLeft: "4px solid #007bff", // Blue accent
+          borderLeft: "4px solid #1a4798",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
         }}
       >
@@ -51,7 +51,10 @@ const CompanyStatisticsCard = () => {
                 backgroundColor: "rgba(0, 123, 255, 0.1)", // Light blue background
               }}
             >
-              <i className="bi bi-award-fill" style={{ color: "#007bff", fontSize: "1rem" }}></i>
+              <i
+                className="bi bi-award-fill"
+                style={{ color: "#007bff", fontSize: "1rem" }}
+              ></i>
             </div>
             <h5
               className="card-title mb-0 ms-3 fw-semibold"
@@ -73,7 +76,7 @@ const CompanyStatisticsCard = () => {
               <div className="d-flex align-items-end mb-3">
                 <h2
                   className="display-4 fw-bold mb-0"
-                  style={{ color: "#007bff" }} // Blue for accredited count
+                  style={{ color: "#1a4798" }}
                 >
                   {stats.accredited}
                 </h2>
@@ -84,7 +87,8 @@ const CompanyStatisticsCard = () => {
                       backgroundColor: "rgba(0, 123, 255, 0.1) !important",
                     }}
                   >
-                    <i className="bi bi-building-fill me-1"></i> {stats.all} total
+                    <i className="bi bi-building-fill me-1"></i> {stats.all}{" "}
+                    total
                   </span>
                 </div>
               </div>
@@ -96,8 +100,13 @@ const CompanyStatisticsCard = () => {
               {/* Progress Bar with improved styling */}
               <div className="mb-4">
                 <div className="d-flex justify-content-between mb-1">
-                  <span className="small fw-semibold">Accreditation Progress</span>
-                  <span className="small fw-semibold" style={{ color: "#007bff" }}>
+                  <span className="small fw-semibold">
+                    Accreditation Progress
+                  </span>
+                  <span
+                    className="small fw-semibold"
+                    style={{ color: "#1a4798" }}
+                  >
                     {percentageAccredited}%
                   </span>
                 </div>
@@ -118,15 +127,15 @@ const CompanyStatisticsCard = () => {
                 to={"accredited-companies"}
                 className="btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 px-4"
                 style={{
-                  backgroundColor: "#007bff",
+                  backgroundColor: "#1a4798",
                   border: "none",
                   borderRadius: "8px",
                   fontWeight: "500",
                   boxShadow: "0 2px 8px rgba(0, 123, 255, 0.3)",
                   transition: "all 0.3s ease",
                 }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
-                onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
+                // onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
+                // onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
               >
                 View Accredited Companies
                 <i className="bi bi-arrow-right"></i>
