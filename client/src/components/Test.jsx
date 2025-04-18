@@ -8,8 +8,8 @@ const QRScanner = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const qrRef = useRef(null);
   const html5QrCode = useRef(null);
+  const hasScanned = useRef(false); // 🔒 Flag to prevent multiple scans
 
   const startScanner = () => {
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
@@ -17,7 +17,7 @@ const QRScanner = () => {
 
     html5QrCode.current
       .start(
-        { facingMode: "environment" }, // or use camera ID
+        { facingMode: "environment" },
         config,
         onScanSuccess,
         onScanError
@@ -29,15 +29,18 @@ const QRScanner = () => {
   };
 
   const stopScanner = async () => {
-    if (html5QrCode.current) {
+    if (html5QrCode.current && html5QrCode.current._isScanning) {
       await html5QrCode.current.stop();
       await html5QrCode.current.clear();
     }
   };
 
   const onScanSuccess = async (decodedText) => {
+    if (hasScanned.current) return; // ✅ prevent multiple scans
+    hasScanned.current = true;
+
     try {
-      await stopScanner(); // Stop immediately
+      await stopScanner();
       setLoading(true);
       setError(null);
 
@@ -80,6 +83,7 @@ const QRScanner = () => {
   }, []);
 
   const restartScanner = () => {
+    hasScanned.current = false; // ✅ Reset flag
     setResult(null);
     setError(null);
     setLoading(false);
