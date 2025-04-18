@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../utils/constants";
@@ -9,26 +9,28 @@ const QRScanner = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [scanner, setScanner] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showPauseAlert, setShowPauseAlert] = useState(false);
+  const scannerRef = useRef(null);
 
   useEffect(() => {
-    if (!scanning) return;
+    if (!scanning || isPaused) return;
 
-    const scannerInstance = new Html5QrcodeScanner("reader", {
+    const scanner = new Html5QrcodeScanner("reader", {
       fps: 10,
       qrbox: { width: 250, height: 250 },
       rememberLastUsedCamera: true,
       showTorchButtonIfSupported: true,
     });
 
+    scannerRef.current = scanner;
+
     const onScanSuccess = async (decodedText) => {
+      if (isPaused) return;
+      
       try {
-        // Pause scanning while processing
-        scannerInstance.pause();
         setLoading(true);
         setError(null);
-        
         const qrData = JSON.parse(decodedText);
 
         const res = await axios.post(
@@ -44,46 +46,44 @@ const QRScanner = () => {
         );
 
         setResult(res.data.message);
-        setShowSuccessModal(true);
         setScanning(false);
       } catch (err) {
         console.error("❌ Error processing QR:", err);
         setError(
-          err.response?.data?.message || 
-          "Invalid QR code or network error. Please try again."
+          err.response?.data?.message || "Something went wrong with the scan."
         );
-        // Resume scanning on error
-        scannerInstance.resume();
       } finally {
         setLoading(false);
       }
     };
 
     const onScanError = (error) => {
-      if (error !== "NotFoundException: No MultiFormat Readers were able to detect the code.") {
-        console.warn("⛔ QR Scan Error:", error);
-        setError("Scanning error. Please try again.");
-      }
+      console.warn("⛔ QR Scan Error:", error);
     };
 
-    scannerInstance.render(onScanSuccess, onScanError);
-    setScanner(scannerInstance);
+    scanner.render(onScanSuccess, onScanError);
 
     return () => {
-      scannerInstance.clear().catch(console.error);
+      scanner.clear().catch(console.error);
     };
-  }, [scanning]);
+  }, [scanning, isPaused]);
+
+  const togglePause = () => {
+    if (isPaused) {
+      setIsPaused(false);
+      setShowPauseAlert(false);
+    } else {
+      setIsPaused(true);
+      setShowPauseAlert(true);
+    }
+  };
 
   const restartScanner = () => {
     setResult(null);
     setError(null);
     setScanning(true);
-    setShowSuccessModal(false);
-  };
-
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    restartScanner();
+    setIsPaused(false);
+    setShowPauseAlert(false);
   };
 
   return (
@@ -91,11 +91,21 @@ const QRScanner = () => {
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
           <div className="card shadow">
-            <div className="card-header bg-primary text-white">
-              <h2 className="h4 mb-0 text-center">
+            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+              <h2 className="h4 mb-0">
                 <i className="bi bi-qr-code-scan me-2"></i>
                 QR Code Scanner
               </h2>
+              {scanning && !loading && !result && !error && (
+                <Button 
+                  variant={isPaused ? "success" : "warning"}
+                  onClick={togglePause}
+                  size="sm"
+                >
+                  <i className={`bi bi-${isPaused ? 'play' : 'pause'}-fill me-1`}></i>
+                  {isPaused ? 'Resume' : 'Pause'}
+                </Button>
+              )}
             </div>
 
             <div className="card-body text-center p-4">
@@ -106,28 +116,64 @@ const QRScanner = () => {
                 </div>
               ) : error ? (
                 <div className="py-4">
-                  <Alert variant="danger" onClose={() => setError(null)} dismissible>
-                    <Alert.Heading>
-                      <i className="bi bi-exclamation-triangle-fill me-2"></i>
-                      Scan Failed
-                    </Alert.Heading>
-                    <p>{error}</p>
-                  </Alert>
-                  <Button
-                    variant="primary"
+                  <div className="alert alert-danger">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                    {error}
+                  </div>
+                  <button
+                    className="btn btn-primary mt-3"
                     onClick={restartScanner}
-                    className="mt-3"
                   >
                     <i className="bi bi-arrow-repeat me-2"></i>
                     Try Again
-                  </Button>
+                  </button>
+                </div>
+              ) : result ? (
+                <div className="py-4">
+                  <div className="alert alert-success">
+                    <i className="bi bi-check-circle-fill me-2"></i>
+                    {result}
+                  </div>
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={restartScanner}
+                  >
+                    <i className="bi bi-qr-code-scan me-2"></i>
+                    Scan Another
+                  </button>
+                </div>
+              ) : isPaused ? (
+                <div className="py-4">
+                  <div className="alert alert-warning">
+                    <i className="bi bi-pause-fill me-2"></i>
+                    Scanner is paused
+                  </div>
+                  <button
+                    className="btn btn-success mt-3"
+                    onClick={togglePause}
+                  >
+                    <i className="bi bi-play-fill me-2"></i>
+                    Resume Scanning
+                  </button>
                 </div>
               ) : (
-                <div
-                  id="reader"
-                  style={{ width: "100%", maxWidth: "400px" }}
-                  className="mx-auto"
-                ></div>
+                <>
+                  {showPauseAlert && (
+                    <Alert 
+                      variant="info" 
+                      onClose={() => setShowPauseAlert(false)} 
+                      dismissible
+                      className="mb-3"
+                    >
+                      Scanner has been paused. Click "Resume" to continue.
+                    </Alert>
+                  )}
+                  <div
+                    id="reader"
+                    style={{ width: "100%", maxWidth: "400px" }}
+                    className="mx-auto"
+                  ></div>
+                </>
               )}
             </div>
 
@@ -139,31 +185,6 @@ const QRScanner = () => {
           </div>
         </div>
       </div>
-
-      {/* Success Modal */}
-      <Modal show={showSuccessModal} onHide={handleCloseSuccessModal} centered>
-        <Modal.Header closeButton className="bg-success text-white">
-          <Modal.Title>
-            <i className="bi bi-check-circle-fill me-2"></i>
-            Scan Successful
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="text-center">
-            <i className="bi bi-check-circle text-success" style={{ fontSize: "4rem" }}></i>
-            <h4 className="mt-3">{result}</h4>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSuccessModal}>
-            Close
-          </Button>
-          <Button variant="success" onClick={restartScanner}>
-            <i className="bi bi-qr-code-scan me-2"></i>
-            Scan Another
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };
