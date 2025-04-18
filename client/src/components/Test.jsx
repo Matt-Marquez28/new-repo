@@ -1,72 +1,89 @@
-import React, { useEffect, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import React, { useEffect, useState, useRef } from "react";
+import { Html5Qrcode } from "html5-qrcode";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../utils/constants";
-import { Modal, Spinner, Alert } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 const QRScanner = () => {
-  const [scanning, setScanning] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const qrRef = useRef(null);
+  const html5QrCode = useRef(null);
+
+  const startScanner = () => {
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    html5QrCode.current = new Html5Qrcode("reader");
+
+    html5QrCode.current
+      .start(
+        { facingMode: "environment" }, // or use camera ID
+        config,
+        onScanSuccess,
+        onScanError
+      )
+      .catch((err) => {
+        console.error("Camera start error:", err);
+        setError("Unable to access camera.");
+      });
+  };
+
+  const stopScanner = async () => {
+    if (html5QrCode.current) {
+      await html5QrCode.current.stop();
+      await html5QrCode.current.clear();
+    }
+  };
+
+  const onScanSuccess = async (decodedText) => {
+    try {
+      await stopScanner(); // Stop immediately
+      setLoading(true);
+      setError(null);
+
+      const qrData = JSON.parse(decodedText);
+
+      const res = await axios.post(
+        `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
+        {
+          referenceNumber: qrData.referenceNumber,
+          eventId: qrData.eventId,
+          role: qrData.role,
+          accountId: qrData.accountId,
+          jobSeekerId: qrData.jobseekerId,
+          employerId: qrData.companyId,
+        }
+      );
+
+      setResult(res?.data?.message);
+      alert(res?.data?.message);
+    } catch (err) {
+      console.error("❌ Error processing QR:", err);
+      setError(
+        err.response?.data?.message || "Something went wrong with the scan."
+      );
+      alert(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onScanError = (err) => {
+    console.warn("⛔ QR Scan Error:", err);
+  };
 
   useEffect(() => {
-    if (!scanning) return;
-
-    const scanner = new Html5QrcodeScanner("reader", {
-      fps: 10,
-      qrbox: { width: 250, height: 250 },
-      rememberLastUsedCamera: true,
-      showTorchButtonIfSupported: true,
-    });
-
-    const onScanSuccess = async (decodedText) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const qrData = JSON.parse(decodedText);
-
-        const res = await axios.post(
-          `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
-          {
-            referenceNumber: qrData.referenceNumber,
-            eventId: qrData.eventId,
-            role: qrData.role,
-            accountId: qrData.accountId,
-            jobSeekerId: qrData.jobseekerId,
-            employerId: qrData.companyId,
-          }
-        );
-
-        setResult(res?.data?.message);
-        alert(res.data.message);
-        setScanning(false);
-      } catch (err) {
-        console.error("❌ Error processing QR:", err);
-        setError(
-          err.response?.data?.message || "Something went wrong with the scan."
-        );
-        alert(err?.response?.data?.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const onScanError = (error) => {
-      console.warn("⛔ QR Scan Error:", error);
-    };
-
-    scanner.render(onScanSuccess, onScanError);
-
+    startScanner();
     return () => {
-      scanner.clear().catch(console.error);
+      stopScanner();
     };
-  }, [scanning]);
+  }, []);
 
   const restartScanner = () => {
     setResult(null);
     setError(null);
-    setScanning(true);
+    setLoading(false);
+    startScanner();
   };
 
   return (
