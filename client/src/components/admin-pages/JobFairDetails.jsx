@@ -4,8 +4,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const JobFairDetails = () => {
-  const {eventId} = useParams();
-  
+  const { eventId } = useParams();
+
   const [activeTab, setActiveTab] = useState("preregs");
   const [preRegs, setPreRegs] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -78,6 +78,7 @@ const JobFairDetails = () => {
       );
       setAttendance(res?.data?.attendance || []);
       setLoading((prev) => ({ ...prev, attendance: false }));
+      console.log(res?.data?.attendance);
     } catch (error) {
       console.log(error);
       setLoading((prev) => ({ ...prev, attendance: false }));
@@ -284,20 +285,19 @@ const JobFairDetails = () => {
             <table className="table table-striped table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Role</th>
-                  <th>Organization</th>
-                  <th>Registration Date</th>
+                  <th className="fw-normal">Job Seeker / Company</th>
+                  <th className="fw-normal">Role</th>
+                  <th className="fw-normal">Registration Date</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPreRegs.map((reg) => (
                   <tr key={reg._id}>
-                    <td>{reg.name || "N/A"}</td>
-                    <td>{reg.email || "N/A"}</td>
-                    <td>{reg.phone || "N/A"}</td>
+                    <td className="text-primary">
+                      {reg?.jobSeekerId?.personalInformation?.firstName ||
+                        reg?.employerId?.companyInformation?.businessName ||
+                        "N/A"}
+                    </td>
                     <td>
                       <span
                         className={`badge ${
@@ -309,7 +309,6 @@ const JobFairDetails = () => {
                         {reg.role || "N/A"}
                       </span>
                     </td>
-                    <td>{reg.organization || "N/A"}</td>
                     <td>{new Date(reg.createdAt).toLocaleString()}</td>
                   </tr>
                 ))}
@@ -343,7 +342,7 @@ const JobFairDetails = () => {
               <thead className="table-light">
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
+
                   <th>Role</th>
                   <th>Check-in Time</th>
                 </tr>
@@ -353,20 +352,24 @@ const JobFairDetails = () => {
                   const user = record.user || record;
                   return (
                     <tr key={record._id}>
-                      <td>{user.name || "N/A"}</td>
-                      <td>{user.email || "N/A"}</td>
+                      <td>
+                        {user?.jobSeekerId?.personalInformation?.firstName ||
+                          user?.employerId?.companyInformation?.businessName ||
+                          "N/A"}
+                      </td>
+
                       <td>
                         <span
                           className={`badge ${
                             user.role === "jobseeker"
                               ? "bg-info"
-                              : "bg-warning text-dark"
+                              : "bg-warning text-white"
                           }`}
                         >
                           {user.role || "N/A"}
                         </span>
                       </td>
-                      <td>{new Date(record.checkInTime).toLocaleString()}</td>
+                      <td>{new Date(record.checkedInAt).toLocaleString()}</td>
                     </tr>
                   );
                 })}

@@ -1647,29 +1647,75 @@ export const getPreRegistration = async (req, res) => {
   }
 };
 
+// export const markAttendance = async (req, res) => {
+//   try {
+//     const {
+//       referenceNumber,
+//       eventId,
+//       role,
+//       accountId,
+//       jobSeekerId,
+//       employerId,
+//     } = req.body;
+
+//     // Step 2: Find matching preregistration
+//     const prereg = await JobFairPreregistration.findOne({
+//       referenceNumber,
+//       eventId,
+//       accountId,
+//     });
+
+//     if (!prereg) {
+//       return res.status(404).json({ message: "Preregistration not found." });
+//     }
+
+//     // Step 3: Check for existing attendance
+//     const alreadyAttended = await JobFairAttendance.findOne({
+//       preRegistrationId: prereg._id,
+//     });
+
+//     if (alreadyAttended) {
+//       return res.status(409).json({ message: "Already checked in." });
+//     }
+
+//     // Step 4: Create attendance record
+//     const attendance = new JobFairAttendance({
+//       eventId,
+//       preRegistrationId: prereg._id,
+//       accountId,
+//       role,
+//       jobSeekerId: jobSeekerId || null,
+//       employerId: employerId || null,
+//       referenceNumber,
+//     });
+
+//     await attendance.save();
+
+//     res.status(201).json({
+//       message: "✅ Attendance recorded successfully.",
+//       attendance,
+//     });
+//   } catch (err) {
+//     console.error("Attendance error:", err);
+//     res.status(500).json({ message: "Internal server error." });
+//   }
+// };
+
 export const markAttendance = async (req, res) => {
   try {
-    const {
-      referenceNumber,
-      eventId,
-      role,
-      accountId,
-      jobSeekerId,
-      employerId,
-    } = req.body;
+    const { referenceNumber, eventId } = req.body;
 
-    // Step 2: Find matching preregistration
+    // Step 1: Find matching preregistration
     const prereg = await JobFairPreregistration.findOne({
       referenceNumber,
       eventId,
-      accountId,
-    });
+    }).populate("jobSeekerId employerId");
 
     if (!prereg) {
       return res.status(404).json({ message: "Preregistration not found." });
     }
 
-    // Step 3: Check for existing attendance
+    // Step 2: Check for existing attendance
     const alreadyAttended = await JobFairAttendance.findOne({
       preRegistrationId: prereg._id,
     });
@@ -1678,15 +1724,15 @@ export const markAttendance = async (req, res) => {
       return res.status(409).json({ message: "Already checked in." });
     }
 
-    // Step 4: Create attendance record
+    // Step 3: Create attendance record using data from preregistration
     const attendance = new JobFairAttendance({
       eventId,
       preRegistrationId: prereg._id,
-      accountId,
-      role,
-      jobSeekerId: jobSeekerId || null,
-      employerId: employerId || null,
-      referenceNumber,
+      accountId: prereg.accountId,
+      role: prereg.role,
+      jobSeekerId: prereg.jobSeekerId || null,
+      employerId: prereg.employerId || null,
+      referenceNumber: prereg.referenceNumber,
     });
 
     await attendance.save();
@@ -1720,9 +1766,9 @@ export const getAllPreRegistered = async (req, res) => {
 export const getAllPreRegisteredByEventId = async (req, res) => {
   const { eventId } = req.params;
   try {
-    const preregs = await JobFairPreregistration.find({
-      eventId,
-    });
+    const preregs = await JobFairPreregistration.find({ eventId })
+      .populate("jobSeekerId")
+      .populate("employerId");
     res.status(200).json({ preregs });
   } catch (error) {
     console.log(error);
@@ -1735,7 +1781,9 @@ export const getAllAttendance = async (req, res) => {
   try {
     const attendance = await JobFairAttendance.find({
       eventId,
-    });
+    })
+      .populate("jobSeekerId")
+      .populate("employerId");
     res.status(200).json({ attendance });
   } catch (error) {
     console.log(error);
