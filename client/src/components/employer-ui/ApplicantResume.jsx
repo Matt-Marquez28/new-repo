@@ -61,7 +61,7 @@ const ApplicantResume = ({ jobseekerData }) => {
 
           {hasContent(specializations) && (
             <div className="mb-4">
-              <h5 className="text-primary">Specializations</h5>
+              <h5 style={{ color: "#1a4798" }}>Specializations</h5>
               {specializations.map((specialization, index) => (
                 <h6 key={index} className="text-secondary small fw-normal">
                   {specialization}
@@ -72,7 +72,7 @@ const ApplicantResume = ({ jobseekerData }) => {
 
           {hasContent(coreSkills) && (
             <div className="mb-4">
-              <h5 className="text-primary">Core Skills</h5>
+              <h5 style={{ color: "#1a4798" }}>Core Skills</h5>
               {coreSkills.map((skill, index) => (
                 <h6 key={index} className="text-secondary fw-normal small">
                   {skill}
@@ -83,7 +83,7 @@ const ApplicantResume = ({ jobseekerData }) => {
 
           {hasContent(softSkills) && (
             <div className="mb-4">
-              <h5 className="text-primary">Soft Skills</h5>
+              <h5 style={{ color: "#1a4798" }}>Soft Skills</h5>
               {softSkills.map((skill, index) => (
                 <h6 key={index} className="text-secondary fw-normal small">
                   {skill}
@@ -95,7 +95,7 @@ const ApplicantResume = ({ jobseekerData }) => {
           {(personalInformation?.emailAddress ||
             personalInformation?.mobileNumber) && (
             <div className="mb-2">
-              <h5 className="text-primary">Contact Information</h5>
+              <h5 style={{ color: "#1a4798" }}>Contact Information</h5>
               {personalInformation?.emailAddress && (
                 <div className="d-flex text-start align-items-center gap-3 mb-3">
                   <div>
@@ -132,7 +132,7 @@ const ApplicantResume = ({ jobseekerData }) => {
           {/* Educational Background */}
           {hasContent(educationalBackgrounds) && (
             <section className="py-2">
-              <h5 className="text-primary mb-3">Educational Background</h5>
+              <h5 className="mb-3" style={{ color: "#1a4798" }}>Educational Background</h5>
               <ul className="timeline">
                 {educationalBackgrounds.map((education, index) => {
                   const hasEducationDetails =
@@ -265,7 +265,7 @@ const ApplicantResume = ({ jobseekerData }) => {
         <div className="col-md-8">
           {personalInformation?.aboutMe && (
             <div className="mb-4">
-              <h5 className="text-primary">About Me</h5>
+              <h5 style={{ color: "#1a4798" }}>About Me</h5>
               <p className="text-secondary text-justify small">
                 {personalInformation.aboutMe}
               </p>
@@ -275,7 +275,7 @@ const ApplicantResume = ({ jobseekerData }) => {
           {/* Work Experiences */}
           {hasContent(workExperiences) && (
             <section className="py-2">
-              <h5 className="text-primary mb-3">Work Experience</h5>
+              <h5 className="mb-3" style={{ color: "#1a4798" }}>Work Experience</h5>
               <ul className="timeline">
                 {workExperiences.map((work, index) => {
                   const hasWorkDetails =

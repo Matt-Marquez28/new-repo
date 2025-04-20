@@ -166,12 +166,12 @@ const EligibilityProfessionalLicence = () => {
       <div className="row align-items-center my-3">
         {/* Left side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
 
         {/* Centered title */}
         <div className="col-auto">
-          <h5 className="position-relative text-primary">
+          <h5 className="position-relative" style={{ color: "#1a4798" }}>
             <i className="bi bi-file-person-fill"></i> Eligibility /
             Professional License
           </h5>
@@ -179,7 +179,7 @@ const EligibilityProfessionalLicence = () => {
 
         {/* Right side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
       </div>
       {error && (

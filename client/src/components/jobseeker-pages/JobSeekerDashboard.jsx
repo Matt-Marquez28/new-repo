@@ -49,7 +49,7 @@ const JobSeekerDashboard = () => {
 
   return (
     <div className="container">
-      <h5 className="my-3 text-primary">
+      <h5 className="my-3" style={{ color: "#1a4798" }}>
         <i className="bi bi-speedometer"></i> Job Seeker Dashboard
       </h5>
       <div className="alert alert-primary" role="alert">
@@ -133,7 +133,7 @@ const JobSeekerDashboard = () => {
           {/* Profile Card */}
           <div className="card text-center mb-3 shadow-sm jobseeker-card">
             <div className="card-body">
-              <h5 className="card-title mb-2 text-primary">
+              <h5 className="card-title mb-2" style={{ color: "#1a4798" }}>
                 <i className="bi bi-person-circle"></i> Profile
               </h5>
               <hr />
@@ -167,7 +167,10 @@ const JobSeekerDashboard = () => {
           {/* Job Preferences Card */}
           <div className="card text-start mb-4 shadow-sm preferences-card">
             <div className="card-body">
-              <h5 className="card-title mb-3 text-center text-primary">
+              <h5
+                className="card-title mb-3 text-center"
+                style={{ color: "#1a4798" }}
+              >
                 <i className="bi bi-sliders"></i> Job Preferences
               </h5>
               <hr />
@@ -225,7 +228,7 @@ const JobSeekerDashboard = () => {
               {/* Edit Button */}
               <div className="d-flex justify-content-center">
                 <button
-                onClick={handlePreferencesEditClick}
+                  onClick={handlePreferencesEditClick}
                   type="button"
                   className="btn btn-sm btn-outline-light text-secondary"
                 >

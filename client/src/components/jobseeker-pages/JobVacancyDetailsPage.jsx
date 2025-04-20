@@ -209,7 +209,10 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
           <div className="col-md-8">
             <div>
               <div class="card shadow-sm mb-3">
-                <Link className="card-header bg-primary text-decoration-none text-center fw-normal text-light">
+                <Link
+                  className="card-header text-decoration-none text-center fw-normal text-light"
+                  style={{ backgroundColor: "#1a4798" }}
+                >
                   Job Details
                 </Link>
                 <div class="card-body">
@@ -346,14 +349,16 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   </div>
 
                   <div className="mb-3 border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 class="card-title m-0 text-primary">Job Description</h5>
+                    <h5 class="card-title m-0" style={{ color: "#1a4798" }}>
+                      Job Description
+                    </h5>
                     <p class="card-text text-secondary small">
                       {`${jobVacancy?.description}`}
                     </p>
                   </div>
 
                   <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="m-0 text-primary">
+                    <h5 className="m-0" style={{ color: "#1a4798" }}>
                       Required Qualifications
                     </h5>
                     {jobVacancy?.requiredQualifications?.length > 0 ? (
@@ -374,7 +379,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   </div>
 
                   <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="card-title m-0 text-primary">
+                    <h5 className="card-title m-0" style={{ color: "#1a4798" }}>
                       Skills Required
                     </h5>
                     {jobVacancy?.skillsRequired?.length > 0 ? (
@@ -391,7 +396,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   </div>
 
                   <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="card-title m-0 text-primary">
+                    <h5 className="card-title m-0" style={{ color: "#1a4798" }}>
                       Responsibilities
                     </h5>
                     {jobVacancy?.responsibilities?.length > 0 ? (
@@ -410,7 +415,9 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                   </div>
 
                   <div className="mb-2  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 class="card-title m-0 text-primary">Work Location</h5>
+                    <h5 class="card-title m-0" style={{ color: "#1a4798" }}>
+                      Work Location
+                    </h5>
                     <p className="text-secondary small">
                       {jobVacancy?.workLocation ||
                         "Work location not specified"}
@@ -424,7 +431,10 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
           {/* About the Company Section */}
           <div className="col-md-4">
             <div class="card shadow-sm about-company-card">
-              <Link class="card-header bg-primary text-decoration-none text-center fw-normal text-light">
+              <Link
+                class="card-header text-decoration-none text-center fw-normal text-light"
+                style={{ backgroundColor: "#1a4798" }}
+              >
                 About the company
               </Link>
               <div class="card-body">
@@ -488,7 +498,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         <div className="text-muted small text-uppercase">
                           Industry
                         </div>
-                        <div className="fw-medium text-primary">
+                        <div className="fw-medium" style={{ color: "#1a4798" }}>
                           {jobVacancy?.companyId?.companyInformation
                             ?.industry || "Not specified"}
                         </div>
@@ -508,7 +518,10 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         <div className="text-muted small text-uppercase">
                           Company Size
                         </div>
-                        <div className="fw-medium text-capitalize text-primary">
+                        <div
+                          className="fw-medium text-capitalize"
+                          style={{ color: "#1a4798" }}
+                        >
                           {jobVacancy?.companyId?.companyInformation
                             ?.companySize || "Not specified"}
                         </div>
@@ -528,7 +541,10 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                         <div className="text-muted small text-uppercase">
                           Office Type
                         </div>
-                        <div className="fw-medium text-capitalize text-primary">
+                        <div
+                          className="fw-medium text-capitalize"
+                          style={{ color: "#1a4798" }}
+                        >
                           {jobVacancy?.companyId?.companyInformation
                             ?.officeType || "Not specified"}
                         </div>

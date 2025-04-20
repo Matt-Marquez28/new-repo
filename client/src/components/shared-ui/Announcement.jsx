@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
-// import { CloseOutlined } from "@ant-design/icons"; // Optional close icon
 import { Link } from "react-router-dom";
 
 const Announcement = () => {
   const [visible, setVisible] = useState(true);
   const [event, setEvent] = useState(null);
+  const [countdown, setCountdown] = useState("");
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -28,15 +28,46 @@ const Announcement = () => {
         const deadline = dayjs(fetchedEvent.registrationDeadline);
         const now = dayjs();
 
-        console.log("Deadline:", deadline.format(), "| Now:", now.format());
-
-        // Only set event if deadline is still in the future
         if (deadline.isAfter(now)) {
           setEvent(fetchedEvent);
+          startCountdown(deadline);
         }
       } catch (err) {
         console.error("Error fetching event:", err);
       }
+    };
+
+    const startCountdown = (deadline) => {
+      const updateCountdown = () => {
+        const now = dayjs();
+        const diff = deadline.diff(now, 'second');
+
+        if (diff <= 0) {
+          setVisible(false);
+          return;
+        }
+
+        const days = Math.floor(diff / (60 * 60 * 24));
+        const hours = Math.floor((diff % (60 * 60 * 24)) / (60 * 60));
+        const minutes = Math.floor((diff % (60 * 60)) / 60);
+        const seconds = diff % 60;
+
+        let countdownStr = "";
+        if (days > 0) countdownStr += `${days} day${days !== 1 ? 's' : ''} `;
+        if (hours > 0 || days > 0) countdownStr += `${hours} hour${hours !== 1 ? 's' : ''} `;
+        if (days === 0) {
+          countdownStr += `${minutes} minute${minutes !== 1 ? 's' : ''} `;
+          if (hours === 0) {
+            countdownStr += `${seconds} second${seconds !== 1 ? 's' : ''}`;
+          }
+        }
+
+        setCountdown(countdownStr.trim());
+      };
+
+      updateCountdown(); // Initial call
+      const interval = setInterval(updateCountdown, 1000);
+      return () => clearInterval(interval);
     };
 
     fetchEvent();
@@ -47,7 +78,7 @@ const Announcement = () => {
   return (
     <div
       style={{
-        backgroundColor: "#1890ff",
+        backgroundColor: "#ed1b24",
         color: "white",
         padding: "2px 16px",
         fontSize: "12px",
@@ -60,8 +91,7 @@ const Announcement = () => {
       }}
     >
       <span>
-        🎉 <strong>Job Fair:</strong> Registration open until{" "}
-        {dayjs(event.registrationDeadline).format("MMM D")} •
+        🎉 <strong>Job Fair:</strong> Registration closes in {countdown} •
         <Link
           to="job-fair"
           style={{
@@ -73,17 +103,6 @@ const Announcement = () => {
           Register now
         </Link>
       </span>
-
-      {/* Optional close button */}
-      {/* <CloseOutlined
-        style={{
-          cursor: "pointer",
-          position: "absolute",
-          right: "8px",
-          fontSize: "12px",
-        }}
-        onClick={() => setVisible(false)}
-      /> */}
     </div>
   );
 };

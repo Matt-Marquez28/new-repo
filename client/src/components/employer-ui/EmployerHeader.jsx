@@ -104,37 +104,80 @@ export const EmployerHeader = () => {
             />
             <h5
               className="pt-serif-bold d-none d-md-block"
-              style={{ color: "#555555" }}
+              style={{ color: "#1a4798" }}
             >
-              PESO City of Taguig
+              <span style={{ color: "#ed1b24", fontSize: "inherit" }}>
+                PESO
+              </span>
+              <br />
+              <span style={{ fontSize: "0.8em", fontWeight: "normal" }}>
+                City Government of Taguig
+              </span>
             </h5>
           </Link>
         </Navbar.Brand>
 
         {/* Desktop View (md and up) */}
         <div className="d-none d-md-flex align-items-center gap-3">
-          <Nav className="me-auto">
+          <Nav className="me-auto align-items-center">
+            <Nav.Link
+              as={Link}
+              to="/employer/dashboard"
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <i className="bi bi-speedometer me-2"></i>
+              <span className="fw-medium">Dashboard</span>
+              <span className="nav-active-indicator"></span>
+            </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/employer/job-vacancy"
-              className="px-3 text-primary"
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-suitcase-lg-fill"></i> Job Vacancy Management
+              <i className="bi bi-suitcase-lg-fill me-2"></i>
+              <span className="fw-medium">Job</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/employer/job-fair"
-              className="px-3"
-              style={{ color: "#1a4798" }}
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-flag-fill"></i> Job Fair
+              <i className="bi bi-flag-fill me-2"></i>
+              <span className="fw-medium">Job Fair</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/employer/company-profile"
-              className="px-3 text-primary"
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-building-fill"></i> Company Profile
+              <i className="bi bi-building-fill me-2"></i>
+              <span className="fw-medium">Company Profile</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
           </Nav>
 
@@ -154,7 +197,10 @@ export const EmployerHeader = () => {
           </Button>
 
           <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
-            <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
+            <i
+              className="bi bi-clock-fill fs-6 me-2"
+              style={{ color: "#1a4798" }}
+            ></i>
             <span>Office Hours: Mon - Fri 7:00 AM - 5:00 PM</span>
           </Link>
 
@@ -327,12 +373,19 @@ export const EmployerHeader = () => {
               <Nav className="flex-column gap-2">
                 <Nav.Link
                   as={Link}
+                  to="/employer/dashboard"
+                  className="px-3 py-2 rounded text-primary"
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-speedometer me-2"></i> Dashboard
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
                   to="/employer/job-vacancy"
                   className="px-3 py-2 rounded text-primary"
                   onClick={() => setShowOffcanvas(false)}
                 >
-                  <i className="bi bi-suitcase-lg-fill me-2"></i> Job Vacancy
-                  Management
+                  <i className="bi bi-suitcase-lg-fill me-2"></i> Job Management
                 </Nav.Link>
                 <Nav.Link
                   as={Link}

@@ -20,7 +20,7 @@ const AdminSidebar = () => {
   return (
     <div className="d-flex" style={{ overflow: "scroll initial" }}>
       <div
-        className={`d-flex flex-column flex-shrink-0 p-3 bg-light border`}
+        className={`d-none d-md-flex flex-column flex-shrink-0 p-3 bg-light border`}
         style={{
           width: isCollapsed ? "80px" : "280px",
           transition: "width 0.3s",

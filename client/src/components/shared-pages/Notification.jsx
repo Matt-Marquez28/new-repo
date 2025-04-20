@@ -88,7 +88,7 @@ const Notification = () => {
             <button onClick={() => navigate(-1)} className="btn btn-light">
               <i class="bi bi-arrow-left"></i>
             </button>
-            <h5 className="my-2 text-primary">
+            <h5 className="my-2" style={{ color: "#1a4798" }}>
               <i className="bi bi-bell-fill"></i> Notifications
             </h5>
           </div>

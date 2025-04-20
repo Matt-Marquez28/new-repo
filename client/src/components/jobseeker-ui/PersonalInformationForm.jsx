@@ -141,19 +141,19 @@ const PersonalInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
 
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-file-person-fill"></i> Personal Details
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -367,18 +367,18 @@ const PersonalInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-geo-alt-fill"></i> Address Information
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
           <div className="row">
@@ -475,19 +475,19 @@ const PersonalInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
 
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-telephone-fill"></i> Contact Information
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
           <div className="row">
@@ -534,19 +534,19 @@ const PersonalInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
 
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-info-circle-fill"></i> About Me
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -571,19 +571,19 @@ const PersonalInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
 
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-image"></i> Upload Picture
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
           <div className="row mb-4">
@@ -641,9 +641,6 @@ const PersonalInformationForm = () => {
 
           {/* buttons */}
           <div className="d-flex justify-content-end gap-2">
-            <button className="btn btn-secondary">
-              <i className="bi bi-arrow-counterclockwise"></i> Reset
-            </button>
             <button type="submit" className="btn btn-primary">
               <i className="bi bi-floppy"></i> Save Changes
             </button>

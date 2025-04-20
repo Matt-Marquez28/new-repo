@@ -81,7 +81,9 @@ const CurriculumVitae = () => {
 
           {specializations?.length > 0 && (
             <div className="mb-4">
-              <h5 className="text-primary">Specializations</h5>
+              <h5 className="" style={{ color: "#1a4798" }}>
+                Specializations
+              </h5>
               {specializations.map((specialization, index) => (
                 <h6 key={index} className="text-secondary small fw-normal">
                   {specialization}
@@ -92,7 +94,9 @@ const CurriculumVitae = () => {
 
           {coreSkills?.length > 0 && (
             <div className="mb-4">
-              <h5 className="text-primary">Core Skills</h5>
+              <h5 className="" style={{ color: "#1a4798" }}>
+                Core Skills
+              </h5>
               {coreSkills.map((skill, index) => (
                 <h6 key={index} className="text-secondary fw-normal small">
                   {skill}
@@ -103,7 +107,9 @@ const CurriculumVitae = () => {
 
           {softSkills?.length > 0 && (
             <div className="mb-4">
-              <h5 className="text-primary">Soft Skills</h5>
+              <h5 className="" style={{ color: "#1a4798" }}>
+                Soft Skills
+              </h5>
               {softSkills.map((skill, index) => (
                 <h6 key={index} className="text-secondary fw-normal small">
                   {skill}
@@ -115,7 +121,9 @@ const CurriculumVitae = () => {
           {(personalInformation?.emailAddress ||
             personalInformation?.mobileNumber) && (
             <div className="mb-2">
-              <h5 className="text-primary">Contact Information</h5>
+              <h5 className="" style={{ color: "#1a4798" }}>
+                Contact Information
+              </h5>
               {personalInformation?.emailAddress && (
                 <div className="d-flex text-start align-items-center gap-3 mb-3">
                   <div>
@@ -151,7 +159,7 @@ const CurriculumVitae = () => {
 
           {educationalBackgrounds?.length > 0 && (
             <section className="py-2">
-              <h5 className="text-primary mb-3">Educational Background</h5>
+              <h5 className=" mb-3">Educational Background</h5>
               <ul className="timeline">
                 {educationalBackgrounds.map((education, index) => (
                   <li className="timeline-item mb-3" key={index}>

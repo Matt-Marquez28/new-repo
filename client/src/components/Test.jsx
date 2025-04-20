@@ -18,7 +18,7 @@ const QRScanner = () => {
       rememberLastUsedCamera: true,
       showTorchButtonIfSupported: true,
     });
-    
+
     scannerRef.current = scanner;
 
     const onScanSuccess = async (decodedText) => {
@@ -27,7 +27,7 @@ const QRScanner = () => {
         scanner.pause();
         setLoading(true);
         setError(null);
-        
+
         const qrData = JSON.parse(decodedText);
 
         const res = await axios.post(
@@ -50,7 +50,7 @@ const QRScanner = () => {
           err.response?.data?.message || "Something went wrong with the scan."
         );
         alert(err?.response?.data?.message);
-        
+
         // On error, resume scanning
         scanner.resume();
       } finally {

@@ -90,44 +90,21 @@ const JobFairDetails = () => {
 
     if (preRegsSearch) {
       const searchTerm = preRegsSearch.toLowerCase();
-      filtered = filtered.filter(
-        (reg) =>
-          reg.name?.toLowerCase().includes(searchTerm) ||
-          reg.email?.toLowerCase().includes(searchTerm) ||
-          reg.phone?.toLowerCase().includes(searchTerm) ||
-          reg.organization?.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    if (roleFilter !== "all") {
-      filtered = filtered.filter((reg) => reg.role === roleFilter);
-    }
-
-    if (dateFilter !== "all") {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
       filtered = filtered.filter((reg) => {
-        const regDate = new Date(reg.createdAt);
-        regDate.setHours(0, 0, 0, 0);
+        const jobSeekerInfo = reg?.jobSeekerId?.personalInformation || {};
+        const employerInfo = reg?.employerId?.companyInformation || {};
 
-        switch (dateFilter) {
-          case "today":
-            return regDate.getTime() === today.getTime();
-          case "week":
-            const weekAgo = new Date(today);
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            return regDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(today);
-            monthAgo.setMonth(monthAgo.getMonth() - 1);
-            return regDate >= monthAgo;
-          default:
-            return true;
-        }
+        return (
+          jobSeekerInfo.firstName?.toLowerCase().includes(searchTerm) ||
+          jobSeekerInfo.lastName?.toLowerCase().includes(searchTerm) ||
+          employerInfo.businessName?.toLowerCase().includes(searchTerm) ||
+          reg.email?.toLowerCase().includes(searchTerm) ||
+          reg.phone?.toLowerCase().includes(searchTerm)
+        );
       });
     }
 
+    // Rest of your filters...
     return filtered;
   };
 
@@ -138,45 +115,19 @@ const JobFairDetails = () => {
       const searchTerm = attendanceSearch.toLowerCase();
       filtered = filtered.filter((record) => {
         const user = record.user || record;
+        const jobSeekerInfo = user?.jobSeekerId?.personalInformation || {};
+        const employerInfo = user?.employerId?.companyInformation || {};
+
         return (
-          user.name?.toLowerCase().includes(searchTerm) ||
+          jobSeekerInfo.firstName?.toLowerCase().includes(searchTerm) ||
+          jobSeekerInfo.lastName?.toLowerCase().includes(searchTerm) ||
+          employerInfo.businessName?.toLowerCase().includes(searchTerm) ||
           user.email?.toLowerCase().includes(searchTerm)
         );
       });
     }
 
-    if (attendanceRoleFilter !== "all") {
-      filtered = filtered.filter((record) => {
-        const user = record.user || record;
-        return user.role === attendanceRoleFilter;
-      });
-    }
-
-    if (attendanceDateFilter !== "all") {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      filtered = filtered.filter((record) => {
-        const checkIn = new Date(record.checkInTime);
-        checkIn.setHours(0, 0, 0, 0);
-
-        switch (attendanceDateFilter) {
-          case "today":
-            return checkIn.getTime() === today.getTime();
-          case "week":
-            const weekAgo = new Date(today);
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            return checkIn >= weekAgo;
-          case "month":
-            const monthAgo = new Date(today);
-            monthAgo.setMonth(monthAgo.getMonth() - 1);
-            return checkIn >= monthAgo;
-          default:
-            return true;
-        }
-      });
-    }
-
+    // Rest of your filters...
     return filtered;
   };
 
@@ -293,17 +244,20 @@ const JobFairDetails = () => {
               <tbody>
                 {filteredPreRegs.map((reg) => (
                   <tr key={reg._id}>
-                    <td className="text-primary">
-                      {reg?.jobSeekerId?.personalInformation?.firstName ||
-                        reg?.employerId?.companyInformation?.businessName ||
-                        "N/A"}
+                    <td>
+                      {reg?.jobSeekerId?.personalInformation?.firstName
+                        ? `${reg.jobSeekerId.personalInformation.firstName} ${
+                            reg.jobSeekerId.personalInformation.lastName || ""
+                          }`
+                        : reg?.employerId?.companyInformation?.businessName ||
+                          "N/A"}
                     </td>
                     <td>
                       <span
                         className={`badge ${
                           reg.role === "jobseeker"
                             ? "bg-info"
-                            : "bg-warning text-dark"
+                            : "bg-warning text-white"
                         }`}
                       >
                         {reg.role || "N/A"}
@@ -341,10 +295,9 @@ const JobFairDetails = () => {
             <table className="table table-striped table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Name</th>
-
-                  <th>Role</th>
-                  <th>Check-in Time</th>
+                  <th className="fw-normal">Job Seeker / Company</th>
+                  <th className="fw-normal">Role</th>
+                  <th className="fw-normal">Check-in Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -353,9 +306,15 @@ const JobFairDetails = () => {
                   return (
                     <tr key={record._id}>
                       <td>
-                        {user?.jobSeekerId?.personalInformation?.firstName ||
-                          user?.employerId?.companyInformation?.businessName ||
-                          "N/A"}
+                        {user?.jobSeekerId?.personalInformation?.firstName
+                          ? `${
+                              user.jobSeekerId.personalInformation.firstName
+                            } ${
+                              user.jobSeekerId.personalInformation.lastName ||
+                              ""
+                            }`
+                          : user?.employerId?.companyInformation
+                              ?.businessName || "N/A"}
                       </td>
 
                       <td>

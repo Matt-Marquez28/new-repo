@@ -272,19 +272,19 @@ const EmploymentStatus = () => {
       <div className="row align-items-center my-3">
         {/* Left side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
 
         {/* Centered title */}
         <div className="col-auto">
-          <h5 className="position-relative text-primary">
+          <h5 className="position-relative" style={{ color: "#1a4798" }}>
             <i className="bi bi-briefcase-fill"></i> Employment Status
           </h5>
         </div>
 
         {/* Right side of the horizontal line */}
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
       </div>
 
@@ -299,7 +299,9 @@ const EmploymentStatus = () => {
           {/* Main Employment Options */}
           <div className="card mb-4 bg-light">
             <div className="card-body">
-              <h5 className="card-title mb-3 text">Current Employment Status</h5>
+              <h5 className="card-title mb-3 text">
+                Current Employment Status
+              </h5>
               <div className="d-flex gap-4 mb-3">
                 <div className="form-check">
                   <input
@@ -311,10 +313,7 @@ const EmploymentStatus = () => {
                     checked={employmentStatus === "employed"}
                     onChange={handleEmploymentChange}
                   />
-                  <label
-                    className="form-check-label"
-                    htmlFor="employedRadio"
-                  >
+                  <label className="form-check-label" htmlFor="employedRadio">
                     Employed
                   </label>
                 </div>
@@ -328,10 +327,7 @@ const EmploymentStatus = () => {
                     checked={employmentStatus === "unemployed"}
                     onChange={handleEmploymentChange}
                   />
-                  <label
-                    className="form-check-label"
-                    htmlFor="unemployedRadio"
-                  >
+                  <label className="form-check-label" htmlFor="unemployedRadio">
                     Unemployed
                   </label>
                 </div>

@@ -26,9 +26,9 @@ const JobVacancyPage = () => {
     <div className="container">
       <div className="d-flex gap-2 my-2 align-items-center">
         <button onClick={() => navigate(-1)} className="btn btn-light">
-        <i class="bi bi-arrow-left"></i>
+          <i class="bi bi-arrow-left"></i>
         </button>
-        <h5 className="my-2 text-primary">
+        <h5 className="my-2" style={{ color: "#1a4798" }}>
           Job Vacancy Management
         </h5>
       </div>

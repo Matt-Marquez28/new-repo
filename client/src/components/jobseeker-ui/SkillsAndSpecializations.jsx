@@ -87,16 +87,16 @@ const SkillsAndSpecializations = () => {
     <form className="container mt-3" onSubmit={handleSubmit}>
       <div className="row align-items-center my-3">
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
         <div className="col-auto">
-          <h5 className="text-primary">
+          <h5 className="" style={{ color: "#1a4798" }}>
             <i className="bi bi-gear-wide-connected"></i> Skills and
             Specialization
           </h5>
         </div>
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
       </div>
 

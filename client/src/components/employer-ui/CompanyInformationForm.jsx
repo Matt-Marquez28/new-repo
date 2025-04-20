@@ -196,15 +196,15 @@ const CompanyInformationForm = () => {
           {/* Section Title: Company Information */}
           <div className="row align-items-center my-3">
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-building-fill"></i> Company Information
               </h5>
             </div>
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -405,15 +405,15 @@ const CompanyInformationForm = () => {
           {/* Section Title: Employer Information */}
           <div className="row align-items-center my-3">
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-person-fill"></i> Employer Information
               </h5>
             </div>
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -456,15 +456,15 @@ const CompanyInformationForm = () => {
           {/* Section Title: Address Information */}
           <div className="row align-items-center my-3">
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-geo-alt-fill"></i> Company Address
               </h5>
             </div>
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -570,15 +570,15 @@ const CompanyInformationForm = () => {
           {/* Section Title: Contact Information */}
           <div className="row align-items-center my-3">
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-telephone-fill"></i> Contact Information
               </h5>
             </div>
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 
@@ -638,19 +638,19 @@ const CompanyInformationForm = () => {
           <div className="row align-items-center my-3">
             {/* Left side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
 
             {/* Centered title */}
             <div className="col-auto">
-              <h5 className="position-relative text-primary">
+              <h5 className="position-relative" style={{ color: "#1a4798" }}>
                 <i className="bi bi-image"></i> Company Logo
               </h5>
             </div>
 
             {/* Right side of the horizontal line */}
             <div className="col">
-              <hr className="border-2 border-primary" />
+              <hr className="border-2" style={{ color: "#1a4798" }} />
             </div>
           </div>
 

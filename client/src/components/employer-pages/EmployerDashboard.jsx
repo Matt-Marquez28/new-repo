@@ -31,11 +31,15 @@ const EmployerDashboard = () => {
   };
 
   const handleCompanyProfileEditClick = () => {
-    navigate("/employer/company-profile", { state: { activeTab: "companyProfile" } });
+    navigate("/employer/company-profile", {
+      state: { activeTab: "companyProfile" },
+    });
   };
 
   const handlePreferencesEditClick = () => {
-    navigate("/employer/company-profile", { state: { activeTab: "candidatePreferences" } });
+    navigate("/employer/company-profile", {
+      state: { activeTab: "candidatePreferences" },
+    });
   };
 
   const getStatusBadge = (status) => {
@@ -78,7 +82,7 @@ const EmployerDashboard = () => {
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center">
-        <h5 className="my-3 text-primary">
+        <h5 className="my-3" style={{ color: "#1a4798" }}>
           <i className="bi bi-speedometer"></i> Employer Dashboard
         </h5>
         <div className="d-flex align-items-center">
@@ -184,7 +188,7 @@ const EmployerDashboard = () => {
         <div className="col-sm-12 col-xl-3">
           <div className="card shadow-sm text-center mb-3 company-profile-card">
             <div className="card-body">
-              <h5 className="card-title mb-2 text-primary">
+              <h5 className="card-title mb-2" style={{ color: "#1a4798" }}>
                 <i className="bi bi-building-fill"></i> Company Profile
               </h5>
               <hr />
@@ -217,7 +221,10 @@ const EmployerDashboard = () => {
 
           <div className="card mb-4 shadow-sm preferences-card">
             <div className="card-header bg-white border-0 py-3">
-              <h5 className="card-title mb-0 d-flex align-items-center justify-content-center text-primary">
+              <h5
+                className="card-title mb-0 d-flex align-items-center justify-content-center"
+                style={{ color: "#1a4798" }}
+              >
                 <i className="bi bi-sliders me-2"></i> Preferences
               </h5>
             </div>

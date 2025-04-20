@@ -78,9 +78,9 @@ const RecommendedJobSeekers = () => {
   return (
     <div>
       <div className="my-3">
-        <h5 className="text-primary text-center fw-semibold mb-1">
+        <h5 className="text-center fw-semibold mb-1" style={{color: "#1a4798"}}>
           <i className="bi bi-hand-thumbs-up-fill"></i> Recommended Job Seekers{" "}
-          <span className="badge bg-primary rounded">{jobSeekers?.length}</span>
+          <span className="badge rounded" style={{backgroundColor: "#1a4798"}}>{jobSeekers?.length}</span>
         </h5>
         <p className="text-muted text-center m-0">
           Recommended job seekers based on your candidate preferences.
@@ -193,7 +193,7 @@ const RecommendedJobSeekers = () => {
                 </div>
                 <div className="d-flex align-items-end d-none d-sm-inline">
                   <p
-                    className="m-0 p-0 text-info"
+                    className="m-0 p-0 text-primary"
                     style={{ fontSize: "0.85rem" }}
                   >
                     <i className="bi bi-envelope-fill"></i>{" "}

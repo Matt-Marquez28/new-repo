@@ -160,15 +160,15 @@ const JobVacancyForm = () => {
             </div>
             <div className="row align-items-center my-3">
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
               <div className="col-auto">
-                <h5 className="position-relative text-primary">
+                <h5 className="position-relative" style={{ color: "#1a4798" }}>
                   <i className="bi bi-suitcase-lg-fill"></i> Job Detail
                 </h5>
               </div>
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
             </div>
             <div className="row">
@@ -301,15 +301,15 @@ const JobVacancyForm = () => {
 
             <div className="row align-items-center my-3">
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
               <div className="col-auto">
-                <h5 className="position-relative text-primary">
+                <h5 className="position-relative" style={{ color: "#1a4798" }}>
                   <i className="bi bi-wallet-fill"></i> Salary Field
                 </h5>
               </div>
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
             </div>
 
@@ -383,15 +383,15 @@ const JobVacancyForm = () => {
 
             <div className="row align-items-center my-3">
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
               <div className="col-auto">
-                <h5 className="position-relative text-primary">
+                <h5 className="position-relative" style={{ color: "#1a4798" }}>
                   <i className="bi bi-wallet-fill"></i> Job Specification
                 </h5>
               </div>
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
             </div>
 
@@ -517,15 +517,15 @@ const JobVacancyForm = () => {
 
             <div className="row align-items-center my-3">
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
               <div className="col-auto">
-                <h5 className="position-relative text-primary">
+                <h5 className="position-relative" style={{ color: "#1a4798" }}>
                   <i className="bi bi-suitcase-lg-fill"></i> Additional Info
                 </h5>
               </div>
               <div className="col">
-                <hr className="border-2 border-primary" />
+                <hr className="border-2" style={{ color: "#1a4798" }} />
               </div>
             </div>
 

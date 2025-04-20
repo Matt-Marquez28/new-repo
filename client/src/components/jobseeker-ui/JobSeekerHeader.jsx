@@ -104,47 +104,80 @@ export const JobSeekerHeader = () => {
             />
             <h5
               className="pt-serif-bold d-none d-md-block"
-              style={{ color: "#555555" }}
+              style={{ color: "#1a4798" }}
             >
-              PESO City of Taguig
+              <span style={{ color: "#ed1b24", fontSize: "inherit" }}>
+                PESO
+              </span>
+              <br />
+              <span style={{ fontSize: "0.8em", fontWeight: "normal" }}>
+                City Government of Taguig
+              </span>
             </h5>
           </Link>
         </Navbar.Brand>
 
         {/* Desktop View (md and up) */}
         <div className="d-none d-md-flex align-items-center gap-3">
-          <Nav className="me-auto">
+          <Nav className="me-auto align-items-center">
             <Nav.Link
               as={Link}
               to="/jobseeker/dashboard"
-              className="px-3"
-              style={{ color: "#1a4798" }}
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i class="bi bi-speedometer"></i> Dashboard
+              <i className="bi bi-speedometer me-2"></i>
+              <span className="fw-medium">Dashboard</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/jobseeker/job-fair"
-              className="px-3"
-              style={{ color: "#1a4798" }}
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-flag-fill"></i> Job Fair
+              <i className="bi bi-flag-fill me-2"></i>
+              <span className="fw-medium">Job Fair</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/jobseeker/profile"
-              className="px-3"
-              style={{ color: "#1a4798" }}
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-person-fill"></i> Profile
+              <i className="bi bi-person-fill me-2"></i>
+              <span className="fw-medium">Profile</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
+
             <Nav.Link
               as={Link}
               to="/jobseeker/search-companies"
-              className="px-3"
-              style={{ color: "#1a4798" }}
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-building-fill"></i> Companies
+              <i className="bi bi-building-fill me-2"></i>
+              <span className="fw-medium">Companies</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
           </Nav>
 

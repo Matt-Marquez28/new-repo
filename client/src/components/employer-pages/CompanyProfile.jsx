@@ -31,7 +31,7 @@ const CompanyProfile = () => {
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i class="bi bi-arrow-left"></i>
         </button>
-        <h5 className="my-2 text-primary">Company Profile</h5>
+        <h5 className="my-2" style={{color: "#1a4798"}}>Company Profile</h5>
       </div>
 
       <div className="alert alert-primary" role="alert">

@@ -100,7 +100,7 @@ const ApplicationDetails = () => {
           >
             <i class="bi bi-arrow-left"></i>
           </button>
-          <h5 className="my-2 text-primary">
+          <h5 className="my-2" style={{ color: "#1a4798" }}>
             Application for {application?.jobVacancyId?.jobTitle}
           </h5>
         </div>
@@ -109,7 +109,10 @@ const ApplicationDetails = () => {
       <div className="row">
         <div className="col-md-4">
           <div className="card shadow-sm mb-3">
-            <div className="card-header bg-primary text-center fw-normal text-light">
+            <div
+              className="card-header text-center fw-normal text-light"
+              style={{ backgroundColor: "#1a4798" }}
+            >
               Overview
             </div>
             <div className="card-body">
@@ -152,7 +155,9 @@ const ApplicationDetails = () => {
 
                 {/* Hiring Progress Section - Always Visible */}
                 <div className="p-3 border rounded bg-light">
-                  <h5 className="mb-3 text-primary">Hiring Progress</h5>
+                  <h5 className="mb-3" style={{ color: "#1a4798" }}>
+                    Hiring Progress
+                  </h5>
                   {getStatusProgressBar(application?.status)}
                   <span
                     className="fw-semibold text-muted"
@@ -166,7 +171,9 @@ const ApplicationDetails = () => {
 
                 {/* Contact Section - Always Visible */}
                 <div className="p-3 border rounded bg-light d-none d-md-block">
-                  <h5 className="mb-3 text-primary">Contact</h5>
+                  <h5 className="mb-3" style={{ color: "#1a4798" }}>
+                    Contact
+                  </h5>
                   <div className="d-flex text-start align-items-center gap-3 mb-3">
                     <div>
                       <i className="bi bi-envelope-fill fs-4 text-secondary"></i>

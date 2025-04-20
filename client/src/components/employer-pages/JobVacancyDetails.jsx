@@ -208,7 +208,7 @@ const JobVacancyDetails = () => {
       {/* buttons */}
       <div className="d-flex justify-content-between my-2">
         <button onClick={() => navigate(-1)} className="btn btn-light">
-        <i class="bi bi-arrow-left"></i>
+          <i class="bi bi-arrow-left"></i>
         </button>
         {jobVacancy?.status === "archived" ? (
           <Button variant="success" onClick={handleShowUnarchiveModal}>
@@ -288,7 +288,10 @@ const JobVacancyDetails = () => {
       </Modal>
 
       <div className="card shadow-sm">
-        <span className="card-header bg-primary text-light text-center">
+        <span
+          className="card-header text-light text-center"
+          style={{ backgroundColor: "#1a4798" }}
+        >
           <i className="bi bi-info-circle"></i> Job Vacancy Details
         </span>
         <div className="card-body">
@@ -315,15 +318,18 @@ const JobVacancyDetails = () => {
               <Form>
                 <div className="row align-items-center my-3">
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                   <div className="col-auto">
-                    <h5 className="position-relative text-primary">
+                    <h5
+                      className="position-relative"
+                      style={{ color: "#1a4798" }}
+                    >
                       <i className="bi bi-suitcase-lg-fill"></i> Job Detail
                     </h5>
                   </div>
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                 </div>
                 <div className="row">
@@ -458,15 +464,18 @@ const JobVacancyDetails = () => {
 
                 <div className="row align-items-center my-3">
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                   <div className="col-auto">
-                    <h5 className="position-relative text-primary">
+                    <h5
+                      className="position-relative"
+                      style={{ color: "#1a4798" }}
+                    >
                       <i className="bi bi-wallet-fill"></i> Salary Field
                     </h5>
                   </div>
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                 </div>
 
@@ -540,15 +549,18 @@ const JobVacancyDetails = () => {
 
                 <div className="row align-items-center my-3">
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                   <div className="col-auto">
-                    <h5 className="position-relative text-primary">
+                    <h5
+                      className="position-relative"
+                      style={{ color: "#1a4798" }}
+                    >
                       <i className="bi bi-wallet-fill"></i> Job Specification
                     </h5>
                   </div>
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                 </div>
 
@@ -676,15 +688,18 @@ const JobVacancyDetails = () => {
 
                 <div className="row align-items-center my-3">
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                   <div className="col-auto">
-                    <h5 className="position-relative text-primary">
+                    <h5
+                      className="position-relative"
+                      style={{ color: "#1a4798" }}
+                    >
                       <i className="bi bi-suitcase-lg-fill"></i> Additional Info
                     </h5>
                   </div>
                   <div className="col">
-                    <hr className="border-2 border-primary" />
+                    <hr className="border-2" style={{ color: "#1a4798" }} />
                   </div>
                 </div>
 

@@ -16,7 +16,7 @@ body {
 }
 
 body {
-  background-image: url("/bg-blue.png");
+  background-image: url("https://img.freepik.com/free-vector/wave-background_53876-115944.jpg?t=st=1745123980~exp=1745127580~hmac=4b49ac6a89200f943a50adb10a48c9be888bac330b30f9efb18af37e42c317fd&w=1380");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -119,15 +119,15 @@ body {
 
 /* hover */
 .job-list {
-  border-left: 4px solid #0d6efd !important;
-  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
+  border-left: 4px solid #1a4798 !important;
+  /* background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent); */
   transition: all 0.3s ease;
 }
 
 /* hover */
 .job-list .btn-info {
-  background-color: #0d6efd !important;
-  border-color: #0d6efd !important;
+  background-color: #1a4798 !important;
+  border-color: #1a4798 !important;
 }
 
 .job-list:hover img {
@@ -155,7 +155,7 @@ body {
 /* Company Profile Card with Permanent Primary Left Border */
 .company-profile-card {
   transition: all 0.3s ease;
-  border-left: 4px solid #0d6efd; /* Primary blue left border */
+  border-left: 4px solid #1a4798; /* Primary blue left border */
 }
 
 /* Keep all hover effects except border changes */
@@ -194,7 +194,7 @@ body {
 /* Jobseeker Card with Permanent Primary Left Border */
 .jobseeker-card {
   transition: all 0.3s ease;
-  border-left: 4px solid #0d6efd; /* Primary blue left border */
+  border-left: 4px solid #1a4798; /* Primary blue left border */
 }
 
 /* Hover effects */
@@ -232,7 +232,7 @@ body {
 /* Preferences Card with Primary Left Border */
 .preferences-card {
   transition: all 0.3s ease;
-  border-left: 4px solid #0d6efd; /* Primary blue left border */
+  border-left: 4px solid #1a4798; /* Primary blue left border */
 }
 
 .preferences-card:hover {
@@ -265,3 +265,43 @@ body {
 
 /*********************************************************************/
 
+.nav-pills .nav-link {
+  border-radius: var(--bs-nav-pills-border-radius);
+  color: #1a4798;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #1a4798;
+}
+
+/************************* NAV LINKS *************************/
+/* Hover and Active Effects */
+.nav-hover-effect:hover {
+  background-color: rgba(26, 71, 152, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Active link indicator */
+.nav-active-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background-color: #1a4798;
+  transition: width 0.3s ease;
+}
+
+.nav-link.active .nav-active-indicator {
+  width: 70%;
+}
+
+/* Icon animation */
+.nav-link i {
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+  transform: scale(1.1);
+}

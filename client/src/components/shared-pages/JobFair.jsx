@@ -87,6 +87,7 @@ const JobFair = () => {
         { withCredentials: true }
       );
       console.log(res?.data);
+      getActiveJobFair();
     } catch (error) {
       console.log(error);
       alert(error?.response?.data?.message);
@@ -110,8 +111,11 @@ const JobFair = () => {
             </h1>
 
             <div className="d-flex align-items-center mb-4">
-              <i className="bi bi-calendar-event me-2 text-muted"></i>
-              <span className="me-4">
+              <i
+                className="bi bi-calendar-event me-2 text-muted"
+                style={{ color: "#ef1b25" }}
+              ></i>
+              <span className="me-4" style={{ color: "#ef1b25" }}>
                 {" "}
                 {jobFairData?.date
                   ? format(new Date(jobFairData.date), "MMMM d, yyyy")

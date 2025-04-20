@@ -110,9 +110,15 @@ const AdminHeader = () => {
             />
             <h5
               className="pt-serif-bold d-none d-md-block"
-              style={{ color: "#555555" }}
+              style={{ color: "#1a4798" }}
             >
-              PESO City of Taguig
+              <span style={{ color: "#ed1b24", fontSize: "inherit" }}>
+                PESO
+              </span>
+              <br />
+              <span style={{ fontSize: "0.8em", fontWeight: "normal" }}>
+                City Government of Taguig
+              </span>
             </h5>
           </Link>
         </Navbar.Brand>

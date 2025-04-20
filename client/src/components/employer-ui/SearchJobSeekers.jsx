@@ -226,7 +226,7 @@ const SearchJobSeekers = () => {
                 </div>
                 <div className="d-flex align-items-end">
                   <p
-                    className="m-0 p-0 text-info d-none d-sm-inline"
+                    className="m-0 p-0 text-primary d-none d-sm-inline"
                     style={{ fontSize: "0.85rem" }}
                   >
                     <i className="bi bi-envelope-fill"></i>{" "}

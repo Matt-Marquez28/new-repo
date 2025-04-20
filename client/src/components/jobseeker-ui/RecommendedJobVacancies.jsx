@@ -68,9 +68,15 @@ const RecommendedJobVacancies = () => {
   return (
     <div>
       <div className="my-3">
-        <h5 className="text-primary text-center fw-semibold mb-1">
+        <h5
+          className="text-center fw-semibold mb-1"
+          style={{ color: "#1a4798" }}
+        >
           <i className="bi bi-hand-thumbs-up-fill"></i> Recommended Jobs{" "}
-          <span className="badge bg-primary rounded">
+          <span
+            className="badge rounded"
+            style={{ backgroundColor: "#1a4798" }}
+          >
             {jobVacancies?.length}
           </span>
         </h5>
@@ -179,14 +185,14 @@ const RecommendedJobVacancies = () => {
                   </Link>
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
+                    className="btn btn-outline-light text-primary d-none d-sm-inline-block"
                   >
                     {(job?.applicants || []).length}{" "}
                     <i className="bi bi-people-fill"></i> Applicants
                   </button>
                   <button
                     type="button"
-                    className="btn btn-outline-light text-info d-none d-sm-inline-block"
+                    className="btn btn-outline-light text-primary d-none d-sm-inline-block"
                   >
                     {job?.vacancies || 1}{" "}
                     <i className="bi bi-clipboard-check-fill"></i> Vacancies

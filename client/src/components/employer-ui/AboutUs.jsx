@@ -97,15 +97,15 @@ const AboutUs = () => {
       {/* Section Title: Company Information */}
       <div className="row align-items-center my-3">
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
         <div className="col-auto">
-          <h5 className="position-relative text-primary">
+          <h5 className="position-relative" style={{ color: "#1a4798" }}>
             <i className="bi bi-info-circle-fill"></i> About Us
           </h5>
         </div>
         <div className="col">
-          <hr className="border-2 border-primary" />
+          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
       </div>
       <form onSubmit={formik.handleSubmit}>
@@ -114,7 +114,7 @@ const AboutUs = () => {
           <div className="col-md-6">
             <div className="mb-3">
               <label htmlFor="mission">
-                <h5 className="text-primary">
+                <h5 style={{ color: "#1a4798" }}>
                   <i className="bi bi-bullseye me-2"></i> Mission
                 </h5>
               </label>
@@ -129,7 +129,7 @@ const AboutUs = () => {
 
             <div className="mb-3">
               <label htmlFor="vision">
-                <h5 className="text-primary">
+                <h5 style={{ color: "#1a4798" }}>
                   <i className="bi bi-eye-fill me-2"></i> Vision
                 </h5>
               </label>
@@ -147,7 +147,7 @@ const AboutUs = () => {
           <div className="col-md-6">
             <div className="mb-3">
               <label htmlFor="goals">
-                <h5 className="text-primary">
+                <h5 style={{ color: "#1a4798" }}>
                   <i className="bi bi-flag-fill me-2"></i> Goals
                 </h5>
               </label>
@@ -162,7 +162,7 @@ const AboutUs = () => {
 
             <div className="mb-3">
               <label htmlFor="values">
-                <h5 className="text-primary">
+                <h5 style={{ color: "#1a4798" }}>
                   <i className="bi bi-heart-fill me-2"></i> Values
                 </h5>
               </label>
@@ -180,15 +180,15 @@ const AboutUs = () => {
         {/* Social Links Inputs */}
         <div className="row align-items-center my-3">
           <div className="col">
-            <hr className="border-2 border-primary" />
+            <hr className="border-2" style={{ color: "#1a4798" }} />
           </div>
           <div className="col-auto">
-            <h5 className="position-relative text-primary">
+            <h5 className="position-relative" style={{ color: "#1a4798" }}>
               <i className="bi bi-info-circle-fill"></i> Social Links
             </h5>
           </div>
           <div className="col">
-            <hr className="border-2 border-primary" />
+            <hr className="border-2" style={{ color: "#1a4798" }} />
           </div>
         </div>
 
