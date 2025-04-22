@@ -8,6 +8,7 @@ const Announcement = () => {
   const [visible, setVisible] = useState(true);
   const [event, setEvent] = useState(null);
   const [countdown, setCountdown] = useState("");
+  const [isBeforeEvent, setIsBeforeEvent] = useState(true);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -18,33 +19,64 @@ const Announcement = () => {
 
         const fetchedEvent = res.data.activeJobFair;
 
-        if (!fetchedEvent || !fetchedEvent.registrationDeadline) {
-          console.warn(
-            "No active job fair event or missing registrationDeadline"
-          );
+        if (!fetchedEvent || !fetchedEvent.date) {
+          console.warn("No active job fair event or missing date");
           return;
         }
 
-        const deadline = dayjs(fetchedEvent.registrationDeadline);
+        const eventDate = dayjs(fetchedEvent.date);
         const now = dayjs();
 
-        if (deadline.isAfter(now)) {
+        if (eventDate.isAfter(now)) {
           setEvent(fetchedEvent);
-          startCountdown(deadline);
+          startCountdown(fetchedEvent);
+          setIsBeforeEvent(true);
+        } else {
+          setIsBeforeEvent(false);
         }
       } catch (err) {
         console.error("Error fetching event:", err);
       }
     };
 
-    const startCountdown = (deadline) => {
+    const startCountdown = (event) => {
       const updateCountdown = () => {
         const now = dayjs();
-        const diff = deadline.diff(now, 'second');
+        const registrationDeadline = dayjs(event.registrationDeadline);
+        const eventDate = dayjs(event.date);
 
-        if (diff <= 0) {
+        // Check if event date has passed
+        if (eventDate.isBefore(now)) {
+          setIsBeforeEvent(false);
           setVisible(false);
           return;
+        }
+
+        // Determine which countdown to show (registration deadline or event date)
+        let targetDate = registrationDeadline.isAfter(now) 
+          ? registrationDeadline 
+          : eventDate;
+        
+        let messagePrefix = registrationDeadline.isAfter(now)
+          ? "Registration closes in"
+          : "Job Fair starts in";
+
+        const diff = targetDate.diff(now, 'second');
+
+        if (diff <= 0) {
+          if (targetDate === registrationDeadline) {
+            // Switch to event date countdown
+            targetDate = eventDate;
+            messagePrefix = "Job Fair starts in";
+            const newDiff = targetDate.diff(now, 'second');
+            if (newDiff <= 0) {
+              setVisible(false);
+              return;
+            }
+          } else {
+            setVisible(false);
+            return;
+          }
         }
 
         const days = Math.floor(diff / (60 * 60 * 24));
@@ -62,7 +94,7 @@ const Announcement = () => {
           }
         }
 
-        setCountdown(countdownStr.trim());
+        setCountdown(`${messagePrefix} ${countdownStr.trim()}`);
       };
 
       updateCountdown(); // Initial call
@@ -73,7 +105,7 @@ const Announcement = () => {
     fetchEvent();
   }, []);
 
-  if (!visible || !event) return null;
+  if (!visible || !event || !isBeforeEvent) return null;
 
   return (
     <div
@@ -91,7 +123,7 @@ const Announcement = () => {
       }}
     >
       <span>
-        🎉 <strong>Job Fair:</strong> Registration closes in {countdown} •
+        🎉 <strong>Job Fair:</strong> {countdown} •
         <Link
           to="job-fair"
           style={{
@@ -100,7 +132,7 @@ const Announcement = () => {
             textDecoration: "underline",
           }}
         >
-          Register now
+          {dayjs().isBefore(dayjs(event.registrationDeadline)) ? "Register now" : "View details"}
         </Link>
       </span>
     </div>

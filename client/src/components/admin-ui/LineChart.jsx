@@ -183,11 +183,11 @@ const LineChart = () => {
       style={{
         backgroundColor: "#ffffff",
         padding: "1.5rem",
-        borderLeft: "4px solid #007bff",
+        borderLeft: "4px solid #1a4798",
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
       }}
     >
-      <div className="card-body p-4">
+      <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
             <div className="d-flex align-items-center mb-4">
@@ -217,7 +217,7 @@ const LineChart = () => {
             </p>
           </div>
           {!loading && (
-            <div className="bg-primary bg-opacity-10 rounded-pill px-3 py-1">
+            <div className="bg-primary bg-opacity-10 rounded-pill px-3">
               <span className="text-primary fw-semibold">
                 {totalHires} Total Hires
               </span>

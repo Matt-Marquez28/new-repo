@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import "./JobFair.css";
 import job_fair from "../../images/job-fair.png";
 import axios from "axios";
@@ -14,6 +14,7 @@ const JobFair = () => {
   const [allPreRegistered, setAllPreRegistered] = useState(null);
   const [jobSeekerCount, setJobSeekerCount] = useState(0);
   const [employerCount, setEmployerCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Sample data
   const stats = {
@@ -36,6 +37,7 @@ const JobFair = () => {
 
   const getActiveJobFair = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(
         `${JOB_VACANCY_API_END_POINT}/get-active-job-fair-event`
       );
@@ -43,6 +45,8 @@ const JobFair = () => {
       setJobFairData(res?.data?.activeJobFair);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +98,143 @@ const JobFair = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="job-fair-page">
+        <Container className="py-5 text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p>Loading job fair information...</p>
+        </Container>
+      </div>
+    );
+  }
+
+  if (!jobFairData) {
+    return (
+      <div>
+        {/* Animated background elements */}
+        <div className="floating-circle circle-1"></div>
+        <div className="floating-circle circle-2"></div>
+        <div className="floating-circle circle-3"></div>
+
+        <Container className="py-5 position-relative">
+          <Row className="justify-content-center">
+            <Col lg={8} className="text-center">
+              <div className="no-job-fair-icon mb-4">
+                <i
+                  className="bi bi-calendar-x"
+                  style={{ fontSize: "4rem", color: "#6c757d" }}
+                ></i>
+              </div>
+
+              <h1
+                className="display-5 fw-bold mb-3"
+                style={{ color: "#1a4798" }}
+              >
+                No Upcoming Job Fair
+              </h1>
+
+              <div
+                className="alert alert-info mb-4 mx-auto"
+                style={{ maxWidth: "600px" }}
+              >
+                <i className="bi bi-info-circle-fill me-2"></i>
+                There are currently no scheduled job fairs. Check back later or
+                subscribe to be notified about future events.
+              </div>
+
+              <div className="d-flex justify-content-center gap-3 mb-5">
+                <Button
+                  variant="outline-primary"
+                  size="lg"
+                  onClick={() => navigate(-1)}
+                >
+                  <i className="bi bi-arrow-left me-2"></i>
+                  Go Back
+                </Button>
+              </div>
+
+              <div className="past-events mt-5">
+                <h4 className="mb-4">
+                  <i className="bi bi-clock-history me-2"></i>
+                  Past Event Statistics
+                </h4>
+
+                <Row className="g-4 justify-content-center">
+                  <Col md={4}>
+                    <Card className="h-100 shadow-sm border-0 stats-card">
+                      <Card.Body>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-secondary bg-opacity-10 p-3 rounded-circle me-3">
+                            <i
+                              className="bi bi-calendar-event"
+                              style={{ fontSize: "1.5rem" }}
+                            ></i>
+                          </div>
+                          <div>
+                            <h5 className="mb-0">Spring 2023</h5>
+                            <p className="text-muted small mb-0">
+                              March 15-16, 2023
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="d-flex justify-content-between">
+                          <span>
+                            <i className="bi bi-people text-primary me-1"></i>
+                            1,200+ Job Seekers
+                          </span>
+                          <span>
+                            <i className="bi bi-buildings text-success me-1"></i>
+                            85 Employers
+                          </span>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+
+                  <Col md={4}>
+                    <Card className="h-100 shadow-sm border-0 stats-card">
+                      <Card.Body>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-secondary bg-opacity-10 p-3 rounded-circle me-3">
+                            <i
+                              className="bi bi-calendar-event"
+                              style={{ fontSize: "1.5rem" }}
+                            ></i>
+                          </div>
+                          <div>
+                            <h5 className="mb-0">Fall 2022</h5>
+                            <p className="text-muted small mb-0">
+                              October 10-11, 2022
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="d-flex justify-content-between">
+                          <span>
+                            <i className="bi bi-people text-primary me-1"></i>
+                            950+ Job Seekers
+                          </span>
+                          <span>
+                            <i className="bi bi-buildings text-success me-1"></i>
+                            72 Employers
+                          </span>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div className="job-fair-page">
       {/* Animated background elements */}
@@ -106,8 +247,7 @@ const JobFair = () => {
         <Row className="mb-5 align-items-center">
           <Col lg={7} className="mb-4 mb-lg-0">
             <h1 className="display-4 fw-bold mb-4" style={{ color: "#1a4798" }}>
-              <i className="bi bi-flag"></i> Annual{" "}
-              {jobFairData?.title || "Job Fair"}
+              <i className="bi bi-flag"></i> {jobFairData?.title || "Job Fair"}
             </h1>
 
             <div className="d-flex align-items-center mb-4">
@@ -141,7 +281,7 @@ const JobFair = () => {
               {preRegistrationData && (
                 <Link
                   to="pre-registration-details"
-                  className="btn btn-outline-primary btn-lg d-flex align-items-center"
+                  className="btn btn-outline-danger btn-lg d-flex align-items-center"
                 >
                   <i className="bi bi-card-checklist me-2"></i>
                   View Registration

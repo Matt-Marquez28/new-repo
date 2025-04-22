@@ -6,7 +6,7 @@ import Footer from "../shared-ui/Footer";
 import CompanyRankings from "../admin-ui/CompanyRankings";
 import AccountStatisticsCard from "../admin-ui/AccountStatisticsCard";
 import CompanyRankingsTest from "../admin-ui/CompanyRankingsTest";
-
+import ApplicationStatisticsCard from "../admin-ui/ApplicationStatistics";
 const AdminDashboard = () => {
   return (
     <div className="container">
@@ -15,10 +15,11 @@ const AdminDashboard = () => {
       </h4>
       <div className="row">
         {/* Accredited Companies Card */}
-        <CompanyStatisticsCard />
+
         {/* Total Applicants Card */}
-        <ApplicantStatisticsCard />
-        
+        {/* <ApplicantStatisticsCard /> */}
+        <ApplicationStatisticsCard />
+        <CompanyStatisticsCard />
       </div>
       {/* Hired Applicants Card */}
       <AccountStatisticsCard />

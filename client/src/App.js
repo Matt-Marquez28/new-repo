@@ -53,6 +53,9 @@ import JobFairPage from "./components/admin-pages/JobFairPage";
 import JobFair from "./components/shared-pages/JobFair";
 import PreRegistrationDetails from "./components/shared-pages/PreRegistrationDetails";
 import JobFairDetails from "./components/admin-pages/JobFairDetails";
+import Export from "./components/Export";
+import ApplicationReports from "./components/admin-pages/ApplicationReports";
+import Scanner from "./components/admin-pages/Scanner";
 
 function App() {
   return (
@@ -73,6 +76,9 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* public routes */}
+      <Route path="/application-reports" element={<ApplicationReports />} />
+      <Route path="/export" element={<Export />} />
+      <Route path="/scanner" element={<Scanner />} />
       <Route path="/admin-login" element={<AdminLoginPage />} />
       <Route path="/" element={<LandingPage />} />
       <Route path="/browse-jobs" element={<BrowseJobs />} />
@@ -98,11 +104,13 @@ const AppRoutes = () => {
       >
         <Route index element={<Navigate to="/jobseeker/dashboard" />} />
         <Route path="settings" element={<SettingsPage />} />
+
         <Route
           path="settings/change-password"
           element={<ChangePasswordPage />}
         />
         <Route path="notification" element={<Notification />} />
+       
         <Route path="job-fair" element={<JobFair />} />
         <Route
           path="job-fair/pre-registration-details"
@@ -179,8 +187,10 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<Navigate to="/admin/dashboard" />} />
+        <Route path="application-reports" element={<ApplicationReports />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="job-fair" element={<JobFairPage />} />
+        <Route path="scanner" element={<Scanner />} />
         <Route path="job-fair/details/:eventId" element={<JobFairDetails />} />
         <Route path="notification" element={<Notification />} />
         <Route

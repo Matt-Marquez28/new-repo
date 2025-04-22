@@ -15,6 +15,9 @@ import {
   markInterviewAsCompleted,
   scheduleInterview,
   scheduleToPreviousInteview,
+  getApplicationStatistics,
+  getAllApplicationReports,
+  getBusinessNames,
 } from "../controllers/application.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { checkBlocked } from "../middlewares/checkBlocked.js";
@@ -73,14 +76,29 @@ router.patch(
   markInterviewAsCompleted
 );
 
-router.post("/hire-applicant/:applicationId", isAuthenticated, checkBlocked, hireApplicant);
+router.post(
+  "/hire-applicant/:applicationId",
+  isAuthenticated,
+  checkBlocked,
+  hireApplicant
+);
 
-router.post("/decline-applicant/:applicationId", isAuthenticated, declineApplicant);
+router.post(
+  "/decline-applicant/:applicationId",
+  isAuthenticated,
+  declineApplicant
+);
 
 router.get("/get-applicant-statistics", getApplicantStatistics);
 
 router.get("/get-hired-applicants", getHiredApplicants);
 
 router.get("/get-all-applicants", getAllApplicants);
+
+router.get("/get-all-application-statistics", getApplicationStatistics);
+
+router.get("/get-all-application-reports", getAllApplicationReports);
+
+router.get("/get-business-names", getBusinessNames);
 
 export default router;

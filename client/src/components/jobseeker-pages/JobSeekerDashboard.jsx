@@ -9,8 +9,12 @@ import SavedJobs from "../jobseeker-ui/SavedJobs";
 import JobInvitationList from "../jobseeker-ui/JobInvitationList";
 import { useNavigate } from "react-router-dom";
 import default_profile from "../../images/default-profile.jpg";
+import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
+import axios from "axios";
+import { useToast } from "../../contexts/toast.context";
 
 const JobSeekerDashboard = () => {
+  const triggerToast = useToast();
   const navigate = useNavigate();
   // Get profile data from the context
   const { user } = useUser();
@@ -31,6 +35,35 @@ const JobSeekerDashboard = () => {
   const handlePreferencesEditClick = () => {
     navigate("/jobseeker/profile", { state: { activeTab: "jobPreferrences" } });
   };
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      try {
+        const response = await axios.get(
+          `${JOBSEEKER_API_END_POINT}/check-profile-completeness`,
+          { withCredentials: true }
+        );
+        console.log(response.data);
+        if (!response.data.isComplete) {
+          // Redirect to profile completion page
+          triggerToast(
+            `Incomplete Required Sections: ${response?.data?.incompleteSections}`,
+            "danger"
+          );
+          navigate("/jobseeker/profile", {
+            state: {
+              incompleteSections: response.data.incompleteSections,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Profile check failed:", error);
+        // Optionally show error or allow limited access
+      }
+    };
+
+    checkProfile();
+  }, []);
 
   // Save the active tab to localStorage whenever it changes
   useEffect(() => {
@@ -179,7 +212,7 @@ const JobSeekerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Preferred Positions</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {jobPreferences?.jobPositions?.join(", ") || "Not specified"}
@@ -190,7 +223,7 @@ const JobSeekerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Preferred Locations</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {jobPreferences?.locations?.join(", ") || "Not specified"}
@@ -201,7 +234,7 @@ const JobSeekerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Employment Type</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {jobPreferences?.employmentType || "Not specified"}

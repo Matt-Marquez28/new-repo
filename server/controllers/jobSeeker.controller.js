@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import fs from "fs";
+import exceljs from "exceljs";
 
 // get all jobseeker data
 export const getJobSeekerData = async (req, res) => {
@@ -1136,5 +1137,662 @@ export const getAllEligibilitiesAndLicenses = async (req, res) => {
       message: "Failed to fetch eligibilities and licenses",
       error: error.message,
     });
+  }
+};
+
+export const addTraining = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  try {
+    const {
+      trainingName,
+      hours,
+      institution,
+      skills,
+      certificate, // Now a simple string
+      startDate,
+      endDate,
+    } = req.body;
+
+    const training = {
+      trainingName,
+      hours: Number(hours),
+      institution,
+      skills:
+        typeof skills === "string"
+          ? skills.split(",").map((s) => s.trim())
+          : skills || [], // Ensure skills is always an array
+      certificate: certificate || undefined, // Simple string field
+      ...(startDate && { startDate: new Date(startDate) }),
+      ...(endDate && { endDate: new Date(endDate) }),
+    };
+
+    const jobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      { $push: { trainings: training } },
+      { new: true, runValidators: true }
+    );
+
+    if (!jobSeeker) {
+      return res.status(404).json({
+        success: false,
+        message: "Job seeker not found",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: jobSeeker.trainings[jobSeeker.trainings.length - 1],
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    });
+  }
+};
+
+export const getAllTrainings = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  try {
+    const jobSeeker = await JobSeeker.findById(jobSeekerId).select("trainings");
+
+    if (!jobSeeker) {
+      return res.status(404).json({
+        success: false,
+        message: "Job seeker not found",
+      });
+    }
+
+    // Transform the data to match frontend expectations
+    const trainings = jobSeeker.trainings.map((training) => ({
+      ...training.toObject(),
+      // Convert skills array to comma-separated string if needed by frontend
+      skills: Array.isArray(training.skills)
+        ? training.skills.join(", ")
+        : training.skills,
+      // Add certificateReceived flag for frontend (not stored in DB)
+      certificateReceived: !!training.certificate,
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: trainings.length,
+      data: trainings,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  }
+};
+
+export const deleteTraining = async (req, res) => {
+  try {
+    const { trainingId } = req.params;
+    const jobSeekerId = req.jobSeekerId;
+
+    // Find and update the job seeker by pulling the training from their array
+    const updatedJobSeeker = await JobSeeker.findByIdAndUpdate(
+      jobSeekerId,
+      { $pull: { trainings: { _id: trainingId } } }, // Added missing closing brace and parenthesis
+      { new: true }
+    );
+
+    if (!updatedJobSeeker) {
+      return res.status(404).json({
+        success: false,
+        message: "Job seeker not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Training deleted successfully",
+      data: updatedJobSeeker.trainings,
+    });
+  } catch (err) {
+    console.error("Error deleting training:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  }
+};
+
+export const editTraining = async (req, res) => {
+  const jobSeekerId = req.jobSeekerId;
+  const trainingId = req.params.trainingId;
+
+  try {
+    const {
+      trainingName,
+      hours,
+      institution,
+      skills,
+      certificate,
+      startDate,
+      endDate,
+    } = req.body;
+
+    const updatedTraining = {
+      ...(trainingName && { trainingName }),
+      ...(hours && { hours: Number(hours) }),
+      ...(institution && { institution }),
+      ...(skills && {
+        skills:
+          typeof skills === "string"
+            ? skills.split(",").map((s) => s.trim())
+            : skills,
+      }),
+      ...(certificate !== undefined && { certificate }),
+      ...(startDate && { startDate: new Date(startDate) }),
+      ...(endDate && { endDate: new Date(endDate) }),
+    };
+
+    const jobSeeker = await JobSeeker.findOneAndUpdate(
+      { _id: jobSeekerId, "trainings._id": trainingId },
+      {
+        $set: Object.fromEntries(
+          Object.entries(updatedTraining).map(([key, value]) => [
+            `trainings.$.${key}`,
+            value,
+          ])
+        ),
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!jobSeeker) {
+      return res.status(404).json({
+        success: false,
+        message: "Training or job seeker not found",
+      });
+    }
+
+    const updated = jobSeeker.trainings.find(
+      (t) => t._id.toString() === trainingId
+    );
+
+    res.status(200).json({
+      success: true,
+      data: updated,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    });
+  }
+};
+
+export const exportSingleJobSeekerToExcel = async (req, res) => {
+  try {
+    const jobSeekerId = req.jobSeekerId;
+
+    // Fetch the job seeker with all data
+    const jobSeeker = await JobSeeker.findById(jobSeekerId)
+      .populate("accountId", "email username")
+      .populate("savedJobVacancies", "title company")
+      .lean();
+
+    if (!jobSeeker) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    // Create a new workbook
+    const workbook = new exceljs.Workbook();
+    workbook.creator = "Your System Name";
+    workbook.created = new Date();
+
+    // Helper function to style headers
+    const styleHeaders = (worksheet) => {
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF4F81BD" },
+        };
+        cell.border = {
+          top: { style: "thin", color: { argb: "FF000000" } },
+          left: { style: "thin", color: { argb: "FF000000" } },
+          bottom: { style: "thin", color: { argb: "FF000000" } },
+          right: { style: "thin", color: { argb: "FF000000" } },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+      });
+
+      // Freeze header row
+      worksheet.views = [{ state: "frozen", ySplit: 1 }];
+    };
+
+    // Helper to format dates
+    const formatDate = (date) => {
+      return date ? new Date(date).toLocaleDateString() : "";
+    };
+
+    // 1. Basic Information Worksheet
+    const basicInfoSheet = workbook.addWorksheet("Basic Information");
+    basicInfoSheet.columns = [
+      { header: "Field", key: "field", width: 30 },
+      { header: "Value", key: "value", width: 50 },
+    ];
+
+    const personalInfo = jobSeeker.personalInformation || {};
+    const basicInfoData = [
+      { field: "Account ID", value: jobSeeker.accountId?._id || "" },
+      { field: "Account Email", value: jobSeeker.accountId?.email || "" },
+      { field: "First Name", value: personalInfo.firstName || "" },
+      { field: "Last Name", value: personalInfo.lastName || "" },
+      { field: "Middle Name", value: personalInfo.middleName || "" },
+      { field: "Suffix", value: personalInfo.suffix || "" },
+      { field: "Gender", value: personalInfo.gender || "" },
+      { field: "Civil Status", value: personalInfo.civilStatus || "" },
+      { field: "Birth Date", value: formatDate(personalInfo.birthDate) },
+      {
+        field: "Educational Level",
+        value: personalInfo.educationalLevel || "",
+      },
+      { field: "Height", value: personalInfo.height || "" },
+      {
+        field: "Address",
+        value: [
+          personalInfo.street,
+          personalInfo.barangay,
+          personalInfo.cityMunicipality,
+          personalInfo.province,
+        ]
+          .filter(Boolean)
+          .join(", "),
+      },
+      { field: "Email Address", value: personalInfo.emailAddress || "" },
+      { field: "Mobile Number", value: personalInfo.mobileNumber || "" },
+      { field: "Photo URL", value: personalInfo.photo || "" },
+      { field: "About Me", value: personalInfo.aboutMe || "" },
+      { field: "Profile Status", value: jobSeeker.status || "" },
+    ];
+
+    basicInfoSheet.addRows(basicInfoData);
+    styleHeaders(basicInfoSheet);
+
+    // 2. Employment Status Worksheet
+    const employmentSheet = workbook.addWorksheet("Employment Status");
+    employmentSheet.columns = [
+      { header: "Field", key: "field", width: 30 },
+      { header: "Value", key: "value", width: 50 },
+    ];
+
+    const empStatus = jobSeeker.employmentStatus || {};
+    const employmentData = [
+      { field: "Current Status", value: empStatus.status || "" },
+    ];
+
+    if (empStatus.status === "employed") {
+      employmentData.push({
+        field: "Employment Type",
+        value: empStatus.employedDetails?.employmentType || "",
+      });
+
+      if (empStatus.employedDetails?.employmentType === "self-employed") {
+        employmentData.push(
+          {
+            field: "Self-Employment Detail",
+            value: empStatus.employedDetails?.selfEmployment?.detail || "",
+          },
+          {
+            field: "Other Detail",
+            value: empStatus.employedDetails?.selfEmployment?.otherDetail || "",
+          }
+        );
+      }
+    } else if (empStatus.status === "unemployed") {
+      employmentData.push(
+        { field: "Reason", value: empStatus.unemployedDetails?.reason || "" },
+        {
+          field: "Other Reason",
+          value: empStatus.unemployedDetails?.otherReason || "",
+        },
+        {
+          field: "Months Looking for Work",
+          value: empStatus.unemployedDetails?.monthsLookingForWork || "",
+        }
+      );
+    }
+
+    employmentSheet.addRows(employmentData);
+    styleHeaders(employmentSheet);
+
+    // 3. Disability Information
+    if (jobSeeker.disability?.hasDisability) {
+      const disabilitySheet = workbook.addWorksheet("Disability Information");
+      disabilitySheet.columns = [
+        { header: "Field", key: "field", width: 30 },
+        { header: "Value", key: "value", width: 50 },
+      ];
+
+      const disabilityData = [
+        { field: "Has Disability", value: "Yes" },
+        {
+          field: "Disability Types",
+          value: jobSeeker.disability.types?.join(", ") || "",
+        },
+        {
+          field: "Other Description",
+          value: jobSeeker.disability.otherDescription || "",
+        },
+      ];
+
+      disabilitySheet.addRows(disabilityData);
+      styleHeaders(disabilitySheet);
+    }
+
+    // 4. Languages
+    if (jobSeeker.languages?.length > 0) {
+      const languagesSheet = workbook.addWorksheet("Languages");
+      languagesSheet.columns = [
+        { header: "Language", key: "language", width: 25 },
+        { header: "Can Read", key: "read", width: 15 },
+        { header: "Can Write", key: "write", width: 15 },
+        { header: "Can Speak", key: "speak", width: 15 },
+        { header: "Can Understand", key: "understand", width: 15 },
+      ];
+
+      jobSeeker.languages.forEach((lang) => {
+        languagesSheet.addRow({
+          language: lang?.name || lang?.language || "", // Handle both possible property names
+          read: lang.read ? "Yes" : "No",
+          write: lang.write ? "Yes" : "No",
+          speak: lang.speak ? "Yes" : "No",
+          understand: lang.understand ? "Yes" : "No",
+        });
+      });
+
+      styleHeaders(languagesSheet);
+    }
+
+    // 5. Skills Worksheet
+    const skillsSheet = workbook.addWorksheet("Skills");
+    skillsSheet.columns = [
+      { header: "Type", key: "type", width: 20 },
+      { header: "Skills", key: "skills", width: 60 },
+    ];
+
+    const skillsData = [];
+    const skills = jobSeeker.skillsAndSpecializations || {};
+
+    if (skills.specializations?.length > 0) {
+      skillsData.push({
+        type: "Specializations",
+        skills: skills.specializations.join(", "),
+      });
+    }
+
+    if (skills.coreSkills?.length > 0) {
+      skillsData.push({
+        type: "Core Skills",
+        skills: skills.coreSkills.join(", "),
+      });
+    }
+
+    if (skills.softSkills?.length > 0) {
+      skillsData.push({
+        type: "Soft Skills",
+        skills: skills.softSkills.join(", "),
+      });
+    }
+
+    if (skillsData.length > 0) {
+      skillsSheet.addRows(skillsData);
+      styleHeaders(skillsSheet);
+    } else {
+      workbook.removeWorksheet("Skills");
+    }
+
+    // 6. Eligibilities and Licenses
+    if (
+      jobSeeker.eligibilities_and_licences?.eligibilities?.length > 0 ||
+      jobSeeker.eligibilities_and_licences?.professionalLicenses?.length > 0
+    ) {
+      const eligibilitiesSheet = workbook.addWorksheet(
+        "Eligibilities & Licenses"
+      );
+      eligibilitiesSheet.columns = [
+        { header: "Type", key: "type", width: 20 },
+        { header: "Name/Number", key: "name", width: 30 },
+        { header: "Date Taken/Valid Until", key: "date", width: 20 },
+        { header: "Created At", key: "createdAt", width: 20 },
+      ];
+
+      // Add eligibilities
+      jobSeeker.eligibilities_and_licences?.eligibilities?.forEach((item) => {
+        eligibilitiesSheet.addRow({
+          type: "Civil Service Eligibility",
+          name: item.civilService,
+          date: formatDate(item.dateTaken),
+          createdAt: formatDate(item.createdAt),
+        });
+      });
+
+      // Add professional licenses
+      jobSeeker.eligibilities_and_licences?.professionalLicenses?.forEach(
+        (item) => {
+          eligibilitiesSheet.addRow({
+            type: "Professional License",
+            name: item.prc,
+            date: formatDate(item.validUntil),
+            createdAt: formatDate(item.createdAt),
+          });
+        }
+      );
+
+      styleHeaders(eligibilitiesSheet);
+    }
+
+    // 7. Work Experience Worksheet
+    if (jobSeeker.workExperience?.length > 0) {
+      const workExpSheet = workbook.addWorksheet("Work Experience");
+      workExpSheet.columns = [
+        { header: "Job Title", key: "jobTitle", width: 25 },
+        { header: "Company", key: "company", width: 25 },
+        { header: "Location", key: "location", width: 25 },
+        { header: "Start Date", key: "startDate", width: 15 },
+        { header: "End Date", key: "endDate", width: 15 },
+        { header: "Currently Working", key: "current", width: 15 },
+        { header: "Responsibilities", key: "responsibilities", width: 50 },
+        { header: "Achievements", key: "achievements", width: 50 },
+        { header: "Skills/Tools Used", key: "skillsTools", width: 50 },
+      ];
+
+      jobSeeker.workExperience.forEach((exp) => {
+        workExpSheet.addRow({
+          jobTitle: exp.jobTitle || "",
+          company: exp.companyName || "",
+          location: exp.location || "",
+          startDate: formatDate(exp.startDate),
+          endDate: exp.currentlyWorking ? "Present" : formatDate(exp.endDate),
+          current: exp.currentlyWorking ? "Yes" : "No",
+          responsibilities: exp.keyResponsibilities?.join("\n") || "",
+          achievements: exp.achievements_and_contributions?.join("\n") || "",
+          skillsTools: exp.skills_and_tools_used?.join("\n") || "",
+        });
+      });
+
+      styleHeaders(workExpSheet);
+    }
+
+    // 8. Education Worksheet
+    if (jobSeeker.educationalBackground?.length > 0) {
+      const educationSheet = workbook.addWorksheet("Education");
+      educationSheet.columns = [
+        { header: "Degree/Qualifications", key: "degree", width: 30 },
+        { header: "Field of Study", key: "field", width: 25 },
+        { header: "Institution", key: "institution", width: 30 },
+        { header: "Location", key: "location", width: 25 },
+        { header: "Start Date", key: "startDate", width: 15 },
+        { header: "End Date", key: "endDate", width: 15 },
+        { header: "Currently Studying", key: "current", width: 15 },
+        { header: "Achievements", key: "achievements", width: 40 },
+        { header: "Relevant Coursework", key: "coursework", width: 40 },
+        { header: "Certifications", key: "certifications", width: 40 },
+      ];
+
+      jobSeeker.educationalBackground.forEach((edu) => {
+        educationSheet.addRow({
+          degree: edu.degree_or_qualifications || "",
+          field: edu.fieldOfStudy || "",
+          institution: edu.institutionName || "",
+          location: edu.location || "",
+          startDate: formatDate(edu.startDate),
+          endDate: edu.currentlyStudying ? "Present" : formatDate(edu.endDate),
+          current: edu.currentlyStudying ? "Yes" : "No",
+          achievements: edu.achievements?.join("\n") || "",
+          coursework: edu.relevantCoursework?.join("\n") || "",
+          certifications: edu.certifications?.join("\n") || "",
+        });
+      });
+
+      styleHeaders(educationSheet);
+    }
+
+    // 9. Trainings
+    if (jobSeeker.trainings?.length > 0) {
+      const trainingsSheet = workbook.addWorksheet("Trainings");
+      trainingsSheet.columns = [
+        { header: "Training Name", key: "name", width: 30 },
+        { header: "Hours", key: "hours", width: 15 },
+        { header: "Institution", key: "institution", width: 30 },
+        { header: "Skills", key: "skills", width: 40 },
+        { header: "Certificate", key: "certificate", width: 20 },
+      ];
+
+      jobSeeker.trainings.forEach((training) => {
+        trainingsSheet.addRow({
+          name: training.trainingName || "",
+          hours: training.hours || "",
+          institution: training.institution || "",
+          skills: training.skills?.join(", ") || "",
+          certificate: training.certificate || "",
+        });
+      });
+
+      styleHeaders(trainingsSheet);
+    }
+
+    // 10. Job Preferences Worksheet
+    const prefs = jobSeeker.jobPreferences || {};
+    if (
+      prefs.jobPositions?.length > 0 ||
+      prefs.locations?.length > 0 ||
+      prefs.industries?.length > 0
+    ) {
+      const prefsSheet = workbook.addWorksheet("Job Preferences");
+      prefsSheet.columns = [
+        { header: "Preference Type", key: "type", width: 25 },
+        { header: "Details", key: "details", width: 60 },
+      ];
+
+      const prefsData = [];
+
+      if (prefs.jobPositions?.length > 0) {
+        prefsData.push({
+          type: "Preferred Positions",
+          details: prefs.jobPositions.join(", "),
+        });
+      }
+
+      if (prefs.locations?.length > 0) {
+        prefsData.push({
+          type: "Preferred Locations",
+          details: prefs.locations.join(", "),
+        });
+      }
+
+      if (prefs.industries?.length > 0) {
+        prefsData.push({
+          type: "Preferred Industries",
+          details: prefs.industries.join(", "),
+        });
+      }
+
+      prefsData.push(
+        { type: "Salary Type", details: prefs.salaryType || "" },
+        { type: "Minimum Salary", details: prefs.salaryMin || "" },
+        { type: "Maximum Salary", details: prefs.salaryMax || "" },
+        { type: "Employment Type", details: prefs.employmentType || "" }
+      );
+
+      prefsSheet.addRows(prefsData);
+      styleHeaders(prefsSheet);
+    }
+
+    // 11. Saved Jobs
+    if (jobSeeker.savedJobVacancies?.length > 0) {
+      const savedJobsSheet = workbook.addWorksheet("Saved Jobs");
+      savedJobsSheet.columns = [
+        { header: "Job Title", key: "title", width: 30 },
+        { header: "Company", key: "company", width: 30 },
+      ];
+
+      jobSeeker.savedJobVacancies.forEach((job) => {
+        savedJobsSheet.addRow({
+          title: job.title || "",
+          company: job.company || "",
+        });
+      });
+
+      styleHeaders(savedJobsSheet);
+    }
+
+    // Set response headers for file download
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=jobseeker_${jobSeeker._id}_export.xlsx`
+    );
+
+    // Write the workbook to the response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Error exporting job seeker data:", error);
+    res.status(500).json({
+      message: "Error exporting job seeker data",
+      error: error.message,
+    });
+  }
+};
+
+export const checkProfileCompleteness = async (req, res) => {
+  try {
+    // const jobSeekerId = '67f8944e11a0b0b79d5211d4';
+    const jobSeekerId = req.jobSeekerId;
+
+    // 1. Find the job seeker
+    const jobSeeker = await JobSeeker.findById(jobSeekerId);
+    if (!jobSeeker) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    // 2. Use our schema method
+    const { isComplete, incompleteSections } =
+      jobSeeker.checkProfileCompleteness();
+
+    // 3. Return results
+    res.json({
+      success: true,
+      isComplete,
+      incompleteSections,
+    });
+  } catch (error) {
+    console.error("Profile completeness check failed:", error);
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };

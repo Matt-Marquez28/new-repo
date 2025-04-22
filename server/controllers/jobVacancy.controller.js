@@ -12,6 +12,7 @@ import JobFairPreregistration from "../models/jobFairPreRegistration.js";
 import JobFairAttendance from "../models/jobFairAttendance.js";
 import QRCode from "qrcode";
 import crypto from "crypto";
+import { sendJobFairNotifications } from "../utils/sendJobFairNotification.js";
 
 // post a job vacancy
 export const postJobVacancy = async (req, res) => {
@@ -1333,6 +1334,63 @@ export const updateJobVacancy = async (req, res) => {
 };
 
 // create job fair event
+// export const createJobFairEvent = async (req, res) => {
+//   try {
+//     const { title, date, venue, time, description, registrationDeadline } =
+//       req.body;
+
+//     // Check: Verify no duplicate event (same title + date)
+//     const existingEvent = await JobFairEvent.findOne({
+//       title,
+//       date: { $eq: new Date(date) },
+//     });
+//     if (existingEvent) {
+//       return res.status(400).json({
+//         success: false,
+//         error: "An event with this title and date already exists",
+//       });
+//     }
+
+//     const activeEventExists = await JobFairEvent.findOne({ isActive: true });
+//     if (activeEventExists) {
+//       return res.status(400).json({
+//         success: false,
+//         message:
+//           "Cannot create new event while another event is still active. Please deactivate the current event first.",
+//       });
+//     }
+
+//     // Create new event
+//     const newEvent = new JobFairEvent({
+//       title,
+//       date,
+//       time,
+//       venue,
+//       description,
+//       registrationDeadline,
+//       // Defaults will be applied:
+//       // registeredJobSeekers: []
+//       // registeredEmployers: []
+//       // isActive: true
+//     });
+
+//     const savedEvent = await newEvent.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Job fair event created successfully",
+//       data: savedEvent,
+//     });
+//   } catch (error) {
+//     console.error("Error creating job fair event:", error);
+//     res.status(500).json({
+//       success: false,
+//       error: "Server error. Could not create job fair event.",
+//     });
+//   }
+// };
+
+
 export const createJobFairEvent = async (req, res) => {
   try {
     const { title, date, venue, time, description, registrationDeadline } =
@@ -1367,17 +1425,16 @@ export const createJobFairEvent = async (req, res) => {
       venue,
       description,
       registrationDeadline,
-      // Defaults will be applied:
-      // registeredJobSeekers: []
-      // registeredEmployers: []
-      // isActive: true
     });
 
     const savedEvent = await newEvent.save();
 
+    // Send email notifications after successful creation
+    await sendJobFairNotifications(savedEvent);
+
     res.status(201).json({
       success: true,
-      message: "Job fair event created successfully",
+      message: "Job fair event created successfully and notifications sent",
       data: savedEvent,
     });
   } catch (error) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { ClipLoader } from "react-spinners";
+import "./JobFair.css";
 
 const PreRegistrationDetails = () => {
   const [jobFairData, setJobFairData] = useState(null);
@@ -111,86 +112,99 @@ const PreRegistrationDetails = () => {
   const { role, referenceNumber, qrCode, eventId } = preRegistrationData;
 
   return (
-    <div className="container py-5">
-      <div
-        className="card border-0 shadow-sm mx-auto"
-        style={{ maxWidth: "500px" }}
-      >
-        <div className="card-header bg-primary text-white">
-          <h2 className="h4 mb-0 text-center">
-            <i className="bi bi-person-badge me-2"></i>
-            Job Fair Digital Pass
-          </h2>
-        </div>
-
-        <div className="card-body p-4">
-          <div className="text-center mb-4">
-            <div className="bg-light p-3 d-inline-block rounded">
-              <img
-                src={qrCode}
-                alt="QR Code"
-                className="img-fluid"
-                style={{ width: "200px", height: "200px" }}
-              />
-            </div>
+    <div className="job-fair-page">
+      {/* Animated background elements */}
+      <div className="floating-circle circle-1"></div>
+      <div className="floating-circle circle-2"></div>
+      <div className="floating-circle circle-3"></div>
+      <div className="container py-3">
+        <div
+          className="card border shadow-sm mx-auto"
+          style={{ maxWidth: "500px" }}
+        >
+          <div
+            className="card-header text-white"
+            style={{ backgroundColor: "#1a4798" }}
+          >
+            <h2 className="h4 mb-0 text-center">
+              <i className="bi bi-person-badge me-2"></i>
+              Job Fair Digital Pass
+            </h2>
           </div>
 
-          <div className="mb-4">
-            <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-              <span className="text-muted">Role</span>
-              <span className="fw-bold text-capitalize">{role}</span>
-            </div>
-
-            <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-              <span className="text-muted">Reference Number</span>
-              <div className="d-flex align-items-center">
-                <span className="font-monospace me-2">{referenceNumber}</span>
-                <button
-                  onClick={copyToClipboard}
-                  className="btn btn-sm btn-outline-secondary"
-                  title="Copy to clipboard"
-                >
-                  <i className="bi bi-clipboard"></i>
-                </button>
+          <div className="card-body p-4">
+            <div className="text-center mb-4">
+              <div className="bg-light p-3 d-inline-block rounded">
+                <img
+                  src={qrCode}
+                  alt="QR Code"
+                  className="img-fluid"
+                  style={{ width: "200px", height: "200px" }}
+                />
               </div>
             </div>
 
-            {eventId && (
+            <div className="mb-4">
               <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                <span className="text-muted">Event ID</span>
-                <span className="fw-bold">{eventId}</span>
+                <span className="text-muted">Role</span>
+                <span className="fw-bold text-capitalize">{role}</span>
+              </div>
+
+              <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                <span className="text-muted">Reference Number</span>
+                <div className="d-flex align-items-center">
+                  <span className="font-monospace me-2">{referenceNumber}</span>
+                  <button
+                    onClick={copyToClipboard}
+                    className="btn btn-sm btn-outline-secondary"
+                    title="Copy to clipboard"
+                  >
+                    <i className="bi bi-clipboard"></i>
+                  </button>
+                </div>
+              </div>
+
+              {eventId && (
+                <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                  <span className="text-muted">Event ID</span>
+                  <span className="fw-bold">{eventId}</span>
+                </div>
+              )}
+            </div>
+
+            {copied && (
+              <div
+                className="alert alert-success alert-dismissible fade show py-2"
+                role="alert"
+              >
+                <small>Copied to clipboard!</small>
               </div>
             )}
+
+            <div className="alert alert-info mb-4">
+              <small>
+                <i className="bi bi-info-circle me-2"></i>
+                Show this QR code at the job fair entrance for fast check-in.
+              </small>
+            </div>
+
+            <button
+              onClick={handleDownloadQR}
+              className="btn w-100 text-white"
+              style={{ backgroundColor: "#1a4798" }}
+            >
+              <i className="bi bi-download me-2"></i>Download QR Code
+            </button>
           </div>
 
-          {copied && (
-            <div
-              className="alert alert-success alert-dismissible fade show py-2"
-              role="alert"
-            >
-              <small>Copied to clipboard!</small>
-            </div>
-          )}
-
-          <div className="alert alert-info mb-4">
-            <small>
-              <i className="bi bi-info-circle me-2"></i>
-              Show this QR code at the job fair entrance for fast check-in.
+          <div className="card-footer bg-light text-center">
+            <small className="text-muted">
+              Need help?{" "}
+              <a href="#" className="text-decoration-none">
+                Contact support
+              </a>
             </small>
           </div>
-
-          <button onClick={handleDownloadQR} className="btn btn-primary w-100">
-            <i className="bi bi-download me-2"></i>Download QR Code
-          </button>
-        </div>
-
-        <div className="card-footer bg-light text-center">
-          <small className="text-muted">
-            Need help?{" "}
-            <a href="#" className="text-decoration-none">
-              Contact support
-            </a>
-          </small>
         </div>
       </div>
     </div>

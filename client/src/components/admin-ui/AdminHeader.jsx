@@ -125,15 +125,32 @@ const AdminHeader = () => {
 
         {/* Desktop View (md and up) */}
         <div className="d-none d-md-flex align-items-center gap-3">
-          <Nav className="me-auto">
+          <Nav className="me-auto align-items-center">
             <Nav.Link
               as={Link}
               to="/admin/dashboard"
-              className="px-3 text-primary"
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
             >
-              <i className="bi bi-house-door-fill"></i> Home
+              <i className="bi bi-speedometer me-2"></i>
+              <span className="fw-medium">Dashboard</span>
+              <span className="nav-active-indicator"></span>
             </Nav.Link>
           </Nav>
+
+          <Button
+            onClick={() => handleNavigation("/admin/scanner")}
+            variant="light"
+            className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative
+            }`}
+            style={{ width: "40px", height: "40px" }}
+          >
+            <i className="bi bi-qr-code-scan text-primary"></i>
+          </Button>
 
           <Button
             onClick={() => handleNavigation("/admin/notification")}
@@ -145,7 +162,7 @@ const AdminHeader = () => {
           >
             <i
               className={`bi bi-bell-fill ${
-                hasUnread ? "text-danger swing-animation" : "text-secondary"
+                hasUnread ? "text-danger swing-animation" : "text-warning"
               }`}
             ></i>
           </Button>
@@ -272,6 +289,16 @@ const AdminHeader = () => {
         {/* Mobile View (sm and down) */}
         <div className="d-flex d-md-none align-items-center">
           <Button
+            onClick={() => handleNavigation("/admin/scanner")}
+            variant="light"
+            className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative
+            }`}
+            style={{ width: "40px", height: "40px" }}
+          >
+            <i className="bi bi-qr-code-scan text-primary"></i>
+          </Button>
+
+          <Button
             onClick={() => handleNavigation("/admin/notification")}
             variant="light"
             className={`bg-white border rounded-circle d-flex align-items-center justify-content-center p-0 mx-2 position-relative ${
@@ -281,7 +308,7 @@ const AdminHeader = () => {
           >
             <i
               className={`bi bi-bell-fill ${
-                hasUnread ? "text-danger swing-animation" : "text-secondary"
+                hasUnread ? "text-danger swing-animation" : "text-warning"
               }`}
             ></i>
           </Button>

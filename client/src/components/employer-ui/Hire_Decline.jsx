@@ -33,7 +33,10 @@ const Hire_Decline = ({ getApplication }) => {
     try {
       const response = await axios.post(
         `${APPLICATION_API_END_POINT}/decline-applicant/${applicationId}`,
-        { remarks }
+        { remarks },
+        {
+          withCredentials: true,
+        }
       );
       triggerToast(response.data.message, "success");
       getApplication();

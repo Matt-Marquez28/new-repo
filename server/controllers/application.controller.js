@@ -6,6 +6,7 @@ import JobSeeker from "../models/jobSeeker.model.js";
 import { sendEmail } from "../utils/email.js";
 import { createNotification } from "../utils/notification.js";
 import { io, userSocketMap } from "../index.js";
+import Company from "../models/company.model.js";
 
 export const applyJobVacancy = async (req, res) => {
   try {
@@ -95,13 +96,25 @@ export const applyJobVacancy = async (req, res) => {
             <p>You have received a new application for the following job vacancy:</p>
             <ul style="list-style: none; padding: 0;">
               <li><strong>Job Title:</strong> ${jobVacancy.jobTitle}</li>
-              <li><strong>Company Name:</strong> ${jobVacancy.companyId?.companyInformation?.businessName}</li>
-              <li><strong>Applicant Name:</strong> ${jobSeeker.personalInformation.firstName} ${jobSeeker.personalInformation.lastName}</li>
-              <li><strong>Applicant Email:</strong> ${jobSeeker.personalInformation.emailAddress}</li>
-              <li><strong>Applicant Phone:</strong> ${jobSeeker.personalInformation.mobileNumber}</li>
+              <li><strong>Company Name:</strong> ${
+                jobVacancy.companyId?.companyInformation?.businessName
+              }</li>
+              <li><strong>Applicant Name:</strong> ${
+                jobSeeker.personalInformation.firstName
+              } ${jobSeeker.personalInformation.lastName}</li>
+              <li><strong>Applicant Email:</strong> ${
+                jobSeeker.personalInformation.emailAddress
+              }</li>
+              <li><strong>Applicant Phone:</strong> ${
+                jobSeeker.personalInformation.mobileNumber
+              }</li>
             </ul>
             <p style="text-align: center;">
-              <a href="${process.env.FRONTEND_URL}/employer/application-details/${newApplication._id}" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Application</a>
+              <a href="${
+                process.env.FRONTEND_URL
+              }/employer/application-details/${
+          newApplication._id
+        }" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">View Application</a>
             </p>
             <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #aaa;">
               © ${new Date().getFullYear()} | City Government of Taguig 
@@ -151,10 +164,10 @@ export const applyJobVacancy = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in applyJobVacancy:", error);
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       message: "Internal server error",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
@@ -1038,5 +1051,274 @@ export const getAllApplicants = async (req, res) => {
     res
       ?.status(500)
       .json({ success: false, message: "Internal server error!" });
+  }
+};
+
+export const getApplicationStatistics = async (req, res) => {
+  try {
+    // Optionally filter by employer if needed (assuming jobVacancy is associated with employer)
+    const filter = {};
+
+    // Get counts for each status
+    const stats = await Application.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Convert array to object with status as keys
+    const result = {
+      pending: 0,
+      "interview scheduled": 0,
+      "interview completed": 0,
+      hired: 0,
+      declined: 0,
+      total: 0,
+    };
+
+    let total = 0;
+
+    stats.forEach((stat) => {
+      result[stat._id] = stat.count;
+      total += stat.count;
+    });
+
+    result.total = total;
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllApplicationReports = async (req, res) => {
+  try {
+    const { year, month, status, businessName } = req.query;
+
+    // Base filter
+    const filter = {};
+
+    // Add status filter if provided
+    if (status) {
+      filter.status = status;
+    }
+
+    // Add business name filter if provided
+    if (businessName) {
+      // First find companies that match the business name
+      const companies = await Company.find({
+        "companyInformation.businessName": new RegExp(businessName, "i"),
+      }).select("_id");
+
+      const companyIds = companies.map((c) => c._id);
+
+      // Then find job vacancies from these companies
+      const jobVacancies = await JobVacancy.find({
+        companyId: { $in: companyIds },
+      }).select("_id");
+
+      const jobVacancyIds = jobVacancies.map((jv) => jv._id);
+      filter.jobVacancyId = { $in: jobVacancyIds };
+    }
+
+    // Add date filtering for year and/or month
+    if (year || month) {
+      filter.createdAt = {};
+
+      if (year) {
+        const startYear = new Date(`${year}-01-01`);
+        const endYear = new Date(`${parseInt(year) + 1}-01-01`);
+        filter.createdAt.$gte = startYear;
+        filter.createdAt.$lt = endYear;
+      }
+
+      if (month && year) {
+        const startMonth = new Date(`${year}-${month.padStart(2, "0")}-01`);
+        const endMonth = new Date(startMonth);
+        endMonth.setMonth(endMonth.getMonth() + 1);
+        filter.createdAt.$gte = startMonth;
+        filter.createdAt.$lt = endMonth;
+      } else if (month) {
+        // If month is provided without year, use current year
+        const currentYear = new Date().getFullYear();
+        const startMonth = new Date(
+          `${currentYear}-${month.padStart(2, "0")}-01`
+        );
+        const endMonth = new Date(startMonth);
+        endMonth.setMonth(endMonth.getMonth() + 1);
+        filter.createdAt.$gte = startMonth;
+        filter.createdAt.$lt = endMonth;
+      }
+    }
+
+    // Get application data with full details
+    const applications = await Application.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "jobseekers",
+          localField: "jobSeekerId",
+          foreignField: "_id",
+          as: "jobSeeker",
+        },
+      },
+      { $unwind: "$jobSeeker" },
+      {
+        $lookup: {
+          from: "jobvacancies",
+          localField: "jobVacancyId",
+          foreignField: "_id",
+          as: "jobVacancy",
+        },
+      },
+      { $unwind: "$jobVacancy" },
+      {
+        $lookup: {
+          from: "companies",
+          localField: "jobVacancy.companyId",
+          foreignField: "_id",
+          as: "company",
+        },
+      },
+      { $unwind: "$company" },
+      {
+        $project: {
+          status: 1,
+          jobSeekerId: 1, // Include job seeker ID
+          "jobSeeker.personalInformation.firstName": 1,
+          "jobSeeker.personalInformation.lastName": 1,
+          "jobSeeker.personalInformation.emailAddress": 1,
+          "jobSeeker.personalInformation.mobileNumber": 1,
+          "jobVacancy.jobTitle": 1,
+          "jobVacancy.department": 1,
+          "company.companyInformation.businessName": 1,
+          "company.companyInformation.industry": 1,
+          createdAt: 1,
+          updatedAt: 1,
+          hiredDate: 1,
+          hiredBy: 1,
+          remarks: 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+
+    // Format report data
+    const reportData = applications.map((app) => ({
+      applicant: {
+        id: app.jobSeekerId, // Include job seeker ID in response
+        name: `${app.jobSeeker.personalInformation.firstName} ${app.jobSeeker.personalInformation.lastName}`,
+        email: app.jobSeeker.personalInformation.emailAddress,
+        phone: app.jobSeeker.personalInformation.mobileNumber,
+      },
+      job: {
+        title: app.jobVacancy.jobTitle,
+        department: app.jobVacancy.department,
+      },
+      company: {
+        businessName: app.company.companyInformation.businessName,
+        industry: app.company.companyInformation.industry,
+      },
+      application: {
+        status: app.status,
+        appliedDate: app.createdAt.toISOString().split("T")[0], // Format as YYYY-MM-DD
+        lastUpdated: app.updatedAt.toISOString().split("T")[0],
+        hiredDate: app.hiredDate
+          ? app.hiredDate.toISOString().split("T")[0]
+          : "N/A",
+        hiredBy: app.hiredBy || app.company.companyInformation.businessName,
+      },
+      remarks: app.remarks,
+    }));
+
+    // Generate summary statistics
+    const statusCounts = await Application.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const summary = {
+      total: applications.length,
+      statuses: statusCounts.reduce((acc, curr) => {
+        acc[curr._id] = curr.count;
+        return acc;
+      }, {}),
+      ...(businessName && {
+        hiringBusiness: businessName,
+        hiredCount: applications.filter((app) => app.status === "hired").length,
+      }),
+    };
+
+    res.status(200).json({
+      success: true,
+      summary,
+      filters: {
+        year: year || "All years",
+        month: month
+          ? new Date(2000, parseInt(month) - 1).toLocaleString("default", {
+              month: "long",
+            })
+          : "All months",
+        status: status || "All statuses",
+        businessName: businessName || "All businesses",
+      },
+      applications: reportData,
+      count: reportData.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate application report",
+      error: error.message,
+    });
+  }
+};
+
+// Get unique business names for filter dropdown
+export const getBusinessNames = async (req, res) => {
+  try {
+    const businessNames = await Company.aggregate([
+      {
+        $match: {
+          "companyInformation.businessName": { $exists: true, $ne: "" },
+        },
+      },
+      {
+        $group: {
+          _id: "$companyInformation.businessName",
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          name: "$_id",
+          _id: 0,
+        },
+      },
+    ]);
+
+    if (!businessNames.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No business names found",
+      });
+    }
+
+    res.status(200).json(businessNames);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch business names",
+      error: error.message,
+    });
   }
 };

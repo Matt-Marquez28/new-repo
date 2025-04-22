@@ -191,7 +191,7 @@ export const JobSeekerHeader = () => {
           >
             <i
               className={`bi bi-bell-fill ${
-                hasUnread ? "text-danger swing-animation" : "text-secondary"
+                hasUnread ? "text-danger swing-animation" : "text-warning"
               }`}
             ></i>
           </Button>

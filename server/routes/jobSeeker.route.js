@@ -24,6 +24,12 @@ import {
   deleteEligibility,
   deleteProfessionalLicense,
   getAllEligibilitiesAndLicenses,
+  addTraining,
+  getAllTrainings,
+  deleteTraining,
+  editTraining,
+  exportSingleJobSeekerToExcel,
+  checkProfileCompleteness,
 } from "../controllers/jobSeeker.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
@@ -132,6 +138,26 @@ router.get(
   "/get-all-eligibilities-and-licenses",
   isAuthenticated,
   getAllEligibilitiesAndLicenses
+);
+
+router.put("/add-training", isAuthenticated, addTraining);
+
+router.get("/get-all-trainings", isAuthenticated, getAllTrainings);
+
+router.delete("/delete-training/:trainingId", isAuthenticated, deleteTraining);
+
+router.put("/edit-training/:trainingId", isAuthenticated, editTraining);
+
+router.get(
+  "/export-single-jobseeker-data",
+  isAuthenticated,
+  exportSingleJobSeekerToExcel
+);
+
+router.get(
+  "/check-profile-completeness",
+  isAuthenticated,
+  checkProfileCompleteness
 );
 
 export default router;

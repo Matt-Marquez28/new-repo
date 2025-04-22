@@ -19,6 +19,7 @@ import EmploymentStatus from "../jobseeker-ui/EmploymentStatus";
 import Disability from "../jobseeker-ui/Disbility";
 import Language from "../jobseeker-ui/Language";
 import EligibilityProfessionalLicence from "../jobseeker-ui/Eligibility_ProfessionalLicence";
+import Certification_Training from "../jobseeker-ui/Certification_Training";
 
 const JobSeekerProfile = () => {
   const navigate = useNavigate();
@@ -48,6 +49,11 @@ const JobSeekerProfile = () => {
     {
       id: "educationalBackground",
       label: "Educational Background",
+      icon: "bi-mortarboard-fill",
+    },
+    {
+      id: "certification/training",
+      label: "Certification / Training",
       icon: "bi-mortarboard-fill",
     },
     {
@@ -244,6 +250,9 @@ const JobSeekerProfile = () => {
                 <EligibilityProfessionalLicence />
               )}
               {activeTab === "cv" && <CurriculumVitae />}
+              {activeTab === "certification/training" && (
+                <Certification_Training />
+              )}
             </Card.Body>
           </Card>
         </div>

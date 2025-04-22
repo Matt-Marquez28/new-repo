@@ -16,7 +16,7 @@ body {
 }
 
 body {
-  background-image: url("https://img.freepik.com/free-vector/wave-background_53876-115944.jpg?t=st=1745123980~exp=1745127580~hmac=4b49ac6a89200f943a50adb10a48c9be888bac330b30f9efb18af37e42c317fd&w=1380");
+  background-image: url("./blue-bg.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -160,7 +160,6 @@ body {
 
 /* Keep all hover effects except border changes */
 .company-profile-card:hover {
-  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transform: translateY(-2px);
 }
 
@@ -199,7 +198,6 @@ body {
 
 /* Hover effects */
 .jobseeker-card:hover {
-  background: linear-gradient(to right, rgba(13, 110, 253, 0.03), transparent);
   transform: translateY(-2px);
 }
 
@@ -304,4 +302,118 @@ body {
 
 .nav-link:hover i {
   transform: scale(1.1);
+}
+
+/*****************************************************************************************************/
+.job-fair-page {
+  position: relative;
+  overflow: hidden;
+  background-color: #f8f9fa;
+}
+
+.highlight {
+  color: #1a4798;
+  position: relative;
+  display: inline-block;
+}
+
+.highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background-color: rgba(26, 71, 152, 0.2);
+  z-index: -1;
+  border-radius: 4px;
+}
+
+/* Floating animation */
+/* Enhanced Floating animation */
+.floating {
+  animation: floating 3.5s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0px) rotate(0.5deg);
+  }
+  50% {
+    transform: translateY(-25px) rotate(-0.5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0.5deg);
+  }
+}
+
+/* More noticeable Background circles */
+.floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(26, 71, 152, 0.08); /* Slightly more opaque */
+  z-index: 0;
+  filter: blur(1px); /* Softens edges for smoother movement */
+}
+
+.circle-1 {
+  width: 320px;
+  height: 320px;
+  top: -120px;
+  left: -120px;
+  animation: float 18s ease-in-out infinite;
+}
+
+.circle-2 {
+  width: 220px;
+  height: 220px;
+  bottom: 80px;
+  right: -80px;
+  animation: float 15s ease-in-out infinite reverse;
+}
+
+.circle-3 {
+  width: 180px;
+  height: 180px;
+  top: 30%;
+  right: 20%;
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(30px, 30px) rotate(7deg);
+  }
+  50% {
+    transform: translate(50px, 0) rotate(0deg);
+  }
+  75% {
+    transform: translate(30px, -30px) rotate(-7deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* More pronounced Button pulse animation */
+.pulse {
+  animation: pulse 1.5s infinite ease-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 71, 152, 0.5);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 12px rgba(26, 71, 152, 0.1);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 71, 152, 0);
+  }
 }

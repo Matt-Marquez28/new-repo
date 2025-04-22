@@ -233,13 +233,13 @@ const EmployerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Specializations</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {candidatePreferences?.specializations?.length > 0 ? (
                     candidatePreferences.specializations.join(", ")
                   ) : (
-                    <span className="text-info">Not specified</span>
+                    <span className="text-primary">Not specified</span>
                   )}
                 </p>
               </div>
@@ -248,13 +248,13 @@ const EmployerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Skills</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {candidatePreferences?.skills?.length > 0 ? (
                     candidatePreferences.skills.join(", ")
                   ) : (
-                    <span className="text-info">Not specified</span>
+                    <span className="text-primary">Not specified</span>
                   )}
                 </p>
               </div>
@@ -263,13 +263,13 @@ const EmployerDashboard = () => {
               <div className="mb-3 px-3 py-2 bg-light rounded  border border-primary border-opacity-25">
                 <h6 className="text-secondary my-2">Educational Levels</h6>
                 <p
-                  className="m-0 text-info fw-semibold"
+                  className="m-0 text-primary fw-semibold"
                   style={{ fontSize: "0.85rem" }}
                 >
                   {candidatePreferences?.educationalLevels?.length > 0 ? (
                     candidatePreferences.educationalLevels.join(", ")
                   ) : (
-                    <span className="text-info">Not specified</span>
+                    <span className="text-primary">Not specified</span>
                   )}
                 </p>
               </div>

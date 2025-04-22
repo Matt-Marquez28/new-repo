@@ -119,7 +119,7 @@ const CompanyRankings = () => {
         style={{
           backgroundColor: "#ffffff",
           padding: "1.5rem",
-          borderLeft: "4px solid #007bff",
+          borderLeft: "4px solid #1a4798",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
         }}
       >

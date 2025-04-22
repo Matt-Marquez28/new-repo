@@ -208,7 +208,6 @@ const jobSeekerSchema = new mongoose.Schema(
         },
       ],
     },
-
     workExperience: [
       {
         jobTitle: {
@@ -352,6 +351,17 @@ const jobSeekerSchema = new mongoose.Schema(
         ],
       },
     ],
+    trainings: [
+      {
+        trainingName: String,
+        hours: Number,
+        institution: String,
+        skills: [String], // Array of strings
+        certificate: String,
+        // startDate: Date,
+        // endDate: Date,
+      },
+    ],
     status: {
       type: String,
       enum: ["incomplete", "pending", "verified", "declined"],
@@ -368,6 +378,110 @@ const jobSeekerSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Add this right BEFORE creating the model
+jobSeekerSchema.methods.checkProfileCompleteness = function () {
+  const incompleteSections = [];
+
+  // Check personal information
+  const requiredPersonalInfo = [
+    "firstName",
+    "lastName",
+    "gender",
+    "civilStatus",
+    "birthDate",
+    "height",
+    "street",
+    "barangay",
+    "cityMunicipality",
+    "province",
+    "emailAddress",
+    "mobileNumber",
+  ];
+
+  for (const field of requiredPersonalInfo) {
+    if (!this.personalInformation[field]) {
+      incompleteSections.push("personalInformation");
+      break;
+    }
+  }
+
+  // Check employment status
+  if (!this.employmentStatus || !this.employmentStatus.status) {
+    incompleteSections.push("employmentStatus");
+  } else if (this.employmentStatus.status === "employed") {
+    if (
+      !this.employmentStatus.employedDetails ||
+      !this.employmentStatus.employedDetails.employmentType
+    ) {
+      incompleteSections.push("employmentStatus");
+    }
+  } else if (this.employmentStatus.status === "unemployed") {
+    if (
+      !this.employmentStatus.unemployedDetails ||
+      !this.employmentStatus.unemployedDetails.reason ||
+      this.employmentStatus.unemployedDetails.monthsLookingForWork === undefined
+    ) {
+      incompleteSections.push("employmentStatus");
+    }
+  }
+
+  // Check disability information
+  if (
+    this.disability === undefined ||
+    this.disability.hasDisability === undefined
+  ) {
+    incompleteSections.push("disability");
+  } else if (
+    this.disability.hasDisability === true &&
+    (!this.disability.types || this.disability.types.length === 0)
+  ) {
+    incompleteSections.push("disability");
+  }
+
+  // Check languages (at least one language required)
+  if (!this.languages || this.languages.length === 0) {
+    incompleteSections.push("languages");
+  }
+
+  // Check educational background (at least one entry required)
+  if (!this.educationalBackground || this.educationalBackground.length === 0) {
+    incompleteSections.push("educationalBackground");
+  } else {
+    // Check required fields in each education entry
+    const requiredEducationFields = [
+      "degree_or_qualifications",
+      "fieldOfStudy",
+      "institutionName",
+      "location",
+      "startDate",
+    ];
+
+    for (const education of this.educationalBackground) {
+      for (const field of requiredEducationFields) {
+        if (!education[field]) {
+          incompleteSections.push("educationalBackground");
+          break;
+        }
+      }
+      if (incompleteSections.includes("educationalBackground")) break;
+    }
+  }
+
+  // Check skills (at least one core skill)
+  if (
+    !this.skillsAndSpecializations ||
+    !this.skillsAndSpecializations.coreSkills ||
+    this.skillsAndSpecializations.coreSkills.length === 0
+  ) {
+    incompleteSections.push("skillsAndSpecializations");
+  }
+
+  return {
+    isComplete: incompleteSections.length === 0,
+    incompleteSections,
+  };
+};
 
 const JobSeeker = mongoose.model("JobSeeker", jobSeekerSchema);
 
