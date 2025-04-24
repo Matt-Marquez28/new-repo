@@ -82,9 +82,29 @@ const JobSeekerDashboard = () => {
 
   return (
     <div className="container">
-      <h5 className="my-3" style={{ color: "#1a4798" }}>
-        <i className="bi bi-speedometer"></i> Job Seeker Dashboard
-      </h5>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-speedometer text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Job Seeker Dashboard
+            </h5>
+          </div>
+        </div>
+      </div>
       <div className="alert alert-primary" role="alert">
         <i className="bi bi-info-circle-fill"></i> You’re all set! Complete your{" "}
         <Link className="text-decoration-none" to="/jobseeker/profile">

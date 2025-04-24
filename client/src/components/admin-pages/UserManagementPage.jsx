@@ -103,7 +103,7 @@ const UserManagementPage = () => {
 
   return (
     <div className="container">
-      <div className="d-flex gap-2 my-2 align-items-center">
+      {/* <div className="d-flex gap-2 my-2 align-items-center">
         <button onClick={() => navigate(-1)} className="btn btn-light">
           <i className="bi bi-arrow-left"></i>
         </button>
@@ -114,6 +114,40 @@ const UserManagementPage = () => {
 
       <div className="d-flex justify-content-end">
         <Button className="btn btn-primary" onClick={() => setModalShow(true)}>
+          <i className="bi bi-person-fill-add"></i> Create New User
+        </Button>
+      </div> */}
+
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-person-fill-gear text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Manage Administrator / Staff Account.
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Manage all upcoming and past job fair events
+          </p>
+        </div>
+        <Button
+          className="btn"
+          style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}
+          onClick={() => setModalShow(true)}
+        >
           <i className="bi bi-person-fill-add"></i> Create New User
         </Button>
       </div>
@@ -243,7 +277,7 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
   const [role, setRole] = useState("staff");
   const roles = [
     { value: "admin", label: "Administrator" },
-    { value: "staff", label: "Staff" }
+    { value: "staff", label: "Staff" },
   ];
   const triggerToast = useToast();
 

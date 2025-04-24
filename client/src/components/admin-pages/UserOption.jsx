@@ -35,50 +35,59 @@ const UserOption = () => {
       </div>
       <div className="row g-4">
         <div className="col-md-6">
-          <div className="card text-center shadow-sm border rounded position-relative overflow-hidden">
-            {/* Left border accent */}
-            <div
-              className="position-absolute top-0 start-0 bg-primary h-100"
-              style={{ width: "5px" }}
-            ></div>
-
+          <div
+            className="card text-center shadow-sm  rounded-3 position-relative overflow-hidden"
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "1.5rem",
+              borderLeft: "4px solid #1a4798",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+            }}
+          >
             <div className="card-body p-4">
-              <h5 className="card-title fw-bold text-primary">
-                <i className="bi bi-people-fill me-2"></i> Manage System Staff
+              <h5 className="card-title fw-bold" style={{ color: "#1a4798" }}>
+                <i className="bi bi-people-fill me-2"></i> Manage Administrator
+                / Staff
               </h5>
               <p className="card-text text-muted mb-3">
-                Manage system staff, add or remove users.
+                Manage system admin and staff, add or remove accounts.
               </p>
               <button
-                className="btn btn-outline-primary rounded-pill px-4"
+                className="btn rounded px-4 text-white"
+                style={{ backgroundColor: "#1a4798" }}
                 onClick={() => navigate("/admin/user-management/system-users")}
               >
-                <i className="bi bi-gear-fill me-2"></i> Manage Staff
+                <i className="bi bi-gear-fill me-2"></i> Manage Administrator /
+                Staff Accounts
               </button>
             </div>
           </div>
         </div>
         <div className="col-md-6">
-          <div className="card text-center shadow-sm border rounded position-relative overflow-hidden">
-            {/* Left border accent */}
-            <div
-              className="position-absolute top-0 start-0 bg-primary h-100"
-              style={{ width: "5px" }}
-            ></div>
-
+          <div
+            className="card text-center shadow-sm rounded-3 position-relative overflow-hidden"
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "1.5rem",
+              borderLeft: "4px solid #1a4798",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+            }}
+          >
             <div className="card-body p-4">
-              <h5 className="card-title fw-bold text-primary">
+              <h5 className="card-title fw-bold" style={{ color: "#1a4798" }}>
                 <i className="bi bi-person-badge-fill me-2"></i> Manage System
                 Users
               </h5>
               <p className="card-text text-muted mb-3">
-                Manage employers and applicants, ban or delete users.
+                Manage employers and jobseekers, ban or delete account.
               </p>
               <button
-                className="btn btn-outline-primary rounded-pill px-4"
+                className="btn rounded px-4 text-white"
+                style={{ backgroundColor: "#1a4798" }}
                 onClick={() => navigate("/admin/user-management/regular-users")}
               >
-                <i className="bi bi-person-x-fill me-2"></i> Manage Users
+                <i className="bi bi-person-x-fill me-2"></i> Manage Employer /
+                Jobseeker Accounts
               </button>
             </div>
           </div>

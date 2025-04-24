@@ -81,7 +81,7 @@ const EmployerDashboard = () => {
 
   return (
     <div className="container">
-      <div className="d-flex justify-content-between align-items-center">
+      {/* <div className="d-flex justify-content-between align-items-center">
         <h5 className="my-3" style={{ color: "#1a4798" }}>
           <i className="bi bi-speedometer"></i> Employer Dashboard
         </h5>
@@ -95,6 +95,30 @@ const EmployerDashboard = () => {
             ></i>
             {user?.companyData?.status || "incomplete"}
           </span>
+        </div>
+      </div> */}
+
+<div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-speedometer text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Employer Dashboard
+            </h5>
+          </div>
         </div>
       </div>
 
