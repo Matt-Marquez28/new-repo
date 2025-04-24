@@ -148,11 +148,7 @@ router.delete("/delete-training/:trainingId", isAuthenticated, deleteTraining);
 
 router.put("/edit-training/:trainingId", isAuthenticated, editTraining);
 
-router.get(
-  "/export-single-jobseeker-data",
-  isAuthenticated,
-  exportSingleJobSeekerToExcel
-);
+router.get("/export-single-jobseeker-data/:id", exportSingleJobSeekerToExcel);
 
 router.get(
   "/check-profile-completeness",

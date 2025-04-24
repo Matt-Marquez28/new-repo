@@ -24,6 +24,7 @@ import { fileURLToPath } from "url";
 import JobSeeker from "./models/jobSeeker.model.js";
 import Application from "./models/application.model.js";
 import JobInvitation from "./models/jobInvitation.model.js";
+import JobFairEvent from "./models/jobFairEvent.js";
 
 // Equivalent to __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -632,6 +633,28 @@ const deleteScheduledAccounts = async () => {
   }
 };
 
+// Function to deactivate past events
+const deactivatePastEvents = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+
+    const result = await JobFairEvent.updateMany(
+      {
+        date: { $lt: today },
+        isActive: true,
+      },
+      {
+        $set: { isActive: false },
+      }
+    );
+
+    console.log(`Deactivated ${result.modifiedCount} past job fair events`);
+  } catch (error) {
+    console.error("Error deactivating past job fair events:", error);
+  }
+};
+
 // Schedule the cron job to run daily
 cron.schedule("0 0 * * *", async () => {
   console.log("Running the daily cron job...");
@@ -646,6 +669,7 @@ cron.schedule("0 0 * * *", async () => {
   await deleteExpiredAccounts();
   await deactivateInactiveAccounts();
   await deleteScheduledAccounts();
+  await deactivatePastEvents();
 });
 
 export { io, userSocketMap };

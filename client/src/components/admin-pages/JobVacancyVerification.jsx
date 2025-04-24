@@ -104,9 +104,32 @@ const JobVacancyVerification = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary mb-3 mx-1">
-        <i className="bi bi-clipboard-check-fill"></i> Job Vacancy Verification
-      </h4>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi  bi-suitcase-lg-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Job Management
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Verify company credentials and manage approval status
+          </p>
+        </div>
+      </div>
       <section className="mb-3">
         <div className="row g-2 g-md-3">
           {statsData.map((stat, index) => (

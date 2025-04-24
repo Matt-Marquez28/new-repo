@@ -217,7 +217,10 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                 </Link>
                 <div class="card-body">
                   <div className="my-3">
-                    <h4 className="text-center fw-bold text-dark mb-2">
+                    <h4
+                      className="text-center fw-bold mb-2"
+                      style={{ color: "#1a4798" }}
+                    >
                       {" "}
                       {/* Reduced margin-bottom */}
                       {jobVacancy?.jobTitle}
@@ -348,80 +351,101 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
                     </div>
                   </div>
 
-                  <div className="mb-3 border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 class="card-title m-0" style={{ color: "#1a4798" }}>
-                      Job Description
-                    </h5>
-                    <p class="card-text text-secondary small">
-                      {`${jobVacancy?.description}`}
-                    </p>
-                  </div>
-
-                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="m-0" style={{ color: "#1a4798" }}>
-                      Required Qualifications
-                    </h5>
-                    {jobVacancy?.requiredQualifications?.length > 0 ? (
-                      <ul className="list-unstyled">
-                        {jobVacancy.requiredQualifications.map(
-                          (qualification, index) => (
-                            <li key={index} className="text-secondary small">
-                              • {qualification}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    ) : (
-                      <p className="text-secondary">
-                        No qualifications listed.
+                  <div className="mb-3 border border-primary border-opacity-25 rounded bg-light">
+                    {/* Job Description */}
+                    <div className="p-3 border-bottom border-primary border-opacity-25">
+                      <h5
+                        className="card-title m-0"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Job Description
+                      </h5>
+                      <p className="card-text text-secondary small">
+                        {`${jobVacancy?.description}`}
                       </p>
-                    )}
-                  </div>
+                    </div>
 
-                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="card-title m-0" style={{ color: "#1a4798" }}>
-                      Skills Required
-                    </h5>
-                    {jobVacancy?.skillsRequired?.length > 0 ? (
-                      <ul className="list-unstyled">
-                        {jobVacancy.skillsRequired.map((skill, index) => (
-                          <li key={index} className="text-secondary small">
-                            • {skill}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-secondary">No skills listed.</p>
-                    )}
-                  </div>
+                    {/* Required Qualifications */}
+                    <div className="p-3 border-bottom border-primary border-opacity-25">
+                      <h5 className="m-0" style={{ color: "#1a4798" }}>
+                        Required Qualifications
+                      </h5>
+                      {jobVacancy?.requiredQualifications?.length > 0 ? (
+                        <ul className="list-unstyled">
+                          {jobVacancy.requiredQualifications.map(
+                            (qualification, index) => (
+                              <li key={index} className="text-secondary small">
+                                • {qualification}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      ) : (
+                        <p className="text-secondary">
+                          No qualifications listed.
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="mb-3  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 className="card-title m-0" style={{ color: "#1a4798" }}>
-                      Responsibilities
-                    </h5>
-                    {jobVacancy?.responsibilities?.length > 0 ? (
-                      <ul className="list-unstyled">
-                        {jobVacancy.responsibilities.map(
-                          (responsibility, index) => (
+                    {/* Skills Required */}
+                    <div className="p-3 border-bottom border-primary border-opacity-25">
+                      <h5
+                        className="card-title m-0"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Skills Required
+                      </h5>
+                      {jobVacancy?.skillsRequired?.length > 0 ? (
+                        <ul className="list-unstyled">
+                          {jobVacancy.skillsRequired.map((skill, index) => (
                             <li key={index} className="text-secondary small">
-                              • {responsibility}
+                              • {skill}
                             </li>
-                          )
-                        )}
-                      </ul>
-                    ) : (
-                      <p className="text-secondary">No skills listed.</p>
-                    )}
-                  </div>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-secondary">No skills listed.</p>
+                      )}
+                    </div>
 
-                  <div className="mb-2  border border-primary border-opacity-25 p-3 rounded bg-light">
-                    <h5 class="card-title m-0" style={{ color: "#1a4798" }}>
-                      Work Location
-                    </h5>
-                    <p className="text-secondary small">
-                      {jobVacancy?.workLocation ||
-                        "Work location not specified"}
-                    </p>
+                    {/* Responsibilities */}
+                    <div className="p-3 border-bottom border-primary border-opacity-25">
+                      <h5
+                        className="card-title m-0"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Responsibilities
+                      </h5>
+                      {jobVacancy?.responsibilities?.length > 0 ? (
+                        <ul className="list-unstyled">
+                          {jobVacancy.responsibilities.map(
+                            (responsibility, index) => (
+                              <li key={index} className="text-secondary small">
+                                • {responsibility}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      ) : (
+                        <p className="text-secondary">
+                          No responsibilities listed.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Work Location */}
+                    <div className="p-3">
+                      <h5
+                        className="card-title m-0"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Work Location
+                      </h5>
+                      <p className="text-secondary small">
+                        {jobVacancy?.workLocation ||
+                          "Work location not specified"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -458,7 +482,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
                   <h4
                     class="card-title text-center fw-bold mb-3"
-                    style={{ color: "#555555" }}
+                    style={{ color: "#1a4798" }}
                   >
                     {jobVacancy?.companyId?.companyInformation?.businessName}
                   </h4>

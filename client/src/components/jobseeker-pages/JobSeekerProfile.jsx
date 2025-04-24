@@ -120,7 +120,7 @@ const JobSeekerProfile = () => {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate("/jobseeker/dashboard", { replace: true });
   }, [navigate]);
 
   const toggleMobileSidebar = useCallback(() => {
@@ -175,7 +175,9 @@ const JobSeekerProfile = () => {
           className="w-75"
         >
           <Offcanvas.Header closeButton closeVariant="white">
-            <Offcanvas.Title>Job Seeker Profile</Offcanvas.Title>
+            <Offcanvas.Title style={{ color: "#1a4798" }}>
+              Job Seeker Profile
+            </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body className="p-0">
             <Alert variant="primary" className="small m-3">
@@ -219,7 +221,9 @@ const JobSeekerProfile = () => {
             >
               <i className="bi bi-list"></i>
             </Button>
-            <h5 className="my-0 text-primary">Job Seeker Profile</h5>
+            <h5 className="my-0" style={{ color: "#1a4798" }}>
+              Job Seeker Profile
+            </h5>
             <Button variant="light" onClick={handleBack} aria-label="Go back">
               <i className="bi bi-arrow-left"></i>
             </Button>

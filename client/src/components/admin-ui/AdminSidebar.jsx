@@ -59,7 +59,7 @@ const AdminSidebar = () => {
                 padding: "8px 12px", // Padding
               })}
             >
-              <i className="bi bi-columns me-2"></i>
+              <i className="bi bi-speedometer me-2"></i>
               {!isCollapsed && "Dashboard"}
             </NavLink>
           </li>
@@ -74,7 +74,7 @@ const AdminSidebar = () => {
                 padding: "8px 12px", // Padding
               })}
             >
-              <i className="bi bi-building me-2"></i>
+              <i className="bi bi-building-fill me-2"></i>
               {!isCollapsed && "Company Verification"}
             </NavLink>
           </li>
@@ -89,7 +89,7 @@ const AdminSidebar = () => {
                 padding: "8px 12px", // Padding
               })}
             >
-              <i className="bi bi-briefcase me-2"></i>
+              <i className="bi bi-suitcase-lg-fill me-2"></i>
               {!isCollapsed && "Job Vacancy Verification"}
             </NavLink>
           </li>
@@ -119,7 +119,7 @@ const AdminSidebar = () => {
                 padding: "8px 12px", // Padding
               })}
             >
-              <i className="bi bi-exclamation-circle me-2"></i>
+              <i className="bi bi-pen-fill me-2"></i>
               {!isCollapsed && "Audit Trail"}
             </NavLink>
           </li>
@@ -137,7 +137,7 @@ const AdminSidebar = () => {
                   : {}),
               })}
             >
-              <i className="bi bi-flag me-2"></i>
+              <i className="bi bi-flag-fill me-2"></i>
               {!isCollapsed && "Job Fair"}
             </NavLink>
           </li>
@@ -155,7 +155,7 @@ const AdminSidebar = () => {
                   : {}),
               })}
             >
-              <i className="bi bi-people me-2"></i>
+              <i className="bi bi-people-fill me-2"></i>
               {!isCollapsed && "Manage User"}
             </NavLink>
           </li>

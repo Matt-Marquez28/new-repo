@@ -103,7 +103,7 @@ export const EmployerHeader = () => {
               className="me-2"
             />
             <h5
-              className="pt-serif-bold d-none d-md-block"
+              className="pt-serif-bold d-none d-lg-inline-block"
               style={{ color: "#1a4798" }}
             >
               <span style={{ color: "#ed1b24", fontSize: "inherit" }}>
@@ -130,7 +130,7 @@ export const EmployerHeader = () => {
                 transition: "all 0.3s ease",
               }}
             >
-              <i className="bi bi-speedometer me-2"></i>
+              <i className="bi bi-speedometer me-2 d-none d-lg-inline-block"></i>
               <span className="fw-medium">Dashboard</span>
               <span className="nav-active-indicator"></span>
             </Nav.Link>
@@ -145,7 +145,7 @@ export const EmployerHeader = () => {
                 transition: "all 0.3s ease",
               }}
             >
-              <i className="bi bi-suitcase-lg-fill me-2"></i>
+              <i className="bi bi-suitcase-lg-fill me-2 d-none d-lg-inline-block"></i>
               <span className="fw-medium">Job</span>
               <span className="nav-active-indicator"></span>
             </Nav.Link>
@@ -160,7 +160,7 @@ export const EmployerHeader = () => {
                 transition: "all 0.3s ease",
               }}
             >
-              <i className="bi bi-flag-fill me-2"></i>
+              <i className="bi bi-flag-fill me-2 d-none d-lg-inline-block"></i>
               <span className="fw-medium">Job Fair</span>
               <span className="nav-active-indicator"></span>
             </Nav.Link>
@@ -175,7 +175,7 @@ export const EmployerHeader = () => {
                 transition: "all 0.3s ease",
               }}
             >
-              <i className="bi bi-building-fill me-2"></i>
+              <i className="bi bi-building-fill me-2 d-none d-lg-inline-block"></i>
               <span className="fw-medium">Company Profile</span>
               <span className="nav-active-indicator"></span>
             </Nav.Link>
@@ -196,7 +196,7 @@ export const EmployerHeader = () => {
             ></i>
           </Button>
 
-          <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
+          <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded d-none d-lg-inline-block">
             <i
               className="bi bi-clock-fill fs-6 me-2"
               style={{ color: "#1a4798" }}

@@ -1815,3 +1815,353 @@ export const searchCompanies = async (req, res) => {
     });
   }
 };
+
+export const verifyAccreditation = async (req, res) => {
+  try {
+    const { accreditationId } = req.body;
+
+    if (!accreditationId) {
+      return res.status(400).json({
+        success: false,
+        message: "Accreditation ID is required in the request body",
+      });
+    }
+
+    // Find company by accreditationId
+    const company = await Company.findOne({ accreditationId });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found with the provided accreditation ID",
+      });
+    }
+
+    // Check if company is accredited
+    if (company.status !== "accredited") {
+      return res.status(400).json({
+        success: false,
+        message: "Company is not currently accredited",
+        companyStatus: company.status,
+      });
+    }
+
+    // Return company information (you can customize what to return)
+    const companyInfo = {
+      businessName: company.companyInformation.businessName,
+      tinNumber: company.companyInformation.tinNumber,
+      accreditationId: company.accreditationId,
+      accreditationDate: company.accreditationDate,
+      status: company.status,
+      accreditationType: company.accreditation,
+      companyId: company._id, // Adding company ID for reference
+    };
+
+    return res.status(200).json({
+      success: true,
+      message: "Company accreditation verified successfully",
+      data: companyInfo,
+    });
+  } catch (error) {
+    console.error("Error verifying accreditation:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+export const getCompanyStatistics = async (req, res) => {
+  try {
+    // Get counts for each status
+    const stats = await Company.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Initialize result object with all possible statuses
+    const result = {
+      incomplete: 0,
+      pending: 0,
+      accredited: 0,
+      declined: 0,
+      revoked: 0,
+      total: 0,
+    };
+
+    // Calculate total and populate counts
+    let total = 0;
+    stats.forEach((stat) => {
+      if (stat._id in result) {
+        result[stat._id] = stat.count;
+        total += stat.count;
+      }
+    });
+
+    result.total = total;
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching company status statistics:", error);
+    res.status(500).json({ 
+      message: "Failed to fetch company status statistics",
+      error: error.message 
+    });
+  }
+};
+
+export const getAllCompanyReports = async (req, res) => {
+  try {
+    const { year, month, status, businessName, industry, companySize } =
+      req.query;
+
+    // Base filter
+    const filter = {};
+
+    // Add status filter if provided
+    if (status) {
+      filter.status = status;
+    }
+
+    // Add business name filter if provided
+    if (businessName) {
+      filter["companyInformation.businessName"] = new RegExp(businessName, "i");
+    }
+
+    // Add industry filter if provided
+    if (industry) {
+      filter["companyInformation.industry"] = new RegExp(industry, "i");
+    }
+
+    // Add company size filter if provided
+    if (companySize) {
+      filter["companyInformation.companySize"] = companySize;
+    }
+
+    // Add date filtering for year and/or month
+    if (year || month) {
+      filter.createdAt = {};
+
+      if (year) {
+        const startYear = new Date(`${year}-01-01`);
+        const endYear = new Date(`${parseInt(year) + 1}-01-01`);
+
+        filter.createdAt.$gte = startYear;
+        filter.createdAt.$lt = endYear;
+      }
+
+      if (month && year) {
+        const startMonth = new Date(
+          `${year}-${String(month).padStart(2, "0")}-01`
+        );
+        const endMonth = new Date(startMonth);
+        endMonth.setMonth(endMonth.getMonth() + 1);
+        filter.createdAt.$gte = startMonth;
+        filter.createdAt.$lt = endMonth;
+      } else if (month) {
+        // If month is provided without year, use current year
+        const currentYear = new Date().getFullYear();
+        const startMonth = new Date(
+          `${currentYear}-${String(month).padStart(2, "0")}-01`
+        );
+        const endMonth = new Date(startMonth);
+        endMonth.setMonth(endMonth.getMonth() + 1);
+        filter.createdAt.$gte = startMonth;
+        filter.createdAt.$lt = endMonth;
+      }
+    }
+
+    // Get company data with full details
+    const companies = await Company.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "accounts",
+          localField: "accountId",
+          foreignField: "_id",
+          as: "account",
+        },
+      },
+      { $unwind: "$account" },
+      {
+        $project: {
+          status: 1,
+          accreditation: 1,
+          accreditationId: 1,
+          accreditationDate: 1,
+          isRenewal: 1,
+          remarks: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "companyInformation.tinNumber": 1,
+          "companyInformation.businessName": 1,
+          "companyInformation.officeType": 1,
+          "companyInformation.companySize": 1,
+          "companyInformation.typeOfBusiness": 1,
+          "companyInformation.industry": 1,
+          "companyInformation.description": 1,
+          "companyInformation.employerName": 1,
+          "companyInformation.employerPosition": 1,
+          "companyInformation.unitNumber": 1,
+          "companyInformation.street": 1,
+          "companyInformation.barangay": 1,
+          "companyInformation.cityMunicipality": 1,
+          "companyInformation.province": 1,
+          "companyInformation.zipCode": 1,
+          "companyInformation.contactPersonName": 1,
+          "companyInformation.mobileNumber": 1,
+          "companyInformation.telephoneNumber": 1,
+          "companyInformation.emailAddress": 1,
+          "companyInformation.companyLogo": 1,
+          "aboutUs.mission": 1,
+          "aboutUs.vision": 1,
+          "aboutUs.goals": 1,
+          "aboutUs.values": 1,
+          "aboutUs.facebook": 1,
+          "aboutUs.instagram": 1,
+          "aboutUs.twitter": 1,
+          "aboutUs.companyWebsite": 1,
+          "account.email": 1,
+          "account.username": 1,
+          "account.isActive": 1,
+          jobVacancies: 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+
+    // Format report data
+    const reportData = companies.map((company) => ({
+      companyId: company._id,
+      businessInfo: {
+        tinNumber: company.companyInformation.tinNumber,
+        businessName: company.companyInformation.businessName,
+        officeType: company.companyInformation.officeType,
+        companySize: company.companyInformation.companySize,
+        typeOfBusiness: company.companyInformation.typeOfBusiness,
+        industry: company.companyInformation.industry,
+        description: company.companyInformation.description,
+        logo: company.companyInformation.companyLogo,
+      },
+      contactInfo: {
+        employerName: company.companyInformation.employerName,
+        employerPosition: company.companyInformation.employerPosition,
+        address: {
+          unitNumber: company.companyInformation.unitNumber,
+          street: company.companyInformation.street,
+          barangay: company.companyInformation.barangay,
+          cityMunicipality: company.companyInformation.cityMunicipality,
+          province: company.companyInformation.province,
+          zipCode: company.companyInformation.zipCode,
+        },
+        contactPerson: company.companyInformation.contactPersonName,
+        mobileNumber: company.companyInformation.mobileNumber,
+        telephoneNumber: company.companyInformation.telephoneNumber,
+        email: company.companyInformation.emailAddress,
+      },
+      accreditation: {
+        status: company.status,
+        accreditationId: company.accreditationId,
+        accreditationType: company.accreditation,
+        accreditationDate:
+          company.accreditationDate?.toISOString().split("T")[0] || "N/A",
+        isRenewal: company.isRenewal,
+      },
+      accountInfo: {
+        email: company.account.email,
+        username: company.account.username,
+        isActive: company.account.isActive,
+      },
+      socialMedia: {
+        facebook: company.aboutUs?.facebook,
+        instagram: company.aboutUs?.instagram,
+        twitter: company.aboutUs?.twitter,
+        website: company.aboutUs?.companyWebsite,
+      },
+      vacancies: company.jobVacancies?.length || 0,
+      registeredDate: company.createdAt.toISOString().split("T")[0],
+      lastUpdated: company.updatedAt.toISOString().split("T")[0],
+      remarks: company.remarks,
+    }));
+
+    // Generate summary statistics
+    const statusCounts = await Company.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const industryCounts = await Company.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: "$companyInformation.industry",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+    ]);
+
+    const sizeCounts = await Company.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: "$companyInformation.companySize",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const summary = {
+      total: companies.length,
+      statuses: statusCounts.reduce((acc, curr) => {
+        acc[curr._id] = curr.count;
+        return acc;
+      }, {}),
+      topIndustries: industryCounts,
+      companySizes: sizeCounts.reduce((acc, curr) => {
+        acc[curr._id] = curr.count;
+        return acc;
+      }, {}),
+      ...(businessName && {
+        matchingBusinesses: companies.length,
+      }),
+    };
+
+    res.status(200).json({
+      success: true,
+      summary,
+      filters: {
+        year: year || "All years",
+        month: month
+          ? new Date(2000, parseInt(month) - 1).toLocaleString("default", {
+              month: "long",
+            })
+          : "All months",
+
+        status: status || "All statuses",
+        businessName: businessName || "All businesses",
+        industry: industry || "All industries",
+        companySize: companySize || "All sizes",
+      },
+      companies: reportData,
+      count: reportData.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate company report",
+      error: error.message,
+    });
+  }
+};

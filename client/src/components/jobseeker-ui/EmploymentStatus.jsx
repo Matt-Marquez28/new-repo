@@ -13,6 +13,7 @@ const EmploymentStatus = () => {
   const [unemploymentOtherReason, setUnemploymentOtherReason] = useState("");
   const [monthsLookingForWork, setMonthsLookingForWork] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     getJobSeekerData();
@@ -26,44 +27,32 @@ const EmploymentStatus = () => {
         { withCredentials: true }
       );
 
-      // Populate employmentStatus
-      setEmploymentStatus(res?.data?.jobSeekerData?.employmentStatus?.status);
+      const employmentData = res?.data?.jobSeekerData?.employmentStatus || {};
 
-      // Populate employmentType (if employed)
-      if (res?.data?.jobSeekerData?.employmentStatus?.status === "employed") {
-        setEmploymentType(
-          res?.data?.jobSeekerData?.employmentStatus?.employedDetails
-            ?.employmentType
-        );
+      setEmploymentStatus(employmentData?.status);
 
-        // Populate self-employment details if employed and self-employed
+      if (employmentData?.status === "employed") {
+        setEmploymentType(employmentData?.employedDetails?.employmentType);
+
         if (
-          res?.data?.jobSeekerData?.employmentStatus?.employedDetails
-            ?.employmentType === "self-employed"
+          employmentData?.employedDetails?.employmentType === "self-employed"
         ) {
           setSelfEmploymentDetail(
-            res?.data?.jobSeekerData?.employmentStatus?.employedDetails
-              ?.selfEmployment?.detail
+            employmentData?.employedDetails?.selfEmployment?.detail
           );
           setSelfEmploymentOther(
-            res?.data?.jobSeekerData?.employmentStatus?.employedDetails
-              ?.selfEmployment?.otherDetail || ""
+            employmentData?.employedDetails?.selfEmployment?.otherDetail || ""
           );
         }
       }
 
-      // Populate unemployment details (if unemployed)
-      if (res?.data?.jobSeekerData?.employmentStatus?.status === "unemployed") {
-        setUnemploymentReason(
-          res?.data?.jobSeekerData?.employmentStatus?.unemployedDetails?.reason
-        );
+      if (employmentData?.status === "unemployed") {
+        setUnemploymentReason(employmentData?.unemployedDetails?.reason);
         setUnemploymentOtherReason(
-          res?.data?.jobSeekerData?.employmentStatus?.unemployedDetails
-            ?.otherReason || ""
+          employmentData?.unemployedDetails?.otherReason || ""
         );
         setMonthsLookingForWork(
-          res?.data?.jobSeekerData?.employmentStatus?.unemployedDetails
-            ?.monthsLookingForWork || ""
+          employmentData?.unemployedDetails?.monthsLookingForWork || ""
         );
       }
     } catch (error) {
@@ -165,7 +154,7 @@ const EmploymentStatus = () => {
     }
 
     try {
-      setIsLoading(true);
+      setIsSubmitting(true);
       const res = await axios.put(
         `${JOBSEEKER_API_END_POINT}/update-employment-status`,
         { payload },
@@ -182,7 +171,7 @@ const EmploymentStatus = () => {
         "error"
       );
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -200,43 +189,6 @@ const EmploymentStatus = () => {
       setSelfEmploymentDetail("");
       setSelfEmploymentOther("");
     }
-  };
-
-  const handleUnemploymentReasonChange = (e) => {
-    setUnemploymentReason(e.target.value);
-    if (e.target.value !== "Others") {
-      setUnemploymentOtherReason("");
-    }
-  };
-
-  const handleUnemploymentOtherReasonChange = (e) => {
-    setUnemploymentOtherReason(e.target.value);
-  };
-
-  const handleMonthsLookingChange = (e) => {
-    const value = e.target.value;
-    if (value === "" || /^[0-9\b]+$/.test(value)) {
-      setMonthsLookingForWork(value);
-    }
-  };
-
-  const handleEmploymentTypeChange = (e) => {
-    setEmploymentType(e.target.value);
-    if (e.target.value !== "self-employed") {
-      setSelfEmploymentDetail("");
-      setSelfEmploymentOther("");
-    }
-  };
-
-  const handleSelfEmploymentDetailChange = (e) => {
-    setSelfEmploymentDetail(e.target.value);
-    if (e.target.value !== "Others") {
-      setSelfEmploymentOther("");
-    }
-  };
-
-  const handleSelfEmploymentOtherChange = (e) => {
-    setSelfEmploymentOther(e.target.value);
   };
 
   const employmentTypeOptions = [
@@ -278,7 +230,7 @@ const EmploymentStatus = () => {
         {/* Centered title */}
         <div className="col-auto">
           <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-briefcase-fill"></i> Employment Status
+            <i className="bi bi-duffle-fill"></i> Employment Status
           </h5>
         </div>
 
@@ -289,47 +241,77 @@ const EmploymentStatus = () => {
       </div>
 
       {isLoading && !employmentStatus ? (
-        <div className="d-flex justify-content-center my-5">
-          <div className="spinner-border text-primary" role="status">
+        <div className="d-flex justify-content-center my-5 py-5">
+          <div
+            className="spinner-border text-primary"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          >
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       ) : (
-        <>
+        <form onSubmit={handleSubmit}>
           {/* Main Employment Options */}
-          <div className="card mb-4 bg-light">
+          <div
+            className="card mb-4"
+            style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
+          >
+            <div
+              className="card-header text-white"
+              style={{ backgroundColor: "#1a4798" }}
+            >
+              <h5 className="card-title mb-0">Current Employment Status</h5>
+            </div>
             <div className="card-body">
-              <h5 className="card-title mb-3 text">
-                Current Employment Status
-              </h5>
-              <div className="d-flex gap-4 mb-3">
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="employmentStatus"
-                    id="employedRadio"
-                    value="employed"
-                    checked={employmentStatus === "employed"}
-                    onChange={handleEmploymentChange}
-                  />
-                  <label className="form-check-label" htmlFor="employedRadio">
-                    Employed
-                  </label>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <div className="form-check card p-3 h-100 border-primary">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="employmentStatus"
+                      id="employedRadio"
+                      value="employed"
+                      checked={employmentStatus === "employed"}
+                      onChange={handleEmploymentChange}
+                    />
+                    <label
+                      className="form-check-label fw-bold fs-5"
+                      htmlFor="employedRadio"
+                    >
+                      <i className="bi bi-briefcase me-2"></i>Employed
+                    </label>
+                    {employmentStatus === "employed" && (
+                      <small className="text-muted mt-1">
+                        You're currently working
+                      </small>
+                    )}
+                  </div>
                 </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="employmentStatus"
-                    id="unemployedRadio"
-                    value="unemployed"
-                    checked={employmentStatus === "unemployed"}
-                    onChange={handleEmploymentChange}
-                  />
-                  <label className="form-check-label" htmlFor="unemployedRadio">
-                    Unemployed
-                  </label>
+                <div className="col-md-6">
+                  <div className="form-check card p-3 h-100 border-primary">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="employmentStatus"
+                      id="unemployedRadio"
+                      value="unemployed"
+                      checked={employmentStatus === "unemployed"}
+                      onChange={handleEmploymentChange}
+                    />
+                    <label
+                      className="form-check-label fw-bold fs-5"
+                      htmlFor="unemployedRadio"
+                    >
+                      <i className="bi bi-person-x me-2"></i>Unemployed
+                    </label>
+                    {employmentStatus === "unemployed" && (
+                      <small className="text-muted mt-1">
+                        You're currently looking for work
+                      </small>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -337,31 +319,47 @@ const EmploymentStatus = () => {
 
           {/* Employment Type Details */}
           {employmentStatus === "employed" && (
-            <div className="card mb-4 bg-light">
+            <div
+              className="card mb-4"
+              style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
+            >
+              <div
+                className="card-header text-white"
+                style={{ backgroundColor: "#1a4798" }}
+              >
+                <h5 className="card-title mb-0">Employment Details</h5>
+              </div>
               <div className="card-body">
-                <h5 className="card-title mb-3">Employment Details</h5>
                 <div className="mb-4">
-                  <label className="form-label fw-medium mb-2">
+                  <label className="form-label fw-bold mb-3">
                     Employment Type:
                   </label>
-                  <div className="d-flex flex-wrap gap-3">
+                  <div className="row g-3">
                     {employmentTypeOptions.map((option) => (
-                      <div className="form-check" key={option.value}>
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="employmentType"
-                          id={option.value}
-                          value={option.value}
-                          checked={employmentType === option.value}
-                          onChange={handleEmploymentTypeChange}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={option.value}
+                      <div className="col-md-6" key={option.value}>
+                        <div
+                          className={`form-check card p-3 h-100 ${
+                            employmentType === option.value
+                              ? "border-primary"
+                              : ""
+                          }`}
                         >
-                          {option.label}
-                        </label>
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="employmentType"
+                            id={option.value}
+                            value={option.value}
+                            checked={employmentType === option.value}
+                            onChange={(e) => setEmploymentType(e.target.value)}
+                          />
+                          <label
+                            className="form-check-label fw-medium"
+                            htmlFor={option.value}
+                          >
+                            {option.label}
+                          </label>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -369,52 +367,67 @@ const EmploymentStatus = () => {
 
                 {/* Self-employment details */}
                 {employmentType === "self-employed" && (
-                  <div className="mb-3 ps-3 border-start border-3 border-primary">
-                    <label className="form-label fw-medium mb-2">
+                  <div className="mb-3 ps-md-4 border-start border-3 border-primary">
+                    <label className="form-label fw-bold mb-3">
                       Self-employment Type:
                     </label>
-                    <div className="d-flex flex-column gap-2">
+                    <div className="row g-3">
                       {selfEmploymentOptions.map((type, index) => (
-                        <div
-                          className="form-check"
-                          key={`selfEmpType-${index}`}
-                        >
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="selfEmploymentType"
-                            id={`selfEmpType${index}`}
-                            value={type}
-                            checked={selfEmploymentDetail === type}
-                            onChange={handleSelfEmploymentDetailChange}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`selfEmpType${index}`}
+                        <div className="col-md-6" key={`selfEmpType-${index}`}>
+                          <div
+                            className={`form-check card p-3 h-100 ${
+                              selfEmploymentDetail === type
+                                ? "border-primary"
+                                : ""
+                            }`}
                           >
-                            {type}
-                          </label>
-                        </div>
-                      ))}
-
-                      {selfEmploymentDetail === "Others" && (
-                        <div className="mt-2 ms-4">
-                          <div className="form-floating">
                             <input
-                              type="text"
-                              className="form-control"
-                              id="selfEmploymentOther"
-                              value={selfEmploymentOther}
-                              onChange={handleSelfEmploymentOtherChange}
-                              placeholder="Enter your occupation"
+                              className="form-check-input"
+                              type="radio"
+                              name="selfEmploymentType"
+                              id={`selfEmpType${index}`}
+                              value={type}
+                              checked={selfEmploymentDetail === type}
+                              onChange={(e) => {
+                                setSelfEmploymentDetail(e.target.value);
+                                if (e.target.value !== "Others") {
+                                  setSelfEmploymentOther("");
+                                }
+                              }}
                             />
-                            <label htmlFor="selfEmploymentOther">
-                              Please specify your occupation
+                            <label
+                              className="form-check-label"
+                              htmlFor={`selfEmpType${index}`}
+                            >
+                              {type}
                             </label>
                           </div>
                         </div>
-                      )}
+                      ))}
                     </div>
+
+                    {selfEmploymentDetail === "Others" && (
+                      <div className="mt-3">
+                        <div className="form-floating">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="selfEmploymentOther"
+                            value={selfEmploymentOther}
+                            onChange={(e) =>
+                              setSelfEmploymentOther(e.target.value)
+                            }
+                            placeholder="Enter your occupation"
+                          />
+                          <label htmlFor="selfEmploymentOther">
+                            Please specify your occupation
+                          </label>
+                        </div>
+                        <div className="form-text">
+                          Describe your self-employment occupation
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -423,71 +436,107 @@ const EmploymentStatus = () => {
 
           {/* Unemployment Details */}
           {employmentStatus === "unemployed" && (
-            <div className="card mb-4 bg-light">
+            <div
+              className="card mb-4 "
+              style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
+            >
+              <div
+                className="card-header text-white"
+                style={{ backgroundColor: "#1a4798" }}
+              >
+                <h5 className="card-title mb-0">Unemployment Details</h5>
+              </div>
               <div className="card-body">
-                <h5 className="card-title mb-3">Unemployment Details</h5>
                 <div className="mb-4">
-                  <label className="form-label fw-medium mb-2">
+                  <label className="form-label fw-bold mb-3">
                     Reason for unemployment:
                   </label>
-                  <div className="d-flex flex-column gap-2">
+                  <div className="row g-3">
                     {unemploymentReasonOptions.map((reason, index) => (
-                      <div className="form-check" key={`reason-${index}`}>
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="unemploymentReason"
-                          id={`reason${index + 1}`}
-                          value={reason}
-                          checked={unemploymentReason === reason}
-                          onChange={handleUnemploymentReasonChange}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`reason${index + 1}`}
+                      <div className="col-md-6" key={`reason-${index}`}>
+                        <div
+                          className={`form-check card p-3 h-100 ${
+                            unemploymentReason === reason
+                              ? "border-primary"
+                              : ""
+                          }`}
                         >
-                          {reason}
-                        </label>
-                      </div>
-                    ))}
-
-                    {unemploymentReason === "Others" && (
-                      <div className="mt-2 ms-4">
-                        <div className="form-floating">
                           <input
-                            type="text"
-                            className="form-control"
-                            id="otherReasonInput"
-                            value={unemploymentOtherReason}
-                            onChange={handleUnemploymentOtherReasonChange}
-                            placeholder="Enter your reason"
+                            className="form-check-input"
+                            type="radio"
+                            name="unemploymentReason"
+                            id={`reason${index + 1}`}
+                            value={reason}
+                            checked={unemploymentReason === reason}
+                            onChange={(e) => {
+                              setUnemploymentReason(e.target.value);
+                              if (e.target.value !== "Others") {
+                                setUnemploymentOtherReason("");
+                              }
+                            }}
                           />
-                          <label htmlFor="otherReasonInput">
-                            Please specify your reason
+                          <label
+                            className="form-check-label"
+                            htmlFor={`reason${index + 1}`}
+                          >
+                            {reason}
                           </label>
                         </div>
                       </div>
-                    )}
+                    ))}
                   </div>
+
+                  {unemploymentReason === "Others" && (
+                    <div className="mt-3">
+                      <div className="form-floating">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="otherReasonInput"
+                          value={unemploymentOtherReason}
+                          onChange={(e) =>
+                            setUnemploymentOtherReason(e.target.value)
+                          }
+                          placeholder="Enter your reason"
+                        />
+                        <label htmlFor="otherReasonInput">
+                          Please specify your reason
+                        </label>
+                      </div>
+                      <div className="form-text">
+                        Describe why you're currently unemployed
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-3">
                   <label
                     htmlFor="monthsLookingInput"
-                    className="form-label fw-medium"
+                    className="form-label fw-bold"
                   >
-                    How long have you been looking for work? (in months)
+                    How long have you been looking for work?
                   </label>
-                  <div className="input-group" style={{ maxWidth: "200px" }}>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="monthsLookingInput"
-                      value={monthsLookingForWork}
-                      onChange={handleMonthsLookingChange}
-                      placeholder="e.g. 6"
-                    />
-                    <span className="input-group-text">months</span>
+                  <div className="d-flex align-items-center gap-3">
+                    <div className="input-group" style={{ maxWidth: "200px" }}>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="monthsLookingInput"
+                        value={monthsLookingForWork}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "" || /^[0-9\b]+$/.test(value)) {
+                            setMonthsLookingForWork(value);
+                          }
+                        }}
+                        placeholder="e.g. 6"
+                      />
+                      <span className="input-group-text">months</span>
+                    </div>
+                    <div className="form-text">
+                      Enter the number of months you've been seeking employment
+                    </div>
                   </div>
                 </div>
               </div>
@@ -496,29 +545,44 @@ const EmploymentStatus = () => {
 
           {/* Submit Button */}
           {employmentStatus && (
-            <div className="d-flex justify-content-end mt-4">
+            <div className="d-flex justify-content-between mt-4">
               <button
-                className="btn btn-primary"
-                onClick={handleSubmit}
-                disabled={isLoading}
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => {
+                  setEmploymentStatus("");
+                  setEmploymentType("");
+                  setSelfEmploymentDetail("");
+                  setSelfEmploymentOther("");
+                  setUnemploymentReason("");
+                  setUnemploymentOtherReason("");
+                  setMonthsLookingForWork("");
+                }}
               >
-                {isLoading ? (
+                <i className="bi bi-x-circle me-2"></i>Clear Selection
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary px-4"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
                   <>
                     <span
                       className="spinner-border spinner-border-sm me-2"
                       aria-hidden="true"
                     ></span>
-                    <span role="status">Saving...</span>
+                    Saving...
                   </>
                 ) : (
                   <>
-                    <i className="bi bi-floppy"></i> Save Changes
+                    <i className="bi bi-check-circle me-2"></i>Save Changes
                   </>
                 )}
               </button>
             </div>
           )}
-        </>
+        </form>
       )}
     </div>
   );

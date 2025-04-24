@@ -56,6 +56,8 @@ import JobFairDetails from "./components/admin-pages/JobFairDetails";
 import Export from "./components/Export";
 import ApplicationReports from "./components/admin-pages/ApplicationReports";
 import Scanner from "./components/admin-pages/Scanner";
+import EmployerVerification from "./components/admin-pages/EmployerVerification";
+import CompanyReports from "./components/admin-pages/CompanyReports";
 
 function App() {
   return (
@@ -110,7 +112,7 @@ const AppRoutes = () => {
           element={<ChangePasswordPage />}
         />
         <Route path="notification" element={<Notification />} />
-       
+
         <Route path="job-fair" element={<JobFair />} />
         <Route
           path="job-fair/pre-registration-details"
@@ -189,6 +191,10 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="application-reports" element={<ApplicationReports />} />
         <Route path="dashboard" element={<AdminDashboard />} />
+        <Route
+          path="employer-verification"
+          element={<EmployerVerification />}
+        />
         <Route path="job-fair" element={<JobFairPage />} />
         <Route path="scanner" element={<Scanner />} />
         <Route path="job-fair/details/:eventId" element={<JobFairDetails />} />
@@ -197,6 +203,7 @@ const AppRoutes = () => {
           path="dashboard/accredited-companies"
           element={<AccreditedCompanies />}
         />
+        <Route path="company-reports" element={<CompanyReports />} />
         <Route
           path="user-management/system-users"
           element={<UserManagementPage />}

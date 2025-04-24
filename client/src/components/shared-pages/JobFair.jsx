@@ -6,6 +6,7 @@ import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const JobFair = () => {
   const navigate = useNavigate();
@@ -247,7 +248,15 @@ const JobFair = () => {
         <Row className="mb-5 align-items-center">
           <Col lg={7} className="mb-4 mb-lg-0">
             <h1 className="display-4 fw-bold mb-4" style={{ color: "#1a4798" }}>
-              <i className="bi bi-flag"></i> {jobFairData?.title || "Job Fair"}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, type: "spring", stiffness: 120 }}
+                className="d-flex align-items-center"
+              >
+                <i className="bi bi-flag me-3"></i>
+                {jobFairData?.title || "Job Fair"}
+              </motion.div>
             </h1>
 
             <div className="d-flex align-items-center mb-4">

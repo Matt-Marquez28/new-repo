@@ -7,19 +7,40 @@ import CompanyRankings from "../admin-ui/CompanyRankings";
 import AccountStatisticsCard from "../admin-ui/AccountStatisticsCard";
 import CompanyRankingsTest from "../admin-ui/CompanyRankingsTest";
 import ApplicationStatisticsCard from "../admin-ui/ApplicationStatistics";
+import { motion } from "framer-motion";
+import CompanyStatistics from "../admin-ui/CompanyStatistics";
 const AdminDashboard = () => {
   return (
     <div className="container">
-      <h4 className="text-primary">
-        <i className="bi bi-speedometer"></i> Admin Dashboard
-      </h4>
+      <div className="mb-3">
+        <div className="d-flex align-items-center">
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              background: "#1a4798",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "12px",
+            }}
+          >
+            <i className="bi bi-speedometer text-white"></i>
+          </div>
+          <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+            Admin Dashboard
+          </h4>
+        </div>
+      </div>
       <div className="row">
         {/* Accredited Companies Card */}
 
         {/* Total Applicants Card */}
         {/* <ApplicantStatisticsCard /> */}
         <ApplicationStatisticsCard />
-        <CompanyStatisticsCard />
+        {/* <CompanyStatisticsCard /> */}
+        <CompanyStatistics />
       </div>
       {/* Hired Applicants Card */}
       <AccountStatisticsCard />

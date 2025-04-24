@@ -13,6 +13,8 @@ import {
 import { downloadCSV } from "../../utils/csvDownloader";
 import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
+import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
+import axios from "axios";
 
 const ApplicationReports = () => {
   const [reports, setReports] = useState([]);
@@ -49,14 +51,39 @@ const ApplicationReports = () => {
     };
 
     fetchBusinessNames();
-  }, []); // Empty dependency array = runs only once on mount
+  }, []);
 
-  // Separate effect for fetching reports when filters change
   useEffect(() => {
     fetchReports();
-  }, [filters]); // Runs whenever filters change
+  }, [filters]);
 
-  // Fetch reports when filters change
+  const getSingleReport = async (id) => {
+    console.log(`EXPORTING ID => ${id}`);
+    try {
+      const response = await axios.get(
+        `${JOBSEEKER_API_END_POINT}/export-single-jobseeker-data/${id}`,
+        {
+          responseType: "blob", // Required for binary (Excel) downloads
+          withCredentials: true, // Ensures cookies/auth headers are sent
+        }
+      );
+
+      // Create a download link
+      const url = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "jobseeker_export.xlsx");
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      link.remove();
+    } catch (error) {
+      console.log(error?.response?.data?.message);
+    }
+  };
+
   const fetchReports = async () => {
     setLoading(true);
     setError(null);
@@ -120,22 +147,22 @@ const ApplicationReports = () => {
       "Hired By",
       "Remarks",
     ];
-  
+
     const formatDateForCSV = (dateValue) => {
-        if (!dateValue) return "";
-        
-        try {
-          const date = new Date(dateValue);
-          if (isNaN(date.getTime())) return "";
-          
-          // Add TAB character to force Excel to treat as text
-          return `\t${date.toISOString().split('T')[0]}`;
-        } catch (e) {
-          console.error("Error formatting date:", e);
-          return "";
-        }
-      };
-  
+      if (!dateValue) return "";
+
+      try {
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return "";
+
+        // Add TAB character to force Excel to treat as text
+        return `\t${date.toISOString().split("T")[0]}`;
+      } catch (e) {
+        console.error("Error formatting date:", e);
+        return "";
+      }
+    };
+
     const data = reports.map((report) => [
       report.applicant.id,
       report.applicant.name,
@@ -152,7 +179,7 @@ const ApplicationReports = () => {
       report.application.hiredBy,
       report.remarks || "",
     ]);
-  
+
     downloadCSV({
       filename: "applications-report.csv",
       headers,
@@ -349,7 +376,7 @@ const ApplicationReports = () => {
             </Alert>
           ) : (
             <div className="table-responsive">
-              <Table striped  hover>
+              <Table striped hover>
                 <thead>
                   <tr>
                     <th>Applicant</th>
@@ -404,6 +431,14 @@ const ApplicationReports = () => {
                           className="me-2"
                         >
                           <i className="fas fa-eye me-1"></i> View
+                        </Button>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => getSingleReport(report.applicant.id)}
+                          className="me-2"
+                        >
+                          <i className="fas fa-eye me-1"></i> Export
                         </Button>
                       </td>
                     </tr>

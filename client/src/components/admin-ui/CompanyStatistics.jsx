@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import axios from "axios";
-import { APPLICATION_API_END_POINT } from "../../utils/constants";
+import { COMPANY_API_END_POINT } from "../../utils/constants";
 import { Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 
-const ApplicationStatisticsCard = () => {
+const CompanyStatistics = () => {
   const [stats, setStats] = useState({
+    incomplete: 0,
     pending: 0,
-    "interview scheduled": 0,
-    "interview completed": 0,
-    hired: 0,
+    accredited: 0,
     declined: 0,
+    revoked: 0,
     total: 0,
   });
   const [loading, setLoading] = useState(true);
@@ -24,17 +24,17 @@ const ApplicationStatisticsCard = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${APPLICATION_API_END_POINT}/get-all-application-statistics`
+        `${COMPANY_API_END_POINT}/get-company-statistics`
       );
-      setStats(res.data); // Just set the stats directly without filtering
+      setStats(res.data);
     } catch (error) {
-      console.error("Error fetching statistics:", error);
+      console.error("Error fetching company statistics:", error);
       setStats({
+        incomplete: 0,
         pending: 0,
-        "interview scheduled": 0,
-        "interview completed": 0,
-        hired: 0,
+        accredited: 0,
         declined: 0,
+        revoked: 0,
         total: 0,
       });
     } finally {
@@ -49,33 +49,33 @@ const ApplicationStatisticsCard = () => {
   const statusItems = [
     {
       key: "pending",
-      label: "Pending",
+      label: "Pending Review",
       variant: "warning",
       color: "#ffc107",
     },
     {
-      key: "interview scheduled",
-      label: "Interview Scheduled",
-      variant: "info",
-      color: "#17a2b8",
-    },
-    {
-      key: "interview completed",
-      label: "Interview Completed",
-      variant: "info",
-      color: "#17a2b8",
-    },
-    {
-      key: "hired",
-      label: "Hired",
+      key: "accredited",
+      label: "Accredited",
       variant: "success",
       color: "#198754",
+    },
+    {
+      key: "incomplete",
+      label: "Incomplete",
+      variant: "info",
+      color: "#17a2b8",
     },
     {
       key: "declined",
       label: "Declined",
       variant: "danger",
       color: "#dc3545",
+    },
+    {
+      key: "revoked",
+      label: "Revoked",
+      variant: "secondary",
+      color: "#6c757d",
     },
   ];
 
@@ -102,7 +102,7 @@ const ApplicationStatisticsCard = () => {
               }}
             >
               <i
-                className="bi bi-file-earmark-text-fill"
+                className="bi bi-building-fill"
                 style={{ color: "#007bff", fontSize: "1rem" }}
               ></i>
             </div>
@@ -110,7 +110,7 @@ const ApplicationStatisticsCard = () => {
               className="card-title mb-0 ms-3 fw-semibold"
               style={{ color: "#495057" }}
             >
-              Application Statistics
+              Company Accreditation Status
             </h5>
           </div>
 
@@ -137,13 +137,12 @@ const ApplicationStatisticsCard = () => {
                       backgroundColor: "rgba(0, 123, 255, 0.1) !important",
                     }}
                   >
-                    <i className="bi bi-people-fill me-1"></i> Total
-                    Applications
+                    <i className="bi bi-buildings me-1"></i> Total Companies
                   </span>
                 </div>
               </div>
 
-              {/* Status Breakdown in 2 Columns */}
+              {/* Status Breakdown */}
               <Row className="mb-4">
                 {statusItems.map((item, index) => (
                   <Col key={item.key} sm={6} className="mb-3">
@@ -185,7 +184,7 @@ const ApplicationStatisticsCard = () => {
 
               {/* Call-to-Action Button */}
               <Link
-                to={"/admin/application-reports"}
+                to={"/admin/company-reports"}
                 className="btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 px-4"
                 style={{
                   backgroundColor: "#1a4798",
@@ -207,4 +206,4 @@ const ApplicationStatisticsCard = () => {
   );
 };
 
-export default ApplicationStatisticsCard;
+export default CompanyStatistics;

@@ -56,9 +56,32 @@ const AuditTrail = () => {
 
   return (
     <div className="container">
-      <h4 className="text-primary mb-4">
-        <i className="bi bi-pen-fill"></i>Audit Trail
-      </h4>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi  bi-pen-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Audit Trail
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Verify company credentials and manage approval status
+          </p>
+        </div>
+      </div>
 
       {loading && (
         <div className="text-center my-4">
@@ -76,10 +99,7 @@ const AuditTrail = () => {
       )}
 
       {!loading && !error && (
-        <div
-          className="table-responsive"
-          style={{ maxHeight: "380px", overflow: "auto" }}
-        >
+        <div className="table-responsive" style={{ overflow: "auto" }}>
           <div style={{ minWidth: "800px" }}>
             {" "}
             {/* Minimum width to trigger horizontal scroll */}

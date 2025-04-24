@@ -193,7 +193,7 @@ const JobFairAdminPage = () => {
   return (
     <div className="container">
       {/* Page Header with Stats */}
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div className="mb-3 mb-md-0">
           <h1 className="h3 fw-bold">
             <i className="bi bi-calendar-event me-2 text-primary"></i>
@@ -205,6 +205,51 @@ const JobFairAdminPage = () => {
         </div>
         <button
           className="btn btn-primary d-flex align-items-center"
+          onClick={() => {
+            setCurrentEvent(null);
+            setFormData({
+              title: "",
+              date: "",
+              time: "",
+              venue: "",
+              description: "",
+              registrationDeadline: "",
+            });
+            setShowModal(true);
+          }}
+        >
+          <i className="bi bi-plus-lg me-2"></i>
+          Add New Event
+        </button>
+      </div> */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-flag-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Job Fair Management
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Manage all upcoming and past job fair events
+          </p>
+        </div>
+        <button
+          className="btn d-flex align-items-center text-white"
+          style={{ backgroundColor: "#1a4798" }}
           onClick={() => {
             setCurrentEvent(null);
             setFormData({

@@ -18,10 +18,14 @@ import {
   getRenewals,
   getCompanyRankings,
   searchCompanies,
+  verifyAccreditation,
+  getCompanyStatistics,
+  getAllCompanyReports,
 } from "../controllers/company.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { singleUpload } from "../middlewares/multerSingle.js";
 import uploadMultipleFiles from "../middlewares/multerMultiple.js";
+
 
 const router = express.Router();
 
@@ -91,5 +95,11 @@ router.get("/get-renewals", getRenewals);
 router.get("/get-company-rankings", getCompanyRankings);
 
 router.get("/search-companies", searchCompanies);
+
+router.post("/verify-accreditation", verifyAccreditation);
+
+router.get("/get-company-statistics", getCompanyStatistics);
+
+router.get("/get-all-company-reports", getAllCompanyReports);
 
 export default router;

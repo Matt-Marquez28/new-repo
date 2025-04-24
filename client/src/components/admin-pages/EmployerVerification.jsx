@@ -10,11 +10,10 @@ import {
   Col,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { COMPANY_API_END_POINT } from "../utils/constants";
+import { COMPANY_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
 
-
-const Test = () => {
+const EmployerVerification = () => {
   const [accreditationId, setAccreditationId] = useState("");
   const [verificationResult, setVerificationResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,8 +47,11 @@ const Test = () => {
       <Row className="justify-content-center">
         <Col md={8} lg={6}>
           <Card className="shadow">
-            <Card.Header className="bg-primary text-white">
-              <h2 className="text-center mb-0">Accreditation Verification</h2>
+            <Card.Header
+              className="text-white"
+              style={{ backgroundColor: "#1a4798" }}
+            >
+              <h5 className="text-center mb-0"><i className="bi bi-person-check-fill"></i> Employer Verification</h5>
             </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
@@ -65,7 +67,7 @@ const Test = () => {
                 </Form.Group>
 
                 <div className="d-grid">
-                  <Button variant="primary" type="submit" disabled={loading}>
+                  <Button type="submit" disabled={loading} style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}>
                     {loading ? (
                       <>
                         <Spinner
@@ -158,4 +160,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default EmployerVerification;

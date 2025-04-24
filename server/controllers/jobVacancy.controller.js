@@ -1608,6 +1608,80 @@ export const updateJobFairEvent = async (req, res) => {
   }
 };
 
+// export const preRegisterForJobFair = async (req, res) => {
+//   const accountId = req.accountId;
+//   const role = req.role;
+
+//   try {
+//     const { eventId } = req.body;
+
+//     if (!["jobseeker", "employer"].includes(role)) {
+//       return res.status(400).json({ message: "Invalid role." });
+//     }
+
+//     // Find associated JobSeeker or Employer
+//     let jobseeker = null;
+//     let employer = null;
+
+//     if (role === "jobseeker") {
+//       jobseeker = await JobSeeker.findOne({ accountId });
+//       if (!jobseeker)
+//         return res.status(404).json({ message: "JobSeeker not found." });
+//     }
+
+//     if (role === "employer") {
+//       employer = await Company.findOne({ accountId });
+//       if (!employer)
+//         return res.status(404).json({ message: "Employer not found." });
+//     }
+
+//     // Generate reference number
+//     const randomSegment = crypto.randomBytes(4).toString("hex").toUpperCase();
+//     const referenceNumber = `JF-${new Date()
+//       .toISOString()
+//       .slice(0, 10)
+//       .replace(/-/g, "")}-${randomSegment}`;
+
+//     // Generate QR Code with additional information
+//     const qrCodeData = JSON.stringify({
+//       referenceNumber: referenceNumber,
+//       eventId: eventId,
+//       role: role,
+//       accountId: accountId,
+//       [role === "jobseeker" ? "jobSeekerId" : "employerId"]:
+//         role === "jobseeker" ? jobseeker._id : employer._id,
+//     });
+
+//     const qrCodeImage = await QRCode.toDataURL(qrCodeData);
+
+//     // Create preregistration entry
+//     const prereg = new JobFairPreregistration({
+//       accountId: accountId,
+//       eventId: eventId,
+//       role,
+//       referenceNumber,
+//       qrCode: qrCodeImage,
+//       jobSeekerId: jobseeker?._id,
+//       employerId: employer?._id,
+//     });
+
+//     await prereg.save();
+
+//     res.status(201).json({
+//       message: "Successfully preregistered.",
+//       preRegistration: prereg,
+//     });
+//   } catch (err) {
+//     if (err.code === 11000) {
+//       return res
+//         .status(409)
+//         .json({ message: "Already preregistered for this event." });
+//     }
+//     console.error("Preregistration error:", err);
+//     res.status(500).json({ message: "Internal server error." });
+//   }
+// };
+
 export const preRegisterForJobFair = async (req, res) => {
   const accountId = req.accountId;
   const role = req.role;
@@ -1615,72 +1689,175 @@ export const preRegisterForJobFair = async (req, res) => {
   try {
     const { eventId } = req.body;
 
+    // Validate role
     if (!["jobseeker", "employer"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role." });
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid user role for job fair registration." 
+      });
     }
 
-    // Find associated JobSeeker or Employer
-    let jobseeker = null;
-    let employer = null;
+    // Find the job fair event with deadline check
+    const jobFairEvent = await JobFairEvent.findById(eventId).select(
+      "title date venue registrationDeadline status"
+    );
 
-    if (role === "jobseeker") {
-      jobseeker = await JobSeeker.findOne({ accountId });
-      if (!jobseeker)
-        return res.status(404).json({ message: "JobSeeker not found." });
+    if (!jobFairEvent) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Job fair event not found." 
+      });
     }
 
-    if (role === "employer") {
-      employer = await Company.findOne({ accountId });
-      if (!employer)
-        return res.status(404).json({ message: "Employer not found." });
+    // Check if event is active
+    if (jobFairEvent.status !== "active") {
+      return res.status(400).json({
+        success: false,
+        message: "This job fair is not currently accepting registrations.",
+        eventStatus: jobFairEvent.status
+      });
     }
 
-    // Generate reference number
-    const randomSegment = crypto.randomBytes(4).toString("hex").toUpperCase();
-    const referenceNumber = `JF-${new Date()
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, "")}-${randomSegment}`;
+    // Check registration deadline
+    const now = new Date();
+    if (now > jobFairEvent.registrationDeadline) {
+      return res.status(400).json({
+        success: false,
+        message: "Pre-registration period has ended.",
+        deadline: jobFairEvent.registrationDeadline,
+        currentTime: now,
+        timeRemaining: null,
+        canRegisterOnsite: true // You might want to indicate if onsite registration is available
+      });
+    }
 
-    // Generate QR Code with additional information
-    const qrCodeData = JSON.stringify({
-      referenceNumber: referenceNumber,
-      eventId: eventId,
-      role: role,
-      accountId: accountId,
-      [role === "jobseeker" ? "jobSeekerId" : "employerId"]:
-        role === "jobseeker" ? jobseeker._id : employer._id,
+    // Find user profile based on role
+    const userProfile = role === "jobseeker"
+      ? await JobSeeker.findOne({ accountId }).select("_id firstName lastName email")
+      : await Company.findOne({ accountId }).select("_id companyName email");
+
+    if (!userProfile) {
+      return res.status(404).json({ 
+        success: false,
+        message: `${role === "jobseeker" ? "Job seeker" : "Employer"} profile not found.` 
+      });
+    }
+
+    // Check for existing registration
+    const existingRegistration = await JobFairPreregistration.findOne({ 
+      accountId, 
+      eventId 
     });
 
-    const qrCodeImage = await QRCode.toDataURL(qrCodeData);
+    if (existingRegistration) {
+      return res.status(200).json({ 
+        success: true,
+        message: "Already preregistered for this event.",
+        registration: existingRegistration,
+        isExisting: true
+      });
+    }
 
-    // Create preregistration entry
-    const prereg = new JobFairPreregistration({
-      accountId: accountId,
-      eventId: eventId,
+    // Generate reference number (format: JF-YYYYMMDD-RANDOM6)
+    const dateSegment = now.toISOString().slice(0, 10).replace(/-/g, "");
+    const randomSegment = crypto.randomBytes(3).toString("hex").toUpperCase();
+    const referenceNumber = `JF-${dateSegment}-${randomSegment}`;
+
+    // Prepare QR code data
+    const qrData = {
+      eventId,
+      referenceNumber,
+      role,
+      accountId,
+      userId: userProfile._id,
+      timestamp: now
+    };
+
+    // Generate QR code
+    const qrCodeImage = await QRCode.toDataURL(JSON.stringify(qrData));
+
+    // Create new registration
+    const newRegistration = new JobFairPreregistration({
+      accountId,
+      eventId,
       role,
       referenceNumber,
       qrCode: qrCodeImage,
-      jobSeekerId: jobseeker?._id,
-      employerId: employer?._id,
+      [role === "jobseeker" ? "jobSeekerId" : "employerId"]: userProfile._id,
+      registrationDate: now,
+      eventDetails: {
+        title: jobFairEvent.title,
+        date: jobFairEvent.date,
+        venue: jobFairEvent.venue,
+        deadline: jobFairEvent.registrationDeadline
+      },
+      userDetails: role === "jobseeker"
+        ? {
+            name: `${userProfile.firstName} ${userProfile.lastName}`,
+            email: userProfile.email
+          }
+        : {
+            name: userProfile.companyName,
+            email: userProfile.email
+          }
     });
 
-    await prereg.save();
+    await newRegistration.save();
 
+    // Send confirmation (implement your email service)
+    await sendConfirmationEmail({
+      to: userProfile.email,
+      subject: `Job Fair Registration Confirmation - ${jobFairEvent.title}`,
+      templateData: {
+        eventName: jobFairEvent.title,
+        eventDate: jobFairEvent.date,
+        venue: jobFairEvent.venue,
+        referenceNumber,
+        qrCodeImage,
+        recipientName: role === "jobseeker"
+          ? `${userProfile.firstName} ${userProfile.lastName}`
+          : userProfile.companyName,
+        deadline: jobFairEvent.registrationDeadline
+      }
+    });
+
+    // Successful response
     res.status(201).json({
-      message: "Successfully preregistered.",
-      preRegistration: prereg,
+      success: true,
+      message: "Successfully preregistered for the job fair.",
+      registration: newRegistration,
+      eventDetails: {
+        title: jobFairEvent.title,
+        date: jobFairEvent.date,
+        venue: jobFairEvent.venue,
+        deadline: jobFairEvent.registrationDeadline
+      },
+      timeRemaining: {
+        days: Math.floor((jobFairEvent.registrationDeadline - now) / (1000 * 60 * 60 * 24)),
+        hours: Math.floor(((jobFairEvent.registrationDeadline - now) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      }
     });
-  } catch (err) {
-    if (err.code === 11000) {
-      return res
-        .status(409)
-        .json({ message: "Already preregistered for this event." });
+
+  } catch (error) {
+    console.error("Job fair registration error:", error);
+    
+    // Handle duplicate key error separately
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Duplicate registration detected.",
+        error: "A registration with these details already exists."
+      });
     }
-    console.error("Preregistration error:", err);
-    res.status(500).json({ message: "Internal server error." });
+
+    res.status(500).json({
+      success: false,
+      message: "An error occurred during registration.",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined
+    });
   }
 };
+
 
 export const getPreRegistration = async (req, res) => {
   const accountId = req.accountId;

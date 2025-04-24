@@ -269,7 +269,7 @@ body {
 }
 
 .nav-pills .nav-link.active {
-  background-color: #1a4798;
+  background-color: #1a4798 !important;
 }
 
 /************************* NAV LINKS *************************/

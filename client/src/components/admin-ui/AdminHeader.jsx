@@ -140,6 +140,21 @@ const AdminHeader = () => {
               <span className="fw-medium">Dashboard</span>
               <span className="nav-active-indicator"></span>
             </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/admin/employer-verification"
+              className="px-3 py-2 mx-1 position-relative nav-hover-effect"
+              style={{
+                color: "#1a4798",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <i className="bi bi-person-check-fill"></i>
+              <span className="fw-medium"> Employer Verification</span>
+              <span className="nav-active-indicator"></span>
+            </Nav.Link>
           </Nav>
 
           <Button
@@ -347,6 +362,20 @@ const AdminHeader = () => {
                 >
                   <i className="bi bi-columns me-2"></i>
                   Dashboard
+                </NavLink>
+
+                <NavLink
+                  exact
+                  to="/admin/employer-verification"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-columns me-2"></i>
+                  Employer Verification
                 </NavLink>
 
                 <NavLink

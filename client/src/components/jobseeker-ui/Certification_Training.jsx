@@ -117,9 +117,11 @@ const CertificationTraining = () => {
   const handleRemove = async (index, trainingId) => {
     try {
       setLoading(true);
-      // Call your backend API to delete
-      // await axios.delete(`${JOBSEEKER_API_END_POINT}/delete-training/${trainingId}`);
-
+      const res = await axios.delete(
+        `${JOBSEEKER_API_END_POINT}/delete-training/${trainingId}`,
+        { withCredentials: true }
+      );
+      console.log(res.data);
       // Optimistic UI update
       const updatedCertifications = [...certifications];
       updatedCertifications.splice(index, 1);

@@ -1332,10 +1332,10 @@ export const editTraining = async (req, res) => {
 
 export const exportSingleJobSeekerToExcel = async (req, res) => {
   try {
-    const jobSeekerId = req.jobSeekerId;
+    const { id } = req.params;
 
     // Fetch the job seeker with all data
-    const jobSeeker = await JobSeeker.findById(jobSeekerId)
+    const jobSeeker = await JobSeeker.findById(id)
       .populate("accountId", "email username")
       .populate("savedJobVacancies", "title company")
       .lean();

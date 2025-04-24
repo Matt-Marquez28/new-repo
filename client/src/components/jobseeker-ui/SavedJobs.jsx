@@ -135,7 +135,7 @@ const SavedJobs = () => {
       <div style={{ maxHeight: "400px", overflowX: "auto", overflowY: "auto" }}>
         <table
           className="table table-hover table-striped mt-2"
-          style={{ tableLayout: "fixed", width: "100%" }}
+          style={{ tableLayout: "fixed", minWidth: "500px" }}
         >
           {/* Table Header */}
           <thead

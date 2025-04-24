@@ -159,12 +159,27 @@ const CompanyVerification = () => {
   return (
     <div className="container">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-        <div className="mb-3 mb-md-0">
-          <h1 className="h3 fw-bold" style={{ color: "#1a4798" }}>
-            <i className="bi bi-building me-2" style={{ color: "#1a4798" }}></i>
-            Company Management
-          </h1>
-          <p className="text-muted mb-0">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-building-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Company Management
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
             Verify company credentials and manage approval status
           </p>
         </div>
@@ -243,7 +258,7 @@ const CompanyVerification = () => {
 
         <button className="btn btn-light">
           <i className="bi bi-arrow-counterclockwise"></i> Renewals{" "}
-          <span className="badge bg-primary">{stats?.renewal}</span>
+          <span className="badge text-white">{stats?.renewal}</span>
         </button>
       </div>
 

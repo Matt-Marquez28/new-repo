@@ -135,7 +135,7 @@ const AccountStatistics = () => {
                     <div className="me-3">
                       <span className="badge bg-success rounded-circle p-2">
                         <i
-                          className="bi bi-building"
+                          className="bi bi-building-fill"
                           style={{ fontSize: "1rem" }}
                         ></i>
                       </span>

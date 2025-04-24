@@ -16,22 +16,20 @@ import { useNavigate } from "react-router-dom";
 const UserManagementPage = () => {
   const navigate = useNavigate();
   const triggerToast = useToast();
-  const [users, setUsers] = useState([]); // State to store users fetched from the API
+  const [users, setUsers] = useState([]);
   const [modalShow, setModalShow] = useState(false);
 
-  // Fetch all system users on component mount
   useEffect(() => {
     getAllSystemUsers();
   }, []);
 
-  // Function to fetch all system users
   const getAllSystemUsers = async () => {
     try {
       const res = await axios.get(
         `${ACCOUNT_API_END_POINT}/get-all-system-users`
       );
-      console.log(res?.data?.users);
-      setUsers(res?.data?.users); // Update the users state with the fetched data
+      console.log(res.data);
+      setUsers(res?.data?.users);
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +50,7 @@ const UserManagementPage = () => {
 
       if (response.data.success) {
         triggerToast(response.data.message, "success");
-        getAllSystemUsers(); // Refresh the user list
+        getAllSystemUsers();
       } else {
         triggerToast(response.data.message, "danger");
       }
@@ -62,7 +60,6 @@ const UserManagementPage = () => {
     }
   };
 
-  // Dropdown content for action buttons
   const dropdownContent = (accountId) => (
     <Dropdown.Menu>
       <Dropdown.Item as="button">
@@ -74,20 +71,27 @@ const UserManagementPage = () => {
     </Dropdown.Menu>
   );
 
-  // Function to get the badge variant based on the role
   const getBadgeVariant = (role) => {
     switch (role) {
-      case "Admin":
-        return "danger";
-      case "Manager":
-        return "warning";
-      case "Staff":
-      default:
+      case "admin":
         return "primary";
+      case "staff":
+      default:
+        return "info";
     }
   };
 
-  // Function to format the date
+  const formatRoleDisplay = (role) => {
+    switch (role) {
+      case "admin":
+        return "Administrator";
+      case "staff":
+        return "Staff";
+      default:
+        return role;
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -101,7 +105,7 @@ const UserManagementPage = () => {
     <div className="container">
       <div className="d-flex gap-2 my-2 align-items-center">
         <button onClick={() => navigate(-1)} className="btn btn-light">
-          <i class="bi bi-arrow-left"></i>
+          <i className="bi bi-arrow-left"></i>
         </button>
         <h4 className="my-2 text-primary">
           <i className="bi bi-people-fill"></i> Manage Staff
@@ -114,11 +118,8 @@ const UserManagementPage = () => {
         </Button>
       </div>
 
-      {/* Table Container with Scrollable Body */}
       <div style={{ maxHeight: "400px", overflow: "auto" }}>
         <div style={{ minWidth: "800px" }}>
-          {" "}
-          {/* Minimum width to trigger horizontal scroll */}
           <table className="table table-hover mt-2" style={{ width: "100%" }}>
             <thead
               style={{
@@ -194,7 +195,7 @@ const UserManagementPage = () => {
                       style={{ width: "15%" }}
                     >
                       <Badge bg={getBadgeVariant(user?.role)}>
-                        {user?.role}
+                        {formatRoleDisplay(user?.role)}
                       </Badge>
                     </td>
                     <td
@@ -225,11 +226,10 @@ const UserManagementPage = () => {
         </div>
       </div>
 
-      {/* Modal for Adding Staff */}
       <AddStaffModal
         show={modalShow}
-        onHide={() => setModalShow(false)} // Pass the onHide prop correctly
-        getAllSystemUsers={getAllSystemUsers} // Pass the function as a prop
+        onHide={() => setModalShow(false)}
+        getAllSystemUsers={getAllSystemUsers}
       />
     </div>
   );
@@ -240,14 +240,17 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Staff");
+  const [role, setRole] = useState("staff");
+  const roles = [
+    { value: "admin", label: "Administrator" },
+    { value: "staff", label: "Staff" }
+  ];
   const triggerToast = useToast();
 
-  // Function to handle form submission
   const onSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload on form submission
-    if (!emailAddress || !password) {
-      alert("Please fill out both email and password.");
+    e.preventDefault();
+    if (!emailAddress || !password || !role) {
+      triggerToast("Please fill out all required fields.", "warning");
       return;
     }
 
@@ -264,17 +267,25 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
       );
 
       if (response.data.success) {
-        // Refresh the user list after creating a new user
         await getAllSystemUsers();
         triggerToast(response?.data?.message, "success");
-        onHide(); // Close the modal
+        onHide();
+        // Reset form fields
+        setFirstName("");
+        setLastName("");
+        setEmailAddress("");
+        setPassword("");
+        setRole("staff");
       } else {
-        alert(response.data.message);
+        triggerToast(response.data.message, "danger");
       }
     } catch (error) {
       console.error(error);
-      triggerToast(error?.response?.data?.message, "danger");
-      alert("An error occurred while creating the user.");
+      triggerToast(
+        error?.response?.data?.message ||
+          "An error occurred while creating the user.",
+        "danger"
+      );
     }
   };
 
@@ -316,6 +327,7 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
               placeholder="Enter email"
               value={emailAddress}
               onChange={(e) => setEmailAddress(e.target.value)}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
@@ -325,15 +337,29 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </Form.Group>
-          {/* Modal Footer with Form Submission */}
+          <Form.Group className="mb-3">
+            <Form.Label>Role</Form.Label>
+            <Form.Select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              required
+            >
+              {roles.map((roleOption) => (
+                <option key={roleOption.value} value={roleOption.value}>
+                  {roleOption.label}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
           <Modal.Footer className="mt-3">
             <Button variant="secondary" onClick={onHide}>
               Cancel
             </Button>
             <Button variant="primary" type="submit">
-              Save Staff
+              Save User
             </Button>
           </Modal.Footer>
         </Form>

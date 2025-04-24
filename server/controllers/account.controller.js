@@ -254,7 +254,7 @@ export const adminLoginController = async (req, res) => {
 // create new system user controller
 export const createNewSystemUser = async (req, res) => {
   try {
-    const { firstName, lastName, emailAddress, password } = req.body;
+    const { firstName, lastName, emailAddress, password, role } = req.body;
 
     // Check if user already exists
     const user = await Account.findOne({ emailAddress });
@@ -270,7 +270,7 @@ export const createNewSystemUser = async (req, res) => {
       lastName,
       emailAddress,
       password,
-      role: "staff",
+      role,
     });
 
     // save the account to the database (password will be hashed due to pre-save middleware)
@@ -368,7 +368,9 @@ export const verifyOTP = async (req, res) => {
 // get all system users controller (admin, staff)
 export const getAllSystemUsers = async (req, res) => {
   try {
-    const users = await Account.find({ role: "staff" }).sort({ createdAt: -1 });
+    const users = await Account.find({
+      role: { $in: ["staff", "admin"] },
+    }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, users });
   } catch (error) {
     console.error(error);
