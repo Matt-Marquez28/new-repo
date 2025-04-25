@@ -7,9 +7,10 @@ import { useUser } from "../../contexts/user.context";
 const CandidatePreferences = () => {
   const { setUser } = useUser();
   const triggerToast = useToast();
-  const [educationalLevels, setEducationLevels] = useState([""]); // Initialize with one empty field
-  const [skills, setSkills] = useState([""]); // Initialize with one empty field
-  const [specializations, setSpecializations] = useState([""]); // Initialize with one empty field
+  const [educationalLevels, setEducationLevels] = useState([""]);
+  const [skills, setSkills] = useState([""]);
+  const [specializations, setSpecializations] = useState([""]);
+  const [locations, setLocations] = useState([""]);
 
   useEffect(() => {
     getCompanyData();
@@ -20,12 +21,9 @@ const CandidatePreferences = () => {
       const res = await axios.get(`${COMPANY_API_END_POINT}/get-company-data`, {
         withCredentials: true,
       });
-      console.log(res.data.companyData?.candidatePreferences);
 
-      // Set the retrieved candidate preferences to the corresponding state variables
       const { candidatePreferences } = res.data.companyData || {};
 
-      // Ensure at least one field exists for each category
       setEducationLevels(
         candidatePreferences?.educationalLevels?.length > 0
           ? candidatePreferences.educationalLevels
@@ -41,12 +39,16 @@ const CandidatePreferences = () => {
           ? candidatePreferences.specializations
           : [""]
       );
+      setLocations(
+        candidatePreferences?.locations?.length > 0
+          ? candidatePreferences.locations
+          : [""]
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Handle array changes for multiple fields
   const handleArrayChange = (setter, index, value) => {
     setter((prev) => {
       const updated = [...prev];
@@ -55,12 +57,10 @@ const CandidatePreferences = () => {
     });
   };
 
-  // Add a new field to the array
   const handleAddField = (setter) => {
     setter((prev) => [...prev, ""]);
   };
 
-  // Remove a field from the array
   const handleRemoveField = (setter, index) => {
     setter((prev) => prev.filter((_, i) => i !== index));
   };
@@ -68,18 +68,14 @@ const CandidatePreferences = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Prepare the data for submission
     const payload = {
-      educationalLevels: educationalLevels.filter(
-        (field) => field.trim() !== ""
-      ),
+      educationalLevels: educationalLevels.filter((field) => field.trim() !== ""),
       skills: skills.filter((skill) => skill.trim() !== ""),
       specializations: specializations.filter(
         (specialization) => specialization.trim() !== ""
       ),
+      locations: locations.filter((location) => location.trim() !== ""),
     };
-
-    console.log("Submitting Preferences:", payload);
 
     try {
       const res = await axios.patch(
@@ -118,9 +114,9 @@ const CandidatePreferences = () => {
         </div>
       </div>
 
-      {/* Specializations */}
       <div className="row mb-4">
-        <div className="col-md-4 mb-3">
+        {/* Specializations */}
+        <div className="col-md-3 mb-3">
           <label>Specializations:</label>
           {specializations.map((specialization, index) => (
             <div key={index} className="input-group mb-2">
@@ -153,7 +149,7 @@ const CandidatePreferences = () => {
         </div>
 
         {/* Skills */}
-        <div className="col-md-4 mb-3">
+        <div className="col-md-3 mb-3">
           <label>Skills:</label>
           {skills.map((skill, index) => (
             <div key={index} className="input-group mb-2">
@@ -186,7 +182,7 @@ const CandidatePreferences = () => {
         </div>
 
         {/* Educational Levels */}
-        <div className="col-md-4 mb-3">
+        <div className="col-md-3 mb-3">
           <label>Educational Levels:</label>
           {educationalLevels.map((level, index) => (
             <div key={index} className="input-group mb-2">
@@ -232,6 +228,39 @@ const CandidatePreferences = () => {
             type="button"
             className="btn btn-outline-info"
             onClick={() => handleAddField(setEducationLevels)}
+          >
+            <i className="bi bi-plus-circle"></i> Add More
+          </button>
+        </div>
+
+        {/* Locations */}
+        <div className="col-md-3 mb-3">
+          <label>Preferred Locations (City/Municipality):</label>
+          {locations.map((location, index) => (
+            <div key={index} className="input-group mb-2">
+              <input
+                type="text"
+                className="form-control"
+                value={location}
+                onChange={(e) =>
+                  handleArrayChange(setLocations, index, e.target.value)
+                }
+                placeholder="Enter city/municipality"
+              />
+              <button
+                type="button"
+                className="btn btn-info"
+                onClick={() => handleRemoveField(setLocations, index)}
+                disabled={locations.length === 1}
+              >
+                <i className="bi bi-x"></i>
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={() => handleAddField(setLocations)}
           >
             <i className="bi bi-plus-circle"></i> Add More
           </button>

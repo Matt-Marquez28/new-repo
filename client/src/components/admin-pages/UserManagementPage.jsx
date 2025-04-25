@@ -103,21 +103,6 @@ const UserManagementPage = () => {
 
   return (
     <div className="container">
-      {/* <div className="d-flex gap-2 my-2 align-items-center">
-        <button onClick={() => navigate(-1)} className="btn btn-light">
-          <i className="bi bi-arrow-left"></i>
-        </button>
-        <h4 className="my-2 text-primary">
-          <i className="bi bi-people-fill"></i> Manage Staff
-        </h4>
-      </div>
-
-      <div className="d-flex justify-content-end">
-        <Button className="btn btn-primary" onClick={() => setModalShow(true)}>
-          <i className="bi bi-person-fill-add"></i> Create New User
-        </Button>
-      </div> */}
-
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div className="mb-3">
           <div className="d-flex align-items-center">

@@ -184,7 +184,7 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
 
           <button
             type="button"
-            className="btn btn-outline-primary"
+            className="btn btn-warning text-white"
             onClick={isJobVacancySaved ? deleteSavedJobVacancy : saveJobVacancy}
           >
             <i

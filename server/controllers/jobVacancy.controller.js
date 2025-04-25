@@ -417,6 +417,272 @@ export const getAllSavedJobVacancies = async (req, res) => {
 };
 
 // get recommended job vacancies
+// export const getRecommendedJobVacancies = async (req, res) => {
+//   const {
+//     jobPositions,
+//     locations,
+//     salaryMin,
+//     salaryMax,
+//     employmentType,
+//     salaryType,
+//     industries,
+//   } = req.body;
+
+//   // Ensure industries are provided
+//   if (!industries || industries.length === 0) {
+//     return res
+//       .status(400)
+//       .json({ message: "Industry must be specified to get recommendations." });
+//   }
+
+//   try {
+//     // Sanitize inputs
+//     const sanitizedJobPositions =
+//       jobPositions && jobPositions.length > 0 ? jobPositions : [];
+//     const sanitizedLocations =
+//       locations && locations.length > 0 ? locations : [];
+//     const sanitizedIndustries = industries;
+
+//     const pipeline = [
+//       {
+//         $search: {
+//           index: "job_vacancy_index",
+//           compound: {
+//             must: [
+//               {
+//                 text: {
+//                   query: sanitizedIndustries,
+//                   path: "industry",
+//                   fuzzy: { maxEdits: 1 },
+//                   score: { boost: { value: 3 } }, // Higher weight for industry match
+//                 },
+//               },
+//             ],
+//             should: [
+//               ...(sanitizedJobPositions.length > 0
+//                 ? [
+//                     {
+//                       text: {
+//                         query: sanitizedJobPositions,
+//                         path: "jobTitle",
+//                         fuzzy: { maxEdits: 1 },
+//                         score: { boost: { value: 2 } }, // Medium weight for job title match
+//                       },
+//                     },
+//                   ]
+//                 : []),
+//               ...(sanitizedLocations.length > 0
+//                 ? [
+//                     {
+//                       text: {
+//                         query: sanitizedLocations,
+//                         path: "workLocation",
+//                         fuzzy: { maxEdits: 1 },
+//                         score: { boost: { value: 1 } }, // Lower weight for location match
+//                       },
+//                     },
+//                   ]
+//                 : []),
+//               ...(employmentType
+//                 ? [
+//                     {
+//                       text: {
+//                         query: employmentType,
+//                         path: "employmentType",
+//                         fuzzy: { maxEdits: 1 },
+//                         score: { boost: { value: 1.5 } }, // Medium weight for employment type match
+//                       },
+//                     },
+//                   ]
+//                 : []),
+//               ...(salaryType
+//                 ? [
+//                     {
+//                       text: {
+//                         query: salaryType,
+//                         path: "salaryType",
+//                         fuzzy: { maxEdits: 1 },
+//                         score: { boost: { value: 1.5 } }, // Medium weight for salary type match
+//                       },
+//                     },
+//                   ]
+//                 : []),
+//             ],
+//             minimumShouldMatch: 0,
+//           },
+//         },
+//       },
+//       {
+//         $match: {
+//           $and: [
+//             { industry: { $in: sanitizedIndustries } },
+//             { publicationStatus: { $in: ["approved", "expired"] } }, // Filter by publicationStatus
+//           ],
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "companies",
+//           localField: "companyId",
+//           foreignField: "_id",
+//           as: "companyDetails",
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$companyDetails",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $match: {
+//           "companyDetails.status": "accredited", // Only include job posts from companies with "accredited" status
+//         },
+//       },
+//       {
+//         $addFields: {
+//           searchScore: { $meta: "searchScore" },
+//           jobPositionMatchCount: {
+//             $size: {
+//               $setIntersection: [
+//                 {
+//                   $cond: {
+//                     if: { $isArray: "$jobTitle" },
+//                     then: "$jobTitle",
+//                     else: [{ $ifNull: ["$jobTitle", ""] }],
+//                   },
+//                 },
+//                 sanitizedJobPositions,
+//               ],
+//             },
+//           },
+//           locationMatchCount: {
+//             $size: {
+//               $setIntersection: [
+//                 {
+//                   $cond: {
+//                     if: { $isArray: "$workLocation" },
+//                     then: "$workLocation",
+//                     else: [{ $ifNull: ["$workLocation", ""] }],
+//                   },
+//                 },
+//                 sanitizedLocations,
+//               ],
+//             },
+//           },
+//           industryMatchCount: {
+//             $size: {
+//               $setIntersection: [
+//                 {
+//                   $cond: {
+//                     if: { $isArray: "$industry" },
+//                     then: "$industry",
+//                     else: [{ $ifNull: ["$industry", ""] }],
+//                   },
+//                 },
+//                 sanitizedIndustries,
+//               ],
+//             },
+//           },
+//           employmentTypeMatchCount: {
+//             $size: {
+//               $setIntersection: [
+//                 {
+//                   $cond: {
+//                     if: { $isArray: "$employmentType" },
+//                     then: "$employmentType",
+//                     else: [{ $ifNull: ["$employmentType", ""] }],
+//                   },
+//                 },
+//                 [employmentType],
+//               ],
+//             },
+//           },
+//           salaryTypeMatchCount: {
+//             $size: {
+//               $setIntersection: [
+//                 {
+//                   $cond: {
+//                     if: { $isArray: "$salaryType" },
+//                     then: "$salaryType",
+//                     else: [{ $ifNull: ["$salaryType", ""] }],
+//                   },
+//                 },
+//                 [salaryType],
+//               ],
+//             },
+//           },
+//           salaryRangeMatch: {
+//             $cond: {
+//               if: {
+//                 $and: [
+//                   { $gte: ["$salaryMin", salaryMin] },
+//                   { $lte: ["$salaryMax", salaryMax] },
+//                 ],
+//               },
+//               then: 1, // Full score if within range
+//               else: 0.5, // Half score if outside range
+//             },
+//           },
+//         },
+//       },
+//       {
+//         $addFields: {
+//           adjustedScore: {
+//             $add: [
+//               "$searchScore",
+//               { $multiply: ["$jobPositionMatchCount", 2] }, // Job position matches add 2 to the score
+//               { $multiply: ["$locationMatchCount", 1.5] }, // Location matches add 1.5 to the score
+//               { $multiply: ["$industryMatchCount", 3] }, // Industry matches add 3 to the score
+//               { $multiply: ["$employmentTypeMatchCount", 1.5] }, // Employment type matches add 1.5 to the score
+//               { $multiply: ["$salaryTypeMatchCount", 1.5] }, // Salary type matches add 1.5 to the score
+//               { $multiply: ["$salaryRangeMatch", 2] }, // Salary range matches add 2 to the score
+//             ],
+//           },
+//         },
+//       },
+//       {
+//         $sort: {
+//           adjustedScore: -1, // Sort by the adjusted score
+//         },
+//       },
+//       {
+//         $limit: 10, // Limit to top 10 recommendations
+//       },
+//       {
+//         $project: {
+//           jobTitle: 1,
+//           workLocation: 1,
+//           salaryMin: 1,
+//           salaryMax: 1,
+//           employmentType: 1, // Include employmentType in the results
+//           salaryType: 1, // Include salaryType in the results
+//           description: 1,
+//           companyId: 1,
+//           companyLogo: "$companyDetails.companyInformation.companyLogo",
+//           companyName: "$companyDetails.companyInformation.businessName",
+//           industry: "$companyDetails.industry",
+//           applicants: 1,
+//           vacancies: 1,
+//           adjustedScore: 1,
+//         },
+//       },
+//     ];
+
+//     // Execute the aggregation pipeline
+//     const results = await JobVacancy.aggregate(pipeline);
+
+//     if (results.length === 0) {
+//       return res.status(404).json({ message: "No matching jobs found." });
+//     }
+
+//     res.status(200).json({ results });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Failed to fetch job recommendations." });
+//   }
+// };
+
 export const getRecommendedJobVacancies = async (req, res) => {
   const {
     jobPositions,
@@ -428,57 +694,51 @@ export const getRecommendedJobVacancies = async (req, res) => {
     industries,
   } = req.body;
 
-  // Ensure industries are provided
-  if (!industries || industries.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "Industry must be specified to get recommendations." });
-  }
-
   try {
     // Sanitize inputs
-    const sanitizedJobPositions =
-      jobPositions && jobPositions.length > 0 ? jobPositions : [];
-    const sanitizedLocations =
-      locations && locations.length > 0 ? locations : [];
-    const sanitizedIndustries = industries;
+    const sanitizedJobPositions = jobPositions?.length ? jobPositions : [];
+    const sanitizedLocations = locations?.length ? locations : [];
+    const sanitizedIndustries = industries?.length ? industries : [];
 
     const pipeline = [
       {
         $search: {
           index: "job_vacancy_index",
           compound: {
-            must: [
-              {
-                text: {
-                  query: sanitizedIndustries,
-                  path: "industry",
-                  fuzzy: { maxEdits: 1 },
-                  score: { boost: { value: 3 } }, // Higher weight for industry match
-                },
-              },
-            ],
             should: [
-              ...(sanitizedJobPositions.length > 0
+              // All conditions are now optional
+              ...(sanitizedIndustries.length
+                ? [
+                    {
+                      text: {
+                        query: sanitizedIndustries,
+                        path: "industry",
+                        fuzzy: { maxEdits: 1 },
+                        score: { boost: { value: 3 } }, // Keep higher weight for industry match
+                      },
+                    },
+                  ]
+                : []),
+              ...(sanitizedJobPositions.length
                 ? [
                     {
                       text: {
                         query: sanitizedJobPositions,
                         path: "jobTitle",
                         fuzzy: { maxEdits: 1 },
-                        score: { boost: { value: 2 } }, // Medium weight for job title match
+                        score: { boost: { value: 2 } },
                       },
                     },
                   ]
                 : []),
-              ...(sanitizedLocations.length > 0
+              ...(sanitizedLocations.length
                 ? [
                     {
                       text: {
                         query: sanitizedLocations,
                         path: "workLocation",
                         fuzzy: { maxEdits: 1 },
-                        score: { boost: { value: 1 } }, // Lower weight for location match
+                        score: { boost: { value: 1 } },
                       },
                     },
                   ]
@@ -490,7 +750,7 @@ export const getRecommendedJobVacancies = async (req, res) => {
                         query: employmentType,
                         path: "employmentType",
                         fuzzy: { maxEdits: 1 },
-                        score: { boost: { value: 1.5 } }, // Medium weight for employment type match
+                        score: { boost: { value: 1.5 } },
                       },
                     },
                   ]
@@ -502,22 +762,19 @@ export const getRecommendedJobVacancies = async (req, res) => {
                         query: salaryType,
                         path: "salaryType",
                         fuzzy: { maxEdits: 1 },
-                        score: { boost: { value: 1.5 } }, // Medium weight for salary type match
+                        score: { boost: { value: 1.5 } },
                       },
                     },
                   ]
                 : []),
             ],
-            minimumShouldMatch: 0,
+            minimumShouldMatch: 1, // Require at least one should clause to match
           },
         },
       },
       {
         $match: {
-          $and: [
-            { industry: { $in: sanitizedIndustries } },
-            { publicationStatus: { $in: ["approved", "expired"] } }, // Filter by publicationStatus
-          ],
+          publicationStatus: { $in: ["approved", "expired"] }, // Filter by publicationStatus
         },
       },
       {
@@ -536,7 +793,7 @@ export const getRecommendedJobVacancies = async (req, res) => {
       },
       {
         $match: {
-          "companyDetails.status": "accredited", // Only include job posts from companies with "accredited" status
+          "companyDetails.status": "accredited", // Only include job posts from accredited companies
         },
       },
       {
@@ -616,12 +873,14 @@ export const getRecommendedJobVacancies = async (req, res) => {
             $cond: {
               if: {
                 $and: [
+                  { $ifNull: [salaryMin, true] },
+                  { $ifNull: [salaryMax, true] },
                   { $gte: ["$salaryMin", salaryMin] },
                   { $lte: ["$salaryMax", salaryMax] },
                 ],
               },
-              then: 1, // Full score if within range
-              else: 0.5, // Half score if outside range
+              then: 1,
+              else: 0.5,
             },
           },
         },
@@ -631,23 +890,23 @@ export const getRecommendedJobVacancies = async (req, res) => {
           adjustedScore: {
             $add: [
               "$searchScore",
-              { $multiply: ["$jobPositionMatchCount", 2] }, // Job position matches add 2 to the score
-              { $multiply: ["$locationMatchCount", 1.5] }, // Location matches add 1.5 to the score
-              { $multiply: ["$industryMatchCount", 3] }, // Industry matches add 3 to the score
-              { $multiply: ["$employmentTypeMatchCount", 1.5] }, // Employment type matches add 1.5 to the score
-              { $multiply: ["$salaryTypeMatchCount", 1.5] }, // Salary type matches add 1.5 to the score
-              { $multiply: ["$salaryRangeMatch", 2] }, // Salary range matches add 2 to the score
+              { $multiply: ["$jobPositionMatchCount", 2] },
+              { $multiply: ["$locationMatchCount", 1.5] },
+              { $multiply: ["$industryMatchCount", 3] },
+              { $multiply: ["$employmentTypeMatchCount", 1.5] },
+              { $multiply: ["$salaryTypeMatchCount", 1.5] },
+              { $multiply: ["$salaryRangeMatch", 2] },
             ],
           },
         },
       },
       {
         $sort: {
-          adjustedScore: -1, // Sort by the adjusted score
+          adjustedScore: -1,
         },
       },
       {
-        $limit: 10, // Limit to top 10 recommendations
+        $limit: 10,
       },
       {
         $project: {
@@ -655,8 +914,8 @@ export const getRecommendedJobVacancies = async (req, res) => {
           workLocation: 1,
           salaryMin: 1,
           salaryMax: 1,
-          employmentType: 1, // Include employmentType in the results
-          salaryType: 1, // Include salaryType in the results
+          employmentType: 1,
+          salaryType: 1,
           description: 1,
           companyId: 1,
           companyLogo: "$companyDetails.companyInformation.companyLogo",
@@ -669,7 +928,6 @@ export const getRecommendedJobVacancies = async (req, res) => {
       },
     ];
 
-    // Execute the aggregation pipeline
     const results = await JobVacancy.aggregate(pipeline);
 
     if (results.length === 0) {
@@ -1390,7 +1648,6 @@ export const updateJobVacancy = async (req, res) => {
 //   }
 // };
 
-
 export const createJobFairEvent = async (req, res) => {
   try {
     const { title, date, venue, time, description, registrationDeadline } =
@@ -1691,9 +1948,9 @@ export const preRegisterForJobFair = async (req, res) => {
 
     // Validate role
     if (!["jobseeker", "employer"].includes(role)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Invalid user role for job fair registration." 
+        message: "Invalid user role for job fair registration.",
       });
     }
 
@@ -1703,9 +1960,9 @@ export const preRegisterForJobFair = async (req, res) => {
     );
 
     if (!jobFairEvent) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: "Job fair event not found." 
+        message: "Job fair event not found.",
       });
     }
 
@@ -1714,7 +1971,7 @@ export const preRegisterForJobFair = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "This job fair is not currently accepting registrations.",
-        eventStatus: jobFairEvent.status
+        eventStatus: jobFairEvent.status,
       });
     }
 
@@ -1727,34 +1984,39 @@ export const preRegisterForJobFair = async (req, res) => {
         deadline: jobFairEvent.registrationDeadline,
         currentTime: now,
         timeRemaining: null,
-        canRegisterOnsite: true // You might want to indicate if onsite registration is available
+        canRegisterOnsite: true, // You might want to indicate if onsite registration is available
       });
     }
 
     // Find user profile based on role
-    const userProfile = role === "jobseeker"
-      ? await JobSeeker.findOne({ accountId }).select("_id firstName lastName email")
-      : await Company.findOne({ accountId }).select("_id companyName email");
+    const userProfile =
+      role === "jobseeker"
+        ? await JobSeeker.findOne({ accountId }).select(
+            "_id firstName lastName email"
+          )
+        : await Company.findOne({ accountId }).select("_id companyName email");
 
     if (!userProfile) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: `${role === "jobseeker" ? "Job seeker" : "Employer"} profile not found.` 
+        message: `${
+          role === "jobseeker" ? "Job seeker" : "Employer"
+        } profile not found.`,
       });
     }
 
     // Check for existing registration
-    const existingRegistration = await JobFairPreregistration.findOne({ 
-      accountId, 
-      eventId 
+    const existingRegistration = await JobFairPreregistration.findOne({
+      accountId,
+      eventId,
     });
 
     if (existingRegistration) {
-      return res.status(200).json({ 
+      return res.status(200).json({
         success: true,
         message: "Already preregistered for this event.",
         registration: existingRegistration,
-        isExisting: true
+        isExisting: true,
       });
     }
 
@@ -1770,7 +2032,7 @@ export const preRegisterForJobFair = async (req, res) => {
       role,
       accountId,
       userId: userProfile._id,
-      timestamp: now
+      timestamp: now,
     };
 
     // Generate QR code
@@ -1789,17 +2051,18 @@ export const preRegisterForJobFair = async (req, res) => {
         title: jobFairEvent.title,
         date: jobFairEvent.date,
         venue: jobFairEvent.venue,
-        deadline: jobFairEvent.registrationDeadline
+        deadline: jobFairEvent.registrationDeadline,
       },
-      userDetails: role === "jobseeker"
-        ? {
-            name: `${userProfile.firstName} ${userProfile.lastName}`,
-            email: userProfile.email
-          }
-        : {
-            name: userProfile.companyName,
-            email: userProfile.email
-          }
+      userDetails:
+        role === "jobseeker"
+          ? {
+              name: `${userProfile.firstName} ${userProfile.lastName}`,
+              email: userProfile.email,
+            }
+          : {
+              name: userProfile.companyName,
+              email: userProfile.email,
+            },
     });
 
     await newRegistration.save();
@@ -1814,11 +2077,12 @@ export const preRegisterForJobFair = async (req, res) => {
         venue: jobFairEvent.venue,
         referenceNumber,
         qrCodeImage,
-        recipientName: role === "jobseeker"
-          ? `${userProfile.firstName} ${userProfile.lastName}`
-          : userProfile.companyName,
-        deadline: jobFairEvent.registrationDeadline
-      }
+        recipientName:
+          role === "jobseeker"
+            ? `${userProfile.firstName} ${userProfile.lastName}`
+            : userProfile.companyName,
+        deadline: jobFairEvent.registrationDeadline,
+      },
     });
 
     // Successful response
@@ -1830,34 +2094,37 @@ export const preRegisterForJobFair = async (req, res) => {
         title: jobFairEvent.title,
         date: jobFairEvent.date,
         venue: jobFairEvent.venue,
-        deadline: jobFairEvent.registrationDeadline
+        deadline: jobFairEvent.registrationDeadline,
       },
       timeRemaining: {
-        days: Math.floor((jobFairEvent.registrationDeadline - now) / (1000 * 60 * 60 * 24)),
-        hours: Math.floor(((jobFairEvent.registrationDeadline - now) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      }
+        days: Math.floor(
+          (jobFairEvent.registrationDeadline - now) / (1000 * 60 * 60 * 24)
+        ),
+        hours: Math.floor(
+          ((jobFairEvent.registrationDeadline - now) % (1000 * 60 * 60 * 24)) /
+            (1000 * 60 * 60)
+        ),
+      },
     });
-
   } catch (error) {
     console.error("Job fair registration error:", error);
-    
+
     // Handle duplicate key error separately
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
         message: "Duplicate registration detected.",
-        error: "A registration with these details already exists."
+        error: "A registration with these details already exists.",
       });
     }
 
     res.status(500).json({
       success: false,
       message: "An error occurred during registration.",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
-
 
 export const getPreRegistration = async (req, res) => {
   const accountId = req.accountId;

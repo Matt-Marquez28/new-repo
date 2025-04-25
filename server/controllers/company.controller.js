@@ -9,7 +9,7 @@ import { createNotification } from "../utils/notification.js";
 import Application from "../models/application.model.js";
 import AuditTrail from "../models/auditTrail.model.js";
 import jwt from "jsonwebtoken";
-import chromium from '@sparticuz/chromium';
+import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer";
 import { auditTrail } from "../utils/auditTrail.js";
 
@@ -1532,8 +1532,8 @@ export const accreditCompany = async (req, res) => {
 
 // update candidate preferences
 export const updateCandidatePreferences = async (req, res) => {
-  const companyId = req.companyId; // Assuming companyId is available from req.company
-  const { educationalLevels, skills, specializations } = req.body;
+  const companyId = req.companyId;
+  const { educationalLevels, skills, specializations, locations } = req.body;
 
   try {
     // Find the company by companyId
@@ -1544,21 +1544,25 @@ export const updateCandidatePreferences = async (req, res) => {
       return res.status(404).json({ message: "Company not found" });
     }
 
-    // Check if candidatePreferences exists, if not, create it
+    // Initialize candidatePreferences if not already present
     if (!company.candidatePreferences) {
-      company.candidatePreferences = {}; // Initialize candidatePreferences if not already present
+      company.candidatePreferences = {
+        educationalLevels: [],
+        skills: [],
+        specializations: [],
+        locations: [],
+      };
     }
 
-    // Update or set candidate preferences
-    company.candidatePreferences.educationalLevels = educationalLevels.filter(
-      (level) => level.trim() !== ""
-    );
-    company.candidatePreferences.skills = skills.filter(
-      (skill) => skill.trim() !== ""
-    );
-    company.candidatePreferences.specializations = specializations.filter(
-      (specialization) => specialization.trim() !== ""
-    );
+    // Update candidate preferences with filtered arrays
+    company.candidatePreferences = {
+      educationalLevels: educationalLevels.filter(
+        (level) => level.trim() !== ""
+      ),
+      skills: skills.filter((skill) => skill.trim() !== ""),
+      specializations: specializations.filter((spec) => spec.trim() !== ""),
+      locations: locations.filter((location) => location.trim() !== ""),
+    };
 
     // Save the updated company document
     const updatedCompany = await company.save();
@@ -1871,7 +1875,6 @@ export const verifyAccreditation = async (req, res) => {
   }
 };
 
-
 export const getCompanyStatistics = async (req, res) => {
   try {
     // Get counts for each status
@@ -1908,9 +1911,9 @@ export const getCompanyStatistics = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching company status statistics:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Failed to fetch company status statistics",
-      error: error.message 
+      error: error.message,
     });
   }
 };

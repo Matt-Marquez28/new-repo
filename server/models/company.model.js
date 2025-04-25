@@ -147,6 +147,12 @@ const companySchema = new mongoose.Schema(
           default: "",
         },
       ],
+      locations: [
+        {
+          type: String,
+          default: "",
+        },
+      ],
     },
     jobVacancies: [
       {

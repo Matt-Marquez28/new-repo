@@ -81,24 +81,7 @@ const EmployerDashboard = () => {
 
   return (
     <div className="container">
-      {/* <div className="d-flex justify-content-between align-items-center">
-        <h5 className="my-3" style={{ color: "#1a4798" }}>
-          <i className="bi bi-speedometer"></i> Employer Dashboard
-        </h5>
-        <div className="d-flex align-items-center">
-          <span
-            className={`${statusBadge.className} d-flex align-items-center p-2`}
-          >
-            <i
-              className={`${statusBadge.icon} me-2`}
-              style={{ fontSize: "1.25rem" }}
-            ></i>
-            {user?.companyData?.status || "incomplete"}
-          </span>
-        </div>
-      </div> */}
-
-<div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
         <div className="">
           <div className="d-flex align-items-center">
             <div

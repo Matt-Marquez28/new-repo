@@ -91,7 +91,7 @@ const ApplicationDetails = () => {
 
   return (
     <div className="container">
-      <div className="d-flex my-2 justify-content-between">
+      {/* <div className="d-flex my-2 justify-content-between">
         <div className="d-flex gap-2 align-items-center">
           <button
             type="button"
@@ -103,6 +103,32 @@ const ApplicationDetails = () => {
           <h5 className="my-2" style={{ color: "#1a4798" }}>
             Application for {application?.jobVacancyId?.jobTitle}
           </h5>
+        </div>
+      </div> */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <button onClick={() => navigate(-1)} className="btn btn-light me-2">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-file-earmark-text-fill text-white"></i>
+            </div>
+            <h5 className="my-2" style={{ color: "#1a4798" }}>
+              Application for {application?.jobVacancyId?.jobTitle}
+            </h5>
+          </div>
         </div>
       </div>
 
