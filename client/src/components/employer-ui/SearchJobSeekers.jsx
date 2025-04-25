@@ -95,7 +95,8 @@ const SearchJobSeekers = () => {
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
             <button
-              className="btn btn-primary text-light"
+              className="btn text-light"
+              style={{ backgroundColor: "#1a4798" }}
               type="submit"
               disabled={loading}
             >

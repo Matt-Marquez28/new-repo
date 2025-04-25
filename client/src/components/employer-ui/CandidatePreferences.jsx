@@ -116,7 +116,7 @@ const CandidatePreferences = () => {
 
       <div className="row mb-4">
         {/* Specializations */}
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <label>Specializations:</label>
           {specializations.map((specialization, index) => (
             <div key={index} className="input-group mb-2">
@@ -149,7 +149,7 @@ const CandidatePreferences = () => {
         </div>
 
         {/* Skills */}
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <label>Skills:</label>
           {skills.map((skill, index) => (
             <div key={index} className="input-group mb-2">
@@ -182,7 +182,7 @@ const CandidatePreferences = () => {
         </div>
 
         {/* Educational Levels */}
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <label>Educational Levels:</label>
           {educationalLevels.map((level, index) => (
             <div key={index} className="input-group mb-2">
@@ -234,7 +234,7 @@ const CandidatePreferences = () => {
         </div>
 
         {/* Locations */}
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <label>Preferred Locations (City/Municipality):</label>
           {locations.map((location, index) => (
             <div key={index} className="input-group mb-2">

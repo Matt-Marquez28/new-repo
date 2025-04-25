@@ -107,7 +107,11 @@ const SavedJobs = () => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
-        <button className="btn btn-primary text-light" type="submit">
+        <button
+          className="btn text-light"
+          type="submit"
+          style={{ backgroundColor: "#1a4798" }}
+        >
           <i className="bi bi-search"></i>{" "}
           <span className="d-none d-sm-inline"> Search</span>
         </button>
@@ -203,7 +207,10 @@ const SavedJobs = () => {
                     >
                       {company?.companyInformation?.companyLogo && (
                         <img
-                          src={company?.companyInformation.companyLogo || default_company}
+                          src={
+                            company?.companyInformation.companyLogo ||
+                            default_company
+                          }
                           alt={
                             company.companyInformation.businessName ||
                             "Company Logo"

@@ -126,7 +126,11 @@ const ApplicationList = () => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
-        <button className="btn btn-primary text-light" type="submit">
+        <button
+          className="btn text-light"
+          type="submit"
+          style={{ backgroundColor: "#1a4798" }}
+        >
           <i className="bi bi-search"></i>{" "}
           <span className="d-none d-sm-inline"> Search</span>
         </button>
@@ -152,7 +156,9 @@ const ApplicationList = () => {
         </div>
         <button className="btn btn-light d-none d-sm-inline">
           <i className="bi bi-calendar-event-fill"></i> Interview Scheduled{" "}
-          <span className="badge bg-primary">{interviewScheduledCount}</span>
+          <span className="badge" style={{ backgroundColor: "#1a4798" }}>
+            {interviewScheduledCount}
+          </span>
         </button>
       </div>
 

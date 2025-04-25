@@ -107,7 +107,11 @@ const JobVacancyList = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
-            <button className="btn btn-primary" type="button">
+            <button
+              className="btn text-light"
+              type="button"
+              style={{ backgroundColor: "#1a4798" }}
+            >
               <i className="bi bi-search"></i>{" "}
               <span className="d-none d-sm-inline"> Search</span>
             </button>

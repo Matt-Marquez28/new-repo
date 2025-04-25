@@ -199,14 +199,14 @@ const AccountStatistics = () => {
                       >
                         User Activity Overview
                       </h6>
-                      <span className="badge bg-info">
+                      <span className="badge bg-primary">
                         {activePercentage}% Active
                       </span>
                     </div>
                     <ProgressBar
                       now={activePercentage}
                       label={`${stats.totalActiveAccounts.toLocaleString()} active users`}
-                      variant="info"
+                      variant="primary"
                       animated
                       style={{
                         height: "20px",

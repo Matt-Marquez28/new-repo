@@ -98,18 +98,30 @@ const SearchCompanies = () => {
 
   return (
     <div className="container">
-      <div className="d-flex my-2 justify-content-between">
-        <div className="d-flex gap-2 align-items-center">
-          <button
-            type="button"
-            className="btn btn-light text-dark"
-            onClick={() => navigate(-1)}
-          >
-            <i className="bi bi-arrow-left"></i>
-          </button>
-          <h5 className="my-2 text-primary">
-            <i className="bi bi-search"></i> Search Companies
-          </h5>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <button onClick={() => navigate(-1)} className="btn btn-light me-2">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-search text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Search Companies
+            </h5>
+          </div>
         </div>
       </div>
       {/* Search Form */}
@@ -124,7 +136,7 @@ const SearchCompanies = () => {
               value={companyName}
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
-            <button className="btn btn-primary text-light" type="submit">
+            <button className="btn text-light" type="submit" style={{ backgroundColor: "#1a4798" }}>
               <i className="bi bi-search"></i>{" "}
               <span className="d-none d-sm-inline">Search</span>
             </button>

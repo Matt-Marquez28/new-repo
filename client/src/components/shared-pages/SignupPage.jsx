@@ -66,8 +66,8 @@ const SignupPage = () => {
               className="row g-2 needs-validation border p-3 rounded shadow my-3"
               onSubmit={formik.handleSubmit}
             >
-              <h3 className="text-center fw-bold text-primary">
-                Create your account
+              <h3 className="text-center fw-bold" style={{ color: "#1a4798" }}>
+                <i className="bi bi-pen"></i> Create your account
               </h3>
               <hr className="mb-4" />
 
@@ -278,7 +278,8 @@ const SignupPage = () => {
               <div className="col-12 mt-3">
                 <button
                   type="submit"
-                  className="btn btn-primary w-100"
+                  className="btn w-100 text-white"
+                  style={{ backgroundColor: "#1a4798" }}
                   disabled={!isAgreed}
                 >
                   Sign Up

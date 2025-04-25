@@ -169,7 +169,11 @@ const Search = () => {
               aria-label="Example text with two button addons"
               style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
             />
-            <button className="btn btn-primary text-light" type="submit">
+            <button
+              className="btn text-light"
+              type="submit"
+              style={{ backgroundColor: "#1a4798" }}
+            >
               <i className="bi bi-search"></i>{" "}
               <span className="d-none d-sm-inline"> Search</span>
             </button>
@@ -346,7 +350,9 @@ const Search = () => {
                 style={{ fontSize: "0.85rem" }}
               >
                 {jobVacancy?.description ? (
-                  <p className="m-0">{truncateDescription(jobVacancy.description)}</p>
+                  <p className="m-0">
+                    {truncateDescription(jobVacancy.description)}
+                  </p>
                 ) : (
                   <p className="text-muted text-center my-3">
                     <i className="bi bi-file-text me-2"></i>{" "}

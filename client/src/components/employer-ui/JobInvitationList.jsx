@@ -86,7 +86,11 @@ const JobInvitationList = () => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
-        <button className="btn btn-primary text-light" type="submit">
+        <button
+          className="btn text-light"
+          type="submit"
+          style={{ backgroundColor: "#1a4798" }}
+        >
           <i className="bi bi-search"></i>{" "}
           <span className="d-none d-sm-inline"> Search</span>
         </button>
@@ -156,7 +160,8 @@ const JobInvitationList = () => {
                     {invitation?.jobSeekerId?.personalInformation?.photo && (
                       <img
                         src={
-                          invitation?.jobSeekerId?.personalInformation?.photo || default_profile
+                          invitation?.jobSeekerId?.personalInformation?.photo ||
+                          default_profile
                         }
                         alt={
                           invitation?.jobSeekerId?.personalInformation
