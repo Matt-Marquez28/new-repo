@@ -9,12 +9,26 @@ import {
   Alert,
   Button,
   Badge,
+  Dropdown,
+  InputGroup,
 } from "react-bootstrap";
 import { downloadCSV } from "../../utils/csvDownloader";
 import { APPLICATION_API_END_POINT } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { JOBSEEKER_API_END_POINT } from "../../utils/constants";
 import axios from "axios";
+import {
+  FiFilter,
+  FiRefreshCw,
+  FiDownload,
+  FiEye,
+  FiCalendar,
+  FiUser,
+  FiBriefcase,
+  FiHome,
+  FiFileText,
+} from "react-icons/fi";
+import { FaRegFileExcel } from "react-icons/fa";
 
 const ApplicationReports = () => {
   const [reports, setReports] = useState([]);
@@ -31,11 +45,11 @@ const ApplicationReports = () => {
     total: 0,
     statuses: {},
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   // Fetch business names and initial reports
   useEffect(() => {
-    // Fetch business names only once when component mounts
     const fetchBusinessNames = async () => {
       try {
         const response = await fetch(
@@ -63,12 +77,11 @@ const ApplicationReports = () => {
       const response = await axios.get(
         `${JOBSEEKER_API_END_POINT}/export-single-jobseeker-data/${id}`,
         {
-          responseType: "blob", // Required for binary (Excel) downloads
-          withCredentials: true, // Ensures cookies/auth headers are sent
+          responseType: "blob",
+          withCredentials: true,
         }
       );
 
-      // Create a download link
       const url = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
       link.href = url;
@@ -76,7 +89,6 @@ const ApplicationReports = () => {
       document.body.appendChild(link);
       link.click();
 
-      // Cleanup
       window.URL.revokeObjectURL(url);
       link.remove();
     } catch (error) {
@@ -128,6 +140,7 @@ const ApplicationReports = () => {
       status: "",
       businessName: "",
     });
+    setSearchTerm("");
   };
 
   const handleExportCSV = () => {
@@ -154,8 +167,6 @@ const ApplicationReports = () => {
       try {
         const date = new Date(dateValue);
         if (isNaN(date.getTime())) return "";
-
-        // Add TAB character to force Excel to treat as text
         return `\t${date.toISOString().split("T")[0]}`;
       } catch (e) {
         console.error("Error formatting date:", e);
@@ -181,7 +192,9 @@ const ApplicationReports = () => {
     ]);
 
     downloadCSV({
-      filename: "applications-report.csv",
+      filename: `applications-report-${
+        new Date().toISOString().split("T")[0]
+      }.csv`,
       headers,
       data,
     });
@@ -200,113 +213,250 @@ const ApplicationReports = () => {
     { value: "declined", label: "Declined" },
   ];
 
+  const filteredReports = reports.filter((report) => {
+    if (!searchTerm) return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      report.applicant?.name?.toLowerCase().includes(searchLower) ||
+      report.applicant?.email?.toLowerCase().includes(searchLower) ||
+      report.applicant?.phone?.toLowerCase().includes(searchLower) ||
+      report.job?.title?.toLowerCase().includes(searchLower) ||
+      report.company?.businessName?.toLowerCase().includes(searchLower) ||
+      report.application?.status?.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <div className="container">
-      <h1 className="mb-4">Application Reports</h1>
+      {/* <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3 mb-0 text-gray-800">Application Reports</h1>
+        <div>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={fetchReports}
+            className="me-2"
+          >
+            <FiRefreshCw className="me-1" /> Refresh
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={reports.length === 0}
+          >
+            <FiDownload className="me-1" /> Export CSV
+          </Button>
+        </div>
+      </div> */}
+
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-flag-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Application Reports
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Manage all upcoming and past job fair events
+          </p>
+        </div>
+        {/* button */}
+        <div>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={fetchReports}
+            className="me-2"
+          >
+            <FiRefreshCw className="me-1" /> Refresh
+          </Button>
+          <Button
+            variant="success"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={reports.length === 0}
+          >
+            <FiDownload className="me-1" /> Export CSV
+          </Button>
+        </div>
+      </div>
 
       {/* Filters Card */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">Filters</h5>
+      <Card className="mb-4 border-0 shadow-sm">
+        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+          <h5 className="mb-0 d-flex align-items-center">
+            <FiFilter className="me-2" /> Filters
+          </h5>
           <Button
-            variant="light"
+            variant="link"
             size="sm"
             onClick={handleResetFilters}
             disabled={
               !filters.year &&
               !filters.month &&
               !filters.status &&
-              !filters.businessName
+              !filters.businessName &&
+              !searchTerm
             }
+            className="text-danger p-0"
           >
-            Reset Filters
+            Reset All
           </Button>
         </Card.Header>
         <Card.Body>
-          <Row>
+          <Row className="g-3">
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Year</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.year || ""}
-                  onChange={(e) =>
-                    handleFilterChange("year", e.target.value || null)
-                  }
-                >
-                  <option value="">All Years</option>
-                  {Array.from(
-                    { length: 5 },
-                    (_, i) => new Date().getFullYear() - i
-                  ).map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Col>
-
-            <Col md={3}>
-              <Form.Group>
-                <Form.Label>Month</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.month || ""}
-                  onChange={(e) =>
-                    handleFilterChange("month", e.target.value || null)
-                  }
-                  disabled={!filters.year}
-                >
-                  <option value="">All Months</option>
-                  {Array.from({ length: 12 }, (_, i) => {
-                    const month = new Date(2000, i).toLocaleString("default", {
-                      month: "long",
-                    });
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {month}
+                <Form.Label className="small text-muted">Year</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiCalendar size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.year || ""}
+                    onChange={(e) =>
+                      handleFilterChange("year", e.target.value || null)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Years</option>
+                    {Array.from(
+                      { length: 5 },
+                      (_, i) => new Date().getFullYear() - i
+                    ).map((year) => (
+                      <option key={year} value={year}>
+                        {year}
                       </option>
-                    );
-                  })}
-                </Form.Control>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Status</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.status}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Form.Label className="small text-muted">Month</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiCalendar size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.month || ""}
+                    onChange={(e) =>
+                      handleFilterChange("month", e.target.value || null)
+                    }
+                    disabled={!filters.year}
+                    className="border-start-0"
+                  >
+                    <option value="">All Months</option>
+                    {Array.from({ length: 12 }, (_, i) => {
+                      const month = new Date(2000, i).toLocaleString(
+                        "default",
+                        {
+                          month: "long",
+                        }
+                      );
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {month}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Company</Form.Label>
+                <Form.Label className="small text-muted">Status</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiFileText size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.status}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    {statusOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+
+            <Col md={3}>
+              <Form.Group>
+                <Form.Label className="small text-muted">Company</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiHome size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.businessName}
+                    onChange={(e) =>
+                      handleFilterChange("businessName", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Companies</option>
+                    {businessNames.map((company) => (
+                      <option key={company._id} value={company.name}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+
+            <Col md={12}>
+              <Form.Group>
+                <Form.Label className="small text-muted">Search</Form.Label>
                 <Form.Control
-                  as="select"
-                  value={filters.businessName}
-                  onChange={(e) =>
-                    handleFilterChange("businessName", e.target.value)
-                  }
-                >
-                  <option value="">All Companies</option>
-                  {businessNames.map((company) => (
-                    <option key={company._id} value={company.name}>
-                      {company.name}
-                    </option>
-                  ))}
-                </Form.Control>
+                  type="text"
+                  placeholder="Search applicants, jobs, companies..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </Form.Group>
             </Col>
           </Row>
@@ -314,22 +464,75 @@ const ApplicationReports = () => {
       </Card>
 
       {/* Summary Cards */}
-      <Row className="mb-4">
-        <Col md={3}>
-          <Card className="text-white bg-primary">
+      <Row className="mb-4 g-4">
+        <Col xl={3} md={6}>
+          <Card className="border-0 shadow-sm h-100">
             <Card.Body>
-              <h5 className="card-title">Total Applications</h5>
-              <h2 className="mb-0">{summary.total}</h2>
+              <div className="d-flex align-items-center">
+                <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
+                  <FiUser size={24} className="text-primary" />
+                </div>
+                <div>
+                  <h6 className="text-uppercase text-primary mb-1">
+                    Total Applications
+                  </h6>
+                  <h2 className="mb-0">{summary.total}</h2>
+                </div>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
         {Object.entries(summary.statuses).map(([status, count]) => (
-          <Col md={2} key={status}>
-            <Card className={`text-white bg-${getStatusBadgeColor(status)}`}>
+          <Col xl={2} md={4} sm={6} key={status}>
+            <Card
+              className={` border-0 border-left-${getStatusBadgeColor(
+                status
+              )} shadow-sm h-100`}
+            >
               <Card.Body>
-                <h5 className="card-title text-capitalize">{status}</h5>
-                <h4 className="mb-0">{count}</h4>
+                <div className="d-flex align-items-center">
+                  <div
+                    className={`bg-${getStatusBadgeColor(
+                      status
+                    )} bg-opacity-10 p-3 rounded me-3`}
+                  >
+                    {status === "hired" && (
+                      <FiBriefcase
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "pending" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "interview scheduled" && (
+                      <FiCalendar
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "interview completed" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "declined" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <h6 className="text-uppercase text-muted mb-1">{status}</h6>
+                    <h3 className="mb-0">{count}</h3>
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -337,109 +540,144 @@ const ApplicationReports = () => {
       </Row>
 
       {/* Reports Table */}
-      <Card className="shadow-sm">
-        <Card.Header className="bg-light d-flex justify-content-between align-items-center">
+      <Card className="border-0 shadow-sm">
+        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
           <h5 className="mb-0">Application Details</h5>
-          <div>
-            <Button
-              variant="success"
-              size="sm"
-              onClick={handleExportCSV}
-              disabled={reports.length === 0}
-              className="me-2"
-            >
-              <i className="fas fa-download me-2"></i>Export CSV
-            </Button>
-            <Button variant="primary" size="sm" onClick={fetchReports}>
-              <i className="fas fa-sync me-2"></i>Refresh
-            </Button>
+          <div className="d-flex align-items-center">
+            <span className="text-muted small me-3">
+              Showing {filteredReports.length} of {reports.length} records
+            </span>
           </div>
         </Card.Header>
 
-        <Card.Body>
+        <Card.Body className="p-0">
           {error && (
-            <Alert variant="danger" className="mb-4">
+            <Alert variant="danger" className="m-4">
               {error}
             </Alert>
           )}
 
           {loading ? (
             <div className="text-center py-5">
-              <Spinner animation="border" role="status">
+              <Spinner animation="border" role="status" variant="primary">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
-              <p className="mt-2">Loading reports...</p>
+              <p className="mt-3 text-muted">Loading reports...</p>
             </div>
           ) : reports.length === 0 ? (
-            <Alert variant="info">
+            <Alert variant="info" className="m-4">
               No applications found matching your filters.
             </Alert>
           ) : (
             <div className="table-responsive">
-              <Table striped hover>
-                <thead>
+              <Table hover className="mb-0">
+                <thead className="bg-light">
                   <tr>
-                    <th>Applicant</th>
-                    <th>Job Details</th>
-                    <th>Company</th>
-                    <th>Status</th>
-                    <th>Applied Date</th>
-                    <th>Actions</th>
+                    <th className="border-0 fw-normal">Applicant</th>
+                    <th className="border-0 fw-normal">Job Details</th>
+                    <th className="border-0 fw-normal">Company</th>
+                    <th className="border-0 fw-normal">Status</th>
+                    <th className="border-0 fw-normal">Applied Date</th>
+                    <th className="border-0 text-center fw-normal">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reports.map((report, index) => (
-                    <tr key={index}>
-                      <td>
-                        <strong>{report.applicant.name}</strong>
-                        <br />
-                        ID: {report.applicant.id}
-                        <br />
-                        {report.applicant.email}
-                        <br />
-                        {report.applicant.phone}
+                  {filteredReports.map((report, index) => (
+                    <tr key={index} className="border-top">
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                            <FiUser size={20} className="text-primary" />
+                          </div>
+                          <div>
+                            <strong className="text-primary fw-semibold">
+                              {report.applicant.name}
+                            </strong>
+                            <div className="text-muted small">
+                              ID: {report.applicant.id}
+                            </div>
+                            <div className="text-muted small">
+                              {report.applicant.email}
+                            </div>
+                            <div className="text-muted small">
+                              {report.applicant.phone}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        <strong>{report.job.title}</strong>
-                        <br />
-                        {report.job.department}
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-info bg-opacity-10 p-2 rounded me-3">
+                            <FiBriefcase size={20} className="text-info" />
+                          </div>
+                          <div>
+                            <strong>{report.job.title}</strong>
+                            <div className="text-muted small">
+                              {report.job.department}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        <strong>{report.company.businessName}</strong>
-                        <br />
-                        {report.company.industry}
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-warning bg-opacity-10 p-2 rounded me-3">
+                            <FiHome size={20} className="text-warning" />
+                          </div>
+                          <div>
+                            <strong>{report.company.businessName}</strong>
+                            <div className="text-muted small">
+                              {report.company.industry}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
+                      <td className="align-middle">
                         <Badge
                           bg={getStatusBadgeColor(report.application.status)}
+                          className=""
                         >
                           {report.application.status}
                         </Badge>
                       </td>
-                      <td>
-                        {new Date(
-                          report.application.appliedDate
-                        ).toLocaleDateString()}
+                      <td className="align-middle">
+                        <div className="text-nowrap">
+                          {new Date(
+                            report.application.appliedDate
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </div>
                       </td>
-                      <td>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() =>
-                            handleViewApplicant(report.applicant.id)
-                          }
-                          className="me-2"
-                        >
-                          <i className="fas fa-eye me-1"></i> View
-                        </Button>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => getSingleReport(report.applicant.id)}
-                          className="me-2"
-                        >
-                          <i className="fas fa-eye me-1"></i> Export
-                        </Button>
+                      <td className="text-end align-middle">
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            variant="outline-secondary"
+                            size="sm"
+                            id="dropdown-actions"
+                            className="px-3"
+                          >
+                            Actions
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            {/* <Dropdown.Item
+                              onClick={() =>
+                                handleViewApplicant(report.applicant.id)
+                              }
+                            >
+                              <FiEye className="me-2" /> View Details
+                            </Dropdown.Item> */}
+                            <Dropdown.Item
+                              onClick={() =>
+                                getSingleReport(report.applicant.id)
+                              }
+                            >
+                              <FaRegFileExcel className="me-2" /> Export to
+                              Excel
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </td>
                     </tr>
                   ))}
@@ -453,7 +691,6 @@ const ApplicationReports = () => {
   );
 };
 
-// Helper function to determine badge color based on status
 const getStatusBadgeColor = (status) => {
   switch (status) {
     case "pending":

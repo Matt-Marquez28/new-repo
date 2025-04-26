@@ -9,11 +9,28 @@ import {
   Alert,
   Button,
   Badge,
+  Dropdown,
+  InputGroup,
 } from "react-bootstrap";
 import { downloadCSV } from "../../utils/csvDownloader";
 import { COMPANY_API_END_POINT } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  FiFilter,
+  FiRefreshCw,
+  FiDownload,
+  FiEye,
+  FiCalendar,
+  FiUser,
+  FiBriefcase,
+  FiHome,
+  FiFileText,
+  FiLayers,
+  FiUsers,
+  FiAward,
+} from "react-icons/fi";
+import { FaRegFileExcel } from "react-icons/fa";
 
 const CompanyReports = () => {
   const [reports, setReports] = useState([]);
@@ -35,6 +52,7 @@ const CompanyReports = () => {
     topIndustries: [],
     companySizes: {},
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   // Fetch business names and industries for dropdowns
@@ -136,6 +154,7 @@ const CompanyReports = () => {
       industry: "",
       companySize: "",
     });
+    setSearchTerm("");
   };
 
   const handleExportCSV = () => {
@@ -210,7 +229,9 @@ const CompanyReports = () => {
     ]);
 
     downloadCSV({
-      filename: "companies-report.csv",
+      filename: `companies-report-${
+        new Date().toISOString().split("T")[0]
+      }.csv`,
       headers,
       data,
     });
@@ -222,29 +243,80 @@ const CompanyReports = () => {
 
   const statusOptions = [
     { value: "", label: "All Statuses" },
-    { value: "pending", label: "Pending" },
-    { value: "approved", label: "Approved" },
-    { value: "rejected", label: "Rejected" },
-    { value: "suspended", label: "Suspended" },
+    { value: "incomplete", label: "Incomplete" },
+    { value: "accredited", label: "Accredited" },
+    { value: "declined", label: "Declined" },
+    { value: "Revoked", label: "Revoked" },
   ];
 
-  const companySizeOptions = [
-    { value: "", label: "All Sizes" },
-    { value: "small", label: "Small (1-50 employees)" },
-    { value: "medium", label: "Medium (51-200 employees)" },
-    { value: "large", label: "Large (201+ employees)" },
-  ];
+  const filteredReports = reports.filter((report) => {
+    if (!searchTerm) return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      report.businessInfo?.businessName?.toLowerCase().includes(searchLower) ||
+      report.contactInfo?.employerName?.toLowerCase().includes(searchLower) ||
+      report.contactInfo?.email?.toLowerCase().includes(searchLower) ||
+      report.businessInfo?.industry?.toLowerCase().includes(searchLower) ||
+      report.accreditation?.status?.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <div className="container">
-      <h1 className="mb-4">Company Reports</h1>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-building-fill text-white"></i>
+            </div>
+            <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Company Reports
+            </h4>
+          </div>
+          <p className="text-muted mb-0 mt-1">
+            Manage all registered companies and their accreditation status
+          </p>
+        </div>
+        <div>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={fetchReports}
+            className="me-2"
+          >
+            <FiRefreshCw className="me-1" /> Refresh
+          </Button>
+          <Button
+            variant="success"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={reports.length === 0}
+          >
+            <FiDownload className="me-1" /> Export CSV
+          </Button>
+        </div>
+      </div>
 
       {/* Filters Card */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">Filters</h5>
+      <Card className="mb-4 border-0 shadow-sm">
+        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+          <h5 className="mb-0 d-flex align-items-center">
+            <FiFilter className="me-2" /> Filters
+          </h5>
           <Button
-            variant="light"
+            variant="link"
             size="sm"
             onClick={handleResetFilters}
             disabled={
@@ -253,357 +325,454 @@ const CompanyReports = () => {
               !filters.status &&
               !filters.businessName &&
               !filters.industry &&
-              !filters.companySize
+              !filters.companySize &&
+              !searchTerm
             }
+            className="text-danger p-0"
           >
-            Reset Filters
+            Reset All
           </Button>
         </Card.Header>
         <Card.Body>
-          <Row>
-            <Col md={2}>
+          <Row className="g-3">
+            <Col md={4}>
               <Form.Group>
-                <Form.Label>Year</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.year || ""}
-                  onChange={(e) =>
-                    handleFilterChange("year", e.target.value || null)
-                  }
-                >
-                  <option value="">All Years</option>
-                  {Array.from(
-                    { length: 5 },
-                    (_, i) => new Date().getFullYear() - i
-                  ).map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Col>
-
-            <Col md={2}>
-              <Form.Group>
-                <Form.Label>Month</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.month || ""}
-                  onChange={(e) =>
-                    handleFilterChange("month", e.target.value || null)
-                  }
-                  disabled={!filters.year}
-                >
-                  <option value="">All Months</option>
-                  {Array.from({ length: 12 }, (_, i) => {
-                    const month = new Date(2000, i).toLocaleString("default", {
-                      month: "long",
-                    });
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {month}
+                <Form.Label className="small text-muted">Year</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiCalendar size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.year || ""}
+                    onChange={(e) =>
+                      handleFilterChange("year", e.target.value || null)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Years</option>
+                    {Array.from(
+                      { length: 5 },
+                      (_, i) => new Date().getFullYear() - i
+                    ).map((year) => (
+                      <option key={year} value={year}>
+                        {year}
                       </option>
-                    );
-                  })}
-                </Form.Control>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
-            <Col md={2}>
+            <Col md={4}>
               <Form.Group>
-                <Form.Label>Status</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.status}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Form.Label className="small text-muted">Month</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiCalendar size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.month || ""}
+                    onChange={(e) =>
+                      handleFilterChange("month", e.target.value || null)
+                    }
+                    disabled={!filters.year}
+                    className="border-start-0"
+                  >
+                    <option value="">All Months</option>
+                    {Array.from({ length: 12 }, (_, i) => {
+                      const month = new Date(2000, i).toLocaleString(
+                        "default",
+                        {
+                          month: "long",
+                        }
+                      );
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {month}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label className="small text-muted">Status</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiFileText size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.status}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    {statusOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
             {/* <Col md={2}>
               <Form.Group>
-                <Form.Label>Company</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.businessName}
-                  onChange={(e) =>
-                    handleFilterChange("businessName", e.target.value)
-                  }
-                >
-                  <option value="">All Companies</option>
-                  {businessNames.map((company) => (
-                    <option key={company._id} value={company.name}>
-                      {company.name}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Form.Label className="small text-muted">Company</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiHome size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.businessName}
+                    onChange={(e) =>
+                      handleFilterChange("businessName", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Companies</option>
+                    {businessNames.map((company) => (
+                      <option key={company._id} value={company.name}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
             <Col md={2}>
               <Form.Group>
-                <Form.Label>Industry</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.industry}
-                  onChange={(e) => handleFilterChange("industry", e.target.value)}
-                >
-                  <option value="">All Industries</option>
-                  {industries.map((industry, index) => (
-                    <option key={index} value={industry}>
-                      {industry}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Form.Label className="small text-muted">Industry</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiLayers size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.industry}
+                    onChange={(e) =>
+                      handleFilterChange("industry", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Industries</option>
+                    {industries.map((industry, index) => (
+                      <option key={index} value={industry}>
+                        {industry}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col>
 
             <Col md={2}>
               <Form.Group>
-                <Form.Label>Company Size</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={filters.companySize}
-                  onChange={(e) => handleFilterChange("companySize", e.target.value)}
-                >
-                  {companySizeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Form.Label className="small text-muted">Size</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiUsers size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.companySize}
+                    onChange={(e) =>
+                      handleFilterChange("companySize", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    {companySizeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
               </Form.Group>
             </Col> */}
+
+            <Col md={12}>
+              <Form.Group>
+                <Form.Label className="small text-muted">Search</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Search companies, employers, industries..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
           </Row>
         </Card.Body>
       </Card>
 
       {/* Summary Cards */}
-      <Row className="mb-4">
-        <Col md={3}>
-          <Card className="text-white bg-primary">
+      <Row className="mb-4 g-4">
+        <Col xl={3} md={6}>
+          <Card className="border-0 shadow-sm h-100">
             <Card.Body>
-              <h5 className="card-title">Total Companies</h5>
-              <h2 className="mb-0">{summary.total}</h2>
+              <div className="d-flex align-items-center">
+                <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
+                  <FiHome size={24} className="text-primary" />
+                </div>
+                <div>
+                  <h6 className="text-uppercase text-primary mb-1">
+                    Total Companies
+                  </h6>
+                  <h2 className="mb-0">{summary.total}</h2>
+                </div>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
         {Object.entries(summary.statuses).map(([status, count]) => (
-          <Col md={2} key={status}>
-            <Card className={`text-white bg-${getStatusBadgeColor(status)}`}>
+          <Col xl={2} md={4} sm={6} key={status}>
+            <Card
+              className={`border-0 border-start-${getStatusBadgeColor(
+                status
+              )} shadow-sm h-100`}
+            >
               <Card.Body>
-                <h5 className="card-title text-capitalize">{status}</h5>
-                <h4 className="mb-0">{count}</h4>
+                <div className="d-flex align-items-center">
+                  <div
+                    className={`bg-${getStatusBadgeColor(
+                      status
+                    )} bg-opacity-10 p-3 rounded me-3`}
+                  >
+                    {status === "accredited" && (
+                      <FiAward
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "incomplete" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "declined" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                    {status === "revoked" && (
+                      <FiFileText
+                        size={24}
+                        className={`text-${getStatusBadgeColor(status)}`}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <h6 className="text-uppercase text-muted mb-1">{status}</h6>
+                    <h3 className="mb-0">{count}</h3>
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
 
-      {/* Industry Distribution */}
-      {summary.topIndustries.length > 0 && (
-        <Row className="mb-4">
-          <Col md={12}>
-            <Card>
-              <Card.Header>
-                <h5>Top Industries</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  {summary.topIndustries.map((industry, index) => (
-                    <Col md={2} key={index}>
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <h4 className="mb-0">{industry.count}</h4>
-                        </div>
-                        <div>
-                          <small className="text-muted">
-                            {industry._id || "Unknown"}
-                          </small>
-                        </div>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      )}
-
-      {/* Company Size Distribution */}
-      {/* {Object.keys(summary.companySizes).length > 0 && (
-        <Row className="mb-4">
-          <Col md={12}>
-            <Card>
-              <Card.Header>
-                <h5>Company Size Distribution</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  {Object.entries(summary.companySizes).map(([size, count]) => (
-                    <Col md={2} key={size}>
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <h4 className="mb-0">{count}</h4>
-                        </div>
-                        <div>
-                          <small className="text-muted">
-                            {size === "small"
-                              ? "Small"
-                              : size === "medium"
-                              ? "Medium"
-                              : size === "large"
-                              ? "Large"
-                              : size}
-                          </small>
-                        </div>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      )} */}
-
       {/* Reports Table */}
-      <Card className="shadow-sm">
-        <Card.Header className="bg-light d-flex justify-content-between align-items-center">
+      <Card className="border-0 shadow-sm">
+        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
           <h5 className="mb-0">Company Details</h5>
-          <div>
-            <Button
-              variant="success"
-              size="sm"
-              onClick={handleExportCSV}
-              disabled={reports.length === 0}
-              className="me-2"
-            >
-              <i className="fas fa-download me-2"></i>Export CSV
-            </Button>
-            <Button variant="primary" size="sm" onClick={fetchReports}>
-              <i className="fas fa-sync me-2"></i>Refresh
-            </Button>
+          <div className="d-flex align-items-center">
+            <span className="text-muted small me-3">
+              Showing {filteredReports.length} of {reports.length} records
+            </span>
           </div>
         </Card.Header>
 
-        <Card.Body>
+        <Card.Body className="p-0">
           {error && (
-            <Alert variant="danger" className="mb-4">
+            <Alert variant="danger" className="m-4">
               {error}
             </Alert>
           )}
 
           {loading ? (
             <div className="text-center py-5">
-              <Spinner animation="border" role="status">
+              <Spinner animation="border" role="status" variant="primary">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
-              <p className="mt-2">Loading reports...</p>
+              <p className="mt-3 text-muted">Loading reports...</p>
             </div>
           ) : reports.length === 0 ? (
-            <Alert variant="info">
+            <Alert variant="info" className="m-4">
               No companies found matching your filters.
             </Alert>
           ) : (
             <div className="table-responsive">
-              <Table striped hover>
-                <thead>
+              <Table hover className="mb-0">
+                <thead className="bg-light">
                   <tr>
-                    <th>Business Info</th>
-                    <th>Contact Info</th>
-                    <th>Accreditation</th>
-                    <th>Account</th>
-                    <th>Vacancies</th>
-                    <th>Registered</th>
-                    <th>Actions</th>
+                    <th className="border-0 fw-normal">Company</th>
+                    <th className="border-0 fw-normal">Contact</th>
+                    <th className="border-0 fw-normal">Accreditation</th>
+                    {/* <th className="border-0 fw-normal">Account</th> */}
+                    {/* <th className="border-0 fw-normal">Vacancies</th> */}
+                    <th className="border-0 fw-normal">Registered</th>
+                    <th className="border-0 text-center fw-normal">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reports.map((report, index) => (
-                    <tr key={index}>
-                      <td>
-                        <strong>{report.businessInfo.businessName}</strong>
-                        <br />
-                        <small className="text-muted">
-                          TIN: {report.businessInfo.tinNumber}
-                        </small>
-                        <br />
-                        <Badge bg="info">
-                          {report.businessInfo.industry}
-                        </Badge>{" "}
-                        <Badge bg="secondary">
-                          {report.businessInfo.companySize}
-                        </Badge>
+                  {filteredReports.map((report, index) => (
+                    <tr key={index} className="border-top">
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                            <FiHome size={20} className="text-primary" />
+                          </div>
+                          <div>
+                            <strong className="text-primary fw-semibold">
+                              {report.businessInfo.businessName}
+                            </strong>
+                            <div className="text-muted small">
+                              TIN: {report.businessInfo.tinNumber}
+                            </div>
+                            <div className="d-flex mt-1">
+                              <Badge bg="info" className="me-1 text-capitalize">
+                                {report.businessInfo.industry}
+                              </Badge>
+                              <Badge bg="secondary" className="text-capitalize">
+                                {report.businessInfo.companySize}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        <strong>{report.contactInfo.employerName}</strong>
-                        <br />
-                        {report.contactInfo.employerPosition}
-                        <br />
-                        {report.contactInfo.contactPerson}
-                        <br />
-                        {report.contactInfo.mobileNumber}
-                        <br />
-                        {report.contactInfo.email}
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-warning bg-opacity-10 p-2 rounded me-3">
+                            <FiUser size={20} className="text-warning" />
+                          </div>
+                          <div>
+                            <strong>{report.contactInfo.employerName}</strong>
+                            <div className="text-muted small">
+                              {report.contactInfo.employerPosition}
+                            </div>
+                            <div className="text-muted small">
+                              {report.contactInfo.contactPerson}
+                            </div>
+                            <div className="text-muted small">
+                              {report.contactInfo.mobileNumber}
+                            </div>
+                            <div className="text-muted small">
+                              {report.contactInfo.email}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        <Badge
-                          bg={getStatusBadgeColor(report.accreditation.status)}
-                        >
-                          {report.accreditation.status}
-                        </Badge>
-                        <br />
-                        {report.accreditation.accreditationType}
-                        <br />
-                        {report.accreditation.accreditationDate}
-                        <br />
-                        {report.accreditation.isRenewal ? "Renewal" : "New"}
+                      <td className="align-middle">
+                        <div className="d-flex align-items-center">
+                          <div className="bg-success bg-opacity-10 p-2 rounded me-3">
+                            <FiAward size={20} className="text-success" />
+                          </div>
+                          <div>
+                            <Badge
+                              bg={getStatusBadgeColor(
+                                report.accreditation.status
+                              )}
+                              className="mb-1 text-capitalize"
+                            >
+                              {report.accreditation.status}
+                            </Badge>
+                            {/* <div className="text-muted small">
+                              {report.accreditation.accreditationType}
+                            </div> */}
+                            <div className="text-muted small">
+                              {report.accreditation.accreditationDate}
+                            </div>
+                            <div className="text-muted small">
+                              {report.accreditation.isRenewal
+                                ? "Renewal"
+                                : "New"}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        {report.accountInfo.email}
-                        <br />
-                        <Badge
-                          bg={
-                            report.accountInfo.isActive ? "success" : "danger"
-                          }
-                        >
-                          {report.accountInfo.isActive ? "Active" : "Inactive"}
-                        </Badge>
+
+                      <td className="align-middle">
+                        <div className="text-nowrap">
+                          {new Date(report.registeredDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
+                        <div className="text-muted small">
+                          Last updated:{" "}
+                          {new Date(report.lastUpdated).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
                       </td>
-                      <td className="text-center">
-                        <h4>{report.vacancies}</h4>
-                      </td>
-                      <td>
-                        {report.registeredDate}
-                        <br />
-                        <small>Last updated: {report.lastUpdated}</small>
-                      </td>
-                      <td>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => handleViewCompany(report.companyId)}
-                          className="me-2 mb-2"
-                        >
-                          <i className="fas fa-eye me-1"></i> View
-                        </Button>
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          onClick={() => getSingleReport(report.companyId)}
-                        >
-                          <i className="fas fa-file-export me-1"></i> Export
-                        </Button>
+                      <td className="text-end align-middle">
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            variant="outline-secondary"
+                            size="sm"
+                            id="dropdown-actions"
+                            className="px-3"
+                          >
+                            Actions
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleViewCompany(report.companyId)
+                              }
+                            >
+                              <FiEye className="me-2" /> View Details
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => getSingleReport(report.companyId)}
+                            >
+                              <FaRegFileExcel className="me-2" /> Export to
+                              Excel
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </td>
                     </tr>
                   ))}
@@ -622,11 +791,11 @@ const getStatusBadgeColor = (status) => {
   switch (status) {
     case "pending":
       return "warning";
-    case "approved":
+    case "accredited":
       return "success";
-    case "rejected":
+    case "declined":
       return "danger";
-    case "suspended":
+    case "revoked":
       return "secondary";
     default:
       return "primary";

@@ -209,7 +209,7 @@ const AccountStatistics = () => {
                       variant="primary"
                       animated
                       style={{
-                        height: "20px",
+                        height: "17px",
                         borderRadius: "5px",
                       }}
                     />
