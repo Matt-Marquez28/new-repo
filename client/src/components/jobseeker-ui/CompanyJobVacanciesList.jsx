@@ -44,9 +44,12 @@ const CompanyJobVacanciesList = ({ companyId, companyName }) => {
   return (
     <div>
       <div className="my-3">
-        <h5 className="text-primary text-center fw-semibold mb-1">
+        <h5
+          className=" text-center fw-semibold mb-1"
+          style={{ color: "#1a4798" }}
+        >
           Current Job Openings at {companyName}{" "}
-          <span className="badge bg-primary rounded">
+          <span className="badge rounded text-white" style={{ backgroundColor: "#1a4798" }}>
             {jobVacancies?.length}
           </span>
         </h5>
@@ -81,7 +84,7 @@ const CompanyJobVacanciesList = ({ companyId, companyName }) => {
                       borderRadius: "10px",
                       objectFit: "cover",
                     }}
-                    src={job?.companyLogo || default_company}
+                    src={job?.companyId.companyInformation?.companyLogo || default_company}
                     alt="Company Logo"
                     onError={(e) => {
                       e.target.src = "/default-company-logo.png";

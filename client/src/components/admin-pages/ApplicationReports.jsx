@@ -266,7 +266,7 @@ const ApplicationReports = () => {
                 marginRight: "12px",
               }}
             >
-              <i className="bi bi-flag-fill text-white"></i>
+              <i className="bi bi-file-earmark-text-fill text-white"></i>
             </div>
             <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
               Application Reports

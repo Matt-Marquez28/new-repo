@@ -279,7 +279,7 @@ const CompanyReports = () => {
                 marginRight: "12px",
               }}
             >
-              <i className="bi bi-building-fill text-white"></i>
+              <i className="bi bi-file-earmark-text-fill text-white"></i>
             </div>
             <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
               Company Reports
@@ -758,13 +758,13 @@ const CompanyReports = () => {
                             Actions
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item
+                            {/* <Dropdown.Item
                               onClick={() =>
                                 handleViewCompany(report.companyId)
                               }
                             >
                               <FiEye className="me-2" /> View Details
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
                             <Dropdown.Item
                               onClick={() => getSingleReport(report.companyId)}
                             >

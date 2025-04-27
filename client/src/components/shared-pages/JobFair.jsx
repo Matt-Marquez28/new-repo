@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
 import "./JobFair.css";
 import job_fair from "../../images/job-fair.png";
 import axios from "axios";
@@ -12,11 +12,14 @@ const JobFair = () => {
   const navigate = useNavigate();
   const [jobFairData, setJobFairData] = useState(null);
   const [preRegistrationData, setPreRegistrationData] = useState(null);
-  const [allPreRegistered, setAllPreRegistered] = useState(null);
+  const [allPreRegistered, setAllPreRegistered] = useState([]);
   const [jobSeekerCount, setJobSeekerCount] = useState(0);
   const [employerCount, setEmployerCount] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [unregisterLoading, setUnregisterLoading] = useState(false);
   const [registrationClosed, setRegistrationClosed] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getActiveJobFair();
@@ -38,12 +41,14 @@ const JobFair = () => {
   const getActiveJobFair = async () => {
     try {
       setLoading(true);
+      setError(null);
       const res = await axios.get(
         `${JOB_VACANCY_API_END_POINT}/get-active-job-fair-event`
       );
-      setJobFairData(res?.data?.activeJobFair);
+      setJobFairData(res?.data?.activeJobFair || null);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching job fair:", error);
+      setError("Failed to load job fair information. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -55,9 +60,10 @@ const JobFair = () => {
         `${JOB_VACANCY_API_END_POINT}/get-pre-registration`,
         { withCredentials: true }
       );
-      setPreRegistrationData(res?.data?.preRegistration);
+      setPreRegistrationData(res?.data?.preRegistration || null);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching pre-registration:", error);
+      setPreRegistrationData(null);
     }
   };
 
@@ -72,44 +78,56 @@ const JobFair = () => {
       setJobSeekerCount(preregs.filter((p) => p.role === "jobseeker").length);
       setEmployerCount(preregs.filter((p) => p.role === "employer").length);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching pre-registered users:", error);
+      setAllPreRegistered([]);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setRegisterLoading(true);
+      setError(null);
       const res = await axios.post(
         `${JOB_VACANCY_API_END_POINT}/pre-register`,
         { eventId: jobFairData?._id },
         { withCredentials: true }
       );
-      getActiveJobFair();
+      await getPreRegistration();
+      await getAllPreRegistered();
     } catch (error) {
-      console.log(error);
-      alert(error?.response?.data?.message);
+      console.error("Registration error:", error);
+      setError(error?.response?.data?.message || "Failed to pre-register. Please try again.");
+    } finally {
+      setRegisterLoading(false);
     }
   };
 
   const handleUnregister = async () => {
     try {
-      // This is a mock implementation - you'll need to implement the backend
       const confirmUnregister = window.confirm(
         "Are you sure you want to unregister from this job fair?"
       );
       if (confirmUnregister) {
-        // Mock API call - replace with actual implementation
+        setUnregisterLoading(true);
+        setError(null);
         await axios.delete(
-          `${JOB_VACANCY_API_END_POINT}/cancel-pre-registration/${preRegistrationData._id}`,
+          `${JOB_VACANCY_API_END_POINT}/cancel-pre-registration/${jobFairData?._id}`,
           { withCredentials: true }
         );
-        setPreRegistrationData(null);
-        getAllPreRegistered(); // Refresh counts
-        alert("You have been unregistered from the job fair");
+
+        // Refresh the data
+        await getPreRegistration();
+        await getAllPreRegistered();
       }
     } catch (error) {
-      console.log(error);
-      alert("Failed to unregister. Please try again.");
+      console.error("Unregistration error:", error);
+      setError(
+        error.response?.data?.message ||
+          "Failed to unregister. Please try again."
+      );
+    } finally {
+      setUnregisterLoading(false);
     }
   };
 
@@ -117,10 +135,10 @@ const JobFair = () => {
     return (
       <div className="job-fair-page">
         <Container className="py-5 text-center">
-          <div className="spinner-border text-primary" role="status">
+          <Spinner animation="border" variant="primary" role="status">
             <span className="visually-hidden">Loading...</span>
-          </div>
-          <p>Loading job fair information...</p>
+          </Spinner>
+          <p className="mt-3">Loading job fair information...</p>
         </Container>
       </div>
     );
@@ -128,9 +146,29 @@ const JobFair = () => {
 
   if (!jobFairData) {
     return (
-      <div>
-        {/* No Job Fair UI remains the same */}
-        {/* ... */}
+      <div className="job-fair-page">
+        <Container className="py-5 text-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img
+              src={job_fair}
+              alt="No active job fair"
+              className="img-fluid mb-4"
+              style={{ maxWidth: "300px" }}
+            />
+            <h2 className="mb-3">No Active Job Fair</h2>
+            <p className="lead text-muted mb-4">
+              There are currently no active job fairs. Please check back later for upcoming events.
+            </p>
+            <Button variant="outline-primary" onClick={getActiveJobFair}>
+              <i className="bi bi-arrow-repeat me-2"></i>
+              Check Again
+            </Button>
+          </motion.div>
+        </Container>
       </div>
     );
   }
@@ -143,6 +181,13 @@ const JobFair = () => {
       <div className="floating-circle circle-3"></div>
 
       <Container className="py-5 position-relative">
+        {error && (
+          <Alert variant="danger" dismissible onClose={() => setError(null)}>
+            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+            {error}
+          </Alert>
+        )}
+
         {/* Hero Section */}
         <Row className="mb-5 align-items-center">
           <Col lg={7} className="mb-4 mb-lg-0">
@@ -160,7 +205,7 @@ const JobFair = () => {
 
             <div className="d-flex align-items-center mb-4">
               <i
-                className="bi bi-calendar-event me-2 text-muted"
+                className="bi bi-calendar-event me-2"
                 style={{ color: "#ef1b25" }}
               ></i>
               <span className="me-4" style={{ color: "#ef1b25" }}>
@@ -168,7 +213,7 @@ const JobFair = () => {
                   ? format(new Date(jobFairData.date), "MMMM d, yyyy")
                   : "Date not available"}
               </span>
-              <i className="bi bi-geo-alt me-2 text-muted"></i>
+              <i className="bi bi-geo-alt me-2"></i>
               <span>{jobFairData?.venue}</span>
             </div>
 
@@ -209,9 +254,26 @@ const JobFair = () => {
                     variant="outline-danger"
                     size="lg"
                     onClick={handleUnregister}
+                    disabled={unregisterLoading}
                   >
-                    <i className="bi bi-x-circle me-2"></i>
-                    Unregister
+                    {unregisterLoading ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                          className="me-2"
+                        />
+                        Unregistering...
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-x-circle me-2"></i>
+                        Unregister
+                      </>
+                    )}
                   </Button>
                 </>
               ) : (
@@ -219,9 +281,26 @@ const JobFair = () => {
                   variant="warning"
                   className="text-white btn-lg pulse"
                   onClick={handleSubmit}
+                  disabled={registerLoading}
                 >
-                  <i className="bi bi-person-plus me-2"></i>
-                  Pre-Register
+                  {registerLoading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        className="me-2"
+                      />
+                      Registering...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-person-plus me-2"></i>
+                      Pre-Register
+                    </>
+                  )}
                 </Button>
               )}
 

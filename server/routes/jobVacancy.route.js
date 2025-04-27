@@ -32,6 +32,7 @@ import {
   toggleJobFairActivation,
   getAllPreRegisteredByEventId,
   getAllAttendance,
+  cancelPreRegistration
 } from "../controllers/jobVacancy.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import { isAccredited } from "../middlewares/isAccredited.js";
@@ -115,5 +116,6 @@ router.get("/get-all-pre-registered", getAllPreRegistered);
 router.put("/toggle-job-fair-activation/:eventId", toggleJobFairActivation);
 router.get("/get-all-preregs-by-id/:eventId", getAllPreRegisteredByEventId);
 router.get("/get-all-attendance/:eventId", getAllAttendance);
+router.delete("/cancel-pre-registration/:eventId", isAuthenticated, cancelPreRegistration);
 
 export default router;

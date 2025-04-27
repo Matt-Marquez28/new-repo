@@ -2,13 +2,68 @@ import React, { useEffect, useState, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import axios from "axios";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
-import { Modal, Spinner, Alert } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 const Scanner = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef(null);
+
+  const handleScanSuccess = async (decodedText, scanner) => {
+    try {
+      // Only try to pause if scanner is active
+      if (isScanning) {
+        try {
+          await scanner.pause();
+          setIsScanning(false);
+        } catch (pauseError) {
+          console.warn("Could not pause scanner:", pauseError);
+        }
+      }
+      
+      setLoading(true);
+      setError(null);
+
+      const qrData = JSON.parse(decodedText);
+
+      const res = await axios.post(
+        `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
+        {
+          referenceNumber: qrData.referenceNumber,
+          eventId: qrData.eventId,
+          role: qrData.role,
+          accountId: qrData.accountId,
+          jobSeekerId: qrData.jobseekerId,
+          employerId: qrData.companyId,
+        }
+      );
+
+      setResult(res?.data?.message);
+    } catch (err) {
+      console.error("❌ Error processing QR:", err);
+      setError(
+        err.response?.data?.message || "Something went wrong with the scan."
+      );
+
+      // On error, try to resume scanning
+      try {
+        if (scannerRef.current && !isScanning) {
+          await scannerRef.current.resume();
+          setIsScanning(true);
+        }
+      } catch (resumeError) {
+        console.error("Could not resume scanner:", resumeError);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleScanError = (error) => {
+    console.warn("⛔ QR Scan Error:", error);
+  };
 
   useEffect(() => {
     // Initialize scanner
@@ -21,48 +76,11 @@ const Scanner = () => {
 
     scannerRef.current = scanner;
 
-    const onScanSuccess = async (decodedText) => {
-      try {
-        // Pause scanning immediately
-        scanner.pause();
-        setLoading(true);
-        setError(null);
-
-        const qrData = JSON.parse(decodedText);
-
-        const res = await axios.post(
-          `${JOB_VACANCY_API_END_POINT}/mark-attendance`,
-          {
-            referenceNumber: qrData.referenceNumber,
-            eventId: qrData.eventId,
-            role: qrData.role,
-            accountId: qrData.accountId,
-            jobSeekerId: qrData.jobseekerId,
-            employerId: qrData.companyId,
-          }
-        );
-
-        setResult(res?.data?.message);
-        alert(res.data.message);
-      } catch (err) {
-        console.error("❌ Error processing QR:", err);
-        setError(
-          err.response?.data?.message || "Something went wrong with the scan."
-        );
-        alert(err?.response?.data?.message);
-
-        // On error, resume scanning
-        scanner.resume();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const onScanError = (error) => {
-      console.warn("⛔ QR Scan Error:", error);
-    };
-
-    scanner.render(onScanSuccess, onScanError);
+    scanner.render(
+      (decodedText) => handleScanSuccess(decodedText, scanner),
+      handleScanError
+    );
+    setIsScanning(true);
 
     return () => {
       if (scannerRef.current) {
@@ -71,10 +89,31 @@ const Scanner = () => {
     };
   }, []);
 
-  const restartScanner = () => {
-    if (scannerRef.current) {
-      scannerRef.current.resume();
+  const restartScanner = async () => {
+    try {
+      if (scannerRef.current) {
+        await scannerRef.current.clear();
+        
+        // Create new scanner instance
+        const newScanner = new Html5QrcodeScanner("reader", {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          rememberLastUsedCamera: true,
+          showTorchButtonIfSupported: true,
+        });
+
+        scannerRef.current = newScanner;
+
+        newScanner.render(
+          (decodedText) => handleScanSuccess(decodedText, newScanner),
+          handleScanError
+        );
+        setIsScanning(true);
+      }
+    } catch (err) {
+      console.error("Error restarting scanner:", err);
     }
+    
     setResult(null);
     setError(null);
   };
