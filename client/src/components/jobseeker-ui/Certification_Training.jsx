@@ -152,8 +152,8 @@ const CertificationTraining = () => {
   }
 
   return (
-    <div className="mt-4">
-      <Row className="mb-4">
+    <div className="container">
+      {/* <Row className="mb-4">
         <Col>
           <h2>Certification & Training</h2>
           <p className="text-muted">
@@ -165,48 +165,96 @@ const CertificationTraining = () => {
             Add Certification/Training
           </Button>
         </Col>
-      </Row>
+      </Row> */}
+      <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center my-3">
+        <div className="d-flex align-items-center mb-2 mb-md-0">
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              background: "#1a4798",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "12px",
+            }}
+          >
+            <i className="bi bi-mortarboard-fill text-white"></i>
+          </div>
+          <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+            Certification & Training
+          </h5>
+        </div>
+
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
+            onClick={() => setShowModal(true)}
+          >
+            Add Certification / Training
+          </button>
+        </div>
+      </div>
 
       {certifications.length > 0 ? (
         <Card>
-          <Card.Body>
-            <Table striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>Training/Course</th>
-                  <th>Hours</th>
-                  <th>Institution</th>
-                  <th>Skills Acquired</th>
-                  <th>Certificate</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {certifications.map((cert, index) => (
-                  <tr key={index}>
-                    <td>{cert.trainingName}</td>
-                    <td>{cert.hours}</td>
-                    <td>{cert.institution}</td>
-                    <td>
-                      {Array.isArray(cert.skills)
-                        ? cert.skills.join(", ")
-                        : cert.skills}
-                    </td>
-                    <td>{cert.certificate || "None"}</td>
-                    <td className="text-center">
-                      <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={() => handleRemove(index, cert._id)}
-                        disabled={loading}
-                      >
-                        <i className="bi bi-trash"></i>
-                      </Button>
-                    </td>
+          <Card.Body style={{ padding: 0 }}>
+            <div
+              className="table-responsive"
+              style={{
+                width: "100%",
+                overflowX: "auto",
+                overflowY: "visible",
+              }}
+            >
+              
+              <Table
+                striped
+                bordered
+                hover
+                style={{ minWidth: "800px", margin: 0 }}
+              >
+                <thead>
+                  <tr>
+                    <th style={{ minWidth: "200px" }}>Training / Course</th>
+                    <th style={{ minWidth: "100px" }}>Hours</th>
+                    <th style={{ minWidth: "200px" }}>Institution</th>
+                    <th style={{ minWidth: "200px" }}>Skills Acquired</th>
+                    <th style={{ minWidth: "150px" }}>Certificate</th>
+                    <th className="text-center" style={{ minWidth: "100px" }}>
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {certifications.map((cert, index) => (
+                    <tr key={index}>
+                      <td>{cert.trainingName}</td>
+                      <td>{cert.hours}</td>
+                      <td>{cert.institution}</td>
+                      <td>
+                        {Array.isArray(cert.skills)
+                          ? cert.skills.join(", ")
+                          : cert.skills}
+                      </td>
+                      <td>{cert.certificate || "None"}</td>
+                      <td className="text-center">
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => handleRemove(index, cert._id)}
+                          disabled={loading}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           </Card.Body>
         </Card>
       ) : (
@@ -220,7 +268,12 @@ const CertificationTraining = () => {
         </Card>
       )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal
+        centered
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add Certification/Training</Modal.Title>
         </Modal.Header>
@@ -310,7 +363,12 @@ const CertificationTraining = () => {
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit" disabled={loading}>
+            <Button
+              variant=""
+              style={{ backgroundColor: "#1a4798", color: "white" }}
+              type="submit"
+              disabled={loading}
+            >
               {loading ? "Saving..." : "Save Certification"}
             </Button>
           </Modal.Footer>

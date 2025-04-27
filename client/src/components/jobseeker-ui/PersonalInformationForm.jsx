@@ -138,22 +138,27 @@ const PersonalInformationForm = () => {
       {({ setFieldValue, errors, touched }) => (
         <Form className="container mt-3">
           {/* title: personal details section */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-file-person-fill"></i> Personal Details
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-person-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Personal Information
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -364,21 +369,27 @@ const PersonalInformationForm = () => {
           </div>
 
           {/* title: address information section */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-geo-alt-fill"></i> Address Information
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-geo-alt-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Address Information
+                </h5>
+              </div>
             </div>
           </div>
           <div className="row">
@@ -472,22 +483,27 @@ const PersonalInformationForm = () => {
             </div> */}
           </div>
           {/* contact section title */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-telephone-fill"></i> Contact Information
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-telephone-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Personal Information
+                </h5>
+              </div>
             </div>
           </div>
           <div className="row">
@@ -531,22 +547,27 @@ const PersonalInformationForm = () => {
           </div>
 
           {/* about me */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-info-circle-fill"></i> About Me
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-info-circle-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  About Yourself
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -555,7 +576,7 @@ const PersonalInformationForm = () => {
             <Field
               name="aboutMe"
               as="textarea"
-              rows={5}
+              rows={6}
               className={`form-control ${
                 touched.aboutMe && (errors.aboutMe ? "is-invalid" : "is-valid")
               }`}
@@ -568,22 +589,27 @@ const PersonalInformationForm = () => {
           </div>
 
           {/*title:  upload picture section */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-image"></i> Upload Picture
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-image text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Upload Picture
+                </h5>
+              </div>
             </div>
           </div>
           <div className="row mb-4">
@@ -641,7 +667,11 @@ const PersonalInformationForm = () => {
 
           {/* buttons */}
           <div className="d-flex justify-content-end gap-2">
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn text-light"
+              style={{ backgroundColor: "#1a4798" }}
+            >
               <i className="bi bi-floppy"></i> Save Changes
             </button>
           </div>

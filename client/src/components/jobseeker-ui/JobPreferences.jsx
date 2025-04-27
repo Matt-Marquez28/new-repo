@@ -175,17 +175,27 @@ const JobPreferences = () => {
   return (
     <form className="container mt-3" onSubmit={handleSubmit}>
       {/* Section Header */}
-      <div className="row align-items-center my-3">
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-        <div className="col-auto">
-          <h5 className="" style={{ color: "#1a4798" }}>
-            <i className="bi bi-sliders"></i> Job Preferences
-          </h5>
-        </div>
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-sliders text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Job Preferences
+            </h5>
+          </div>
         </div>
       </div>
 
@@ -367,7 +377,11 @@ const JobPreferences = () => {
 
       {/* Submit Button */}
       <div className="d-flex justify-content-end">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn text-light"
+          style={{ background: "#1a4798" }}
+        >
           <i className="bi bi-floppy"></i> Save Preferences
         </button>
       </div>

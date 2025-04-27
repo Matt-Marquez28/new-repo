@@ -150,7 +150,7 @@ const WorkExperience = () => {
         }
       );
       getJobSeekerData();
-      triggerToast(res?.data?.message, "primary");
+      triggerToast(res?.data?.message, "success");
       handleClose();
     } catch (error) {
       console.error("Error updating work experience:", error);
@@ -186,117 +186,186 @@ const WorkExperience = () => {
 
   return (
     <div className="container">
-      <div className="row align-items-center my-3">
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-        <div className="col-auto">
-          <h5 className="" style={{ color: "#1a4798" }}>
-            <i className="bi bi-suitcase-lg-fill"></i> Work Experience
+      <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center my-3">
+        <div className="d-flex align-items-center mb-2 mb-md-0">
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              background: "#1a4798",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "12px",
+            }}
+          >
+            <i className="bi bi-mortarboard-fill text-white"></i>
+          </div>
+          <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+            Work Experience
           </h5>
         </div>
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
+            onClick={handleShow}
+          >
+            <i className="bi bi-plus-lg"></i> Add Work
+          </button>
         </div>
       </div>
-      <div className="d-flex justify-content-end">
-        <button className="btn btn-primary mb-3" onClick={handleShow}>
-          <i className="bi bi-plus-circle"></i> Add Work Experience
-        </button>
-      </div>
 
-      <section className="py-2">
-        <ul className="timeline">
+      <section className="bg-light p-3 rounded border">
+        <div className="position-relative">
+          <div
+            className="position-absolute top-0 start-0 h-100"
+            style={{
+              width: "2px",
+              backgroundColor: "#1a4798",
+              marginLeft: "5px",
+            }}
+          ></div>
+
           {workExperiences.map((experience, index) => (
-            <li className="timeline-item mb-5" key={index}>
-              <h5 className="m-0 text-primary">{experience?.jobTitle}</h5>
-              <p className="text-muted mb-2 m-0">
-                {new Date(experience?.startDate).toLocaleDateString("default", {
-                  year: "numeric",
-                })}{" "}
-                - {experience?.companyName}
-              </p>
+            <div className="position-relative mb-4" key={index}>
+              <div
+                className="position-absolute top-0 start-0 translate-middle rounded-circle"
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  backgroundColor: "#1a4798",
+                  border: "2px solid white",
+                  boxShadow: "0 0 0 1px #1a4798",
+                  marginLeft: "5px",
+                }}
+              ></div>
 
-              {/* Details Toggle Button */}
-              <button
-                className="btn btn-sm btn-outline-primary mt-2"
-                onClick={() => toggleWorkExperienceDetails(index)}
-              >
-                {expandedWorkExperience[index]
-                  ? "Hide Details"
-                  : "Show Details"}
-              </button>
+              <div className="ms-4 ps-2">
+                <div className="bg-white p-3 rounded border">
+                  <h6 className="mb-1 fw-bold">{experience?.jobTitle}</h6>
+                  <p className="text-muted small mb-2">
+                    {new Date(experience?.startDate).toLocaleDateString(
+                      "default",
+                      {
+                        year: "numeric",
+                      }
+                    )}{" "}
+                    • {experience?.companyName}
+                  </p>
 
-              {/* Delete Button */}
-              <button
-                className="btn btn-sm btn-outline-danger mt-2 ms-2"
-                onClick={() => handleDeleteWorkExperience(index)}
-              >
-                <i className="bi bi-trash"></i>
-              </button>
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-sm btn-outline-primary mt-2"
+                      onClick={() => toggleWorkExperienceDetails(index)}
+                      style={{
+                        borderColor: "#1a4798",
+                        color: "#1a4798",
+                      }}
+                    >
+                      <i
+                        className={`bi bi-chevron-${
+                          expandedWorkExperience[index] ? "up" : "down"
+                        } me-1`}
+                      ></i>
+                      {expandedWorkExperience[index]
+                        ? "Less Details"
+                        : "More Details"}
+                    </button>
 
-              {/* Conditionally Rendered Details */}
-              {expandedWorkExperience[index] && (
-                <>
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Responsibilities:</h6>
-                    {experience?.keyResponsibilities &&
-                      experience.keyResponsibilities.length > 0 && (
-                        <ul className="list-unstyled">
-                          {experience.keyResponsibilities.map(
-                            (responsibility, i) => (
-                              <li key={i} className="text-muted mx-3">
-                                &#8226; {responsibility}
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      )}
+                    <button
+                      className="btn btn-sm btn-outline-danger mt-2"
+                      onClick={() => handleDeleteWorkExperience(index)}
+                      style={{
+                        borderColor: "#dc3545",
+                        color: "#dc3545",
+                      }}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
                   </div>
 
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">
-                      Achievements & Contributions:
-                    </h6>
-                    {experience?.achievements_and_contributions &&
-                      experience.achievements_and_contributions.length > 0 && (
-                        <ul className="list-unstyled">
-                          {experience.achievements_and_contributions.map(
-                            (achievement, i) => (
-                              <li key={i} className="text-muted mx-3">
-                                &#8226; {achievement}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                  {expandedWorkExperience[index] && (
+                    <div className="mt-3">
+                      {experience?.keyResponsibilities?.length > 0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-list-task text-primary"></i>
+                            Responsibilities
+                          </h6>
+                          <ul className="list-unstyled">
+                            {experience.keyResponsibilities.map(
+                              (responsibility, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <span className="small">
+                                    {responsibility}
+                                  </span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
-                  </div>
 
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Skills & Tools Used:</h6>
-                    {experience?.skills_and_tools_used &&
-                      experience.skills_and_tools_used.length > 0 && (
-                        <ul className="list-unstyled">
-                          {experience.skills_and_tools_used.map((skill, i) => (
-                            <li key={i} className="text-muted mx-3">
-                              &#8226; {skill}
-                            </li>
-                          ))}
-                        </ul>
+                      {experience?.achievements_and_contributions?.length >
+                        0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-trophy-fill text-warning"></i>
+                            Achievements & Contributions
+                          </h6>
+                          <ul className="list-unstyled">
+                            {experience.achievements_and_contributions.map(
+                              (achievement, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <span className="small">{achievement}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
-                  </div>
-                </>
-              )}
-            </li>
+
+                      {experience?.skills_and_tools_used?.length > 0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-tools text-success"></i>
+                            Skills & Tools Used
+                          </h6>
+                          <ul className="list-unstyled">
+                            {experience.skills_and_tools_used.map(
+                              (skill, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <span className="small">{skill}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       {/* Modal Form */}
       <Modal show={show} onHide={handleClose} size="xl" centered>
-        <Modal.Header className="bg-primary text-white" closeButton>
+        <Modal.Header
+          className="text-white"
+          style={{ backgroundColor: "#1a4798" }}
+          closeButton
+        >
           <Modal.Title>
-            <i className="bi bi-suitcase-lg"></i> Work Experience Details
+            <i className="bi bi-suitcase-lg-fill"></i> Work Experience Details
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ maxHeight: "500px", overflowY: "auto" }}>
@@ -548,7 +617,8 @@ const WorkExperience = () => {
           </button>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
             onClick={handleSubmit}
           >
             {isSubmitting ? (

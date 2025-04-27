@@ -189,139 +189,217 @@ const EducationalBackground = () => {
 
   return (
     <div className="container">
-      <div className="row align-items-center my-3">
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-        <div className="col-auto">
-          <h5 className="" style={{ color: "#1a4798" }}>
-            <i className="bi bi-mortarboard-fill"></i> Educational Background
+      <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center my-3">
+        <div className="d-flex align-items-center mb-2 mb-md-0">
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              background: "#1a4798",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "12px",
+            }}
+          >
+            <i className="bi bi-mortarboard-fill text-white"></i>
+          </div>
+          <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+            Educational Background
           </h5>
         </div>
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
+            onClick={handleShow}
+          >
+            <i className="bi bi-plus-lg"></i> Add Education
+          </button>
         </div>
       </div>
-      <div className="d-flex justify-content-end">
-        <button className="btn btn-primary mb-3" onClick={handleShow}>
-          <i className="bi bi-plus-circle"></i> Add Education
-        </button>
-      </div>
+      <section className="bg-light p-3 rounded border">
+        <h5
+          className="d-flex align-items-center gap-2 mb-3"
+          style={{ color: "#1a4798" }}
+        >
+          <i className="bi bi-mortarboard-fill"></i>
+          Education
+        </h5>
 
-      <section className="py-2">
-        <ul className="timeline">
+        <div className="position-relative">
+          <div
+            className="position-absolute top-0 start-0 h-100"
+            style={{
+              width: "2px",
+              backgroundColor: "#1a4798",
+              marginLeft: "5px",
+            }}
+          ></div>
+
           {educationalBackgrounds.map((education, index) => (
-            <li className="timeline-item mb-5" key={index}>
-              <h5 className="m-0 text-primary">
-                {education?.degree_or_qualifications}
-              </h5>
-              <p className="text-muted mb-2 m-0">
-                {new Date(education?.startDate).toLocaleDateString("default", {
-                  year: "numeric",
-                })}{" "}
-                - {education?.institutionName}
-              </p>
+            <div className="position-relative mb-4" key={index}>
+              <div
+                className="position-absolute top-0 start-0 translate-middle rounded-circle"
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  backgroundColor: "#1a4798",
+                  border: "2px solid white",
+                  boxShadow: "0 0 0 1px #1a4798",
+                  marginLeft: "5px",
+                }}
+              ></div>
 
-              {/* Details Toggle Button */}
-              <button
-                className="btn btn-sm btn-outline-primary mt-2"
-                onClick={() => toggleEducationDetails(index)}
-              >
-                {expandedEducation[index] ? "Hide Details" : "Show Details"}
-              </button>
+              <div className="ms-4 ps-2">
+                <div className="bg-white p-3 rounded border">
+                  <h6 className="mb-1 fw-bold">
+                    {education?.degree_or_qualifications}
+                  </h6>
+                  <p className="text-muted small mb-2">
+                    {new Date(education?.startDate).toLocaleDateString(
+                      "default",
+                      {
+                        year: "numeric",
+                      }
+                    )}{" "}
+                    • {education?.institutionName}
+                  </p>
 
-              {/* Delete Button */}
-              <button
-                className="btn btn-sm btn-outline-danger mt-2 ms-2"
-                onClick={() => handleDeleteEducation(index)}
-              >
-                <i className="bi bi-trash"></i>
-              </button>
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-sm btn-outline-primary mt-2"
+                      onClick={() => toggleEducationDetails(index)}
+                      style={{
+                        borderColor: "#1a4798",
+                        color: "#1a4798",
+                      }}
+                    >
+                      <i
+                        className={`bi bi-chevron-${
+                          expandedEducation[index] ? "up" : "down"
+                        } me-1`}
+                      ></i>
+                      {expandedEducation[index]
+                        ? "Less Details"
+                        : "More Details"}
+                    </button>
 
-              {/* Conditionally Rendered Details */}
-              {expandedEducation[index] && (
-                <>
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Achievements:</h6>
-                    {education?.achievements &&
-                      education?.achievements.length > 0 && (
-                        <ul className="list-unstyled">
-                          {education?.achievements.map((achievement, i) => (
-                            <li key={i} className="text-muted mx-3">
-                              &#8226; {achievement}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                    <button
+                      className="btn btn-sm btn-outline-danger mt-2"
+                      onClick={() => handleDeleteEducation(index)}
+                      style={{
+                        borderColor: "#dc3545",
+                        color: "#dc3545",
+                      }}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
                   </div>
 
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Relevant Course Work:</h6>
-                    {education?.relevantCoursework &&
-                      education?.relevantCoursework.length > 0 && (
-                        <ul className="list-unstyled">
-                          {education?.relevantCoursework.map(
-                            (coursework, i) => (
-                              <li key={i} className="text-muted mx-3">
-                                &#8226; {coursework}
+                  {expandedEducation[index] && (
+                    <div className="mt-3">
+                      {education?.achievements?.length > 0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-trophy-fill text-warning"></i>
+                            Achievements
+                          </h6>
+                          <ul className="list-unstyled">
+                            {education.achievements.map((achievement, i) => (
+                              <li key={i} className="d-flex mb-2">
+                                <span className="me-2">•</span>
+                                <span className="small">{achievement}</span>
                               </li>
-                            )
-                          )}
-                        </ul>
+                            ))}
+                          </ul>
+                        </div>
                       )}
-                  </div>
 
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Certifications:</h6>
-                    {education?.certifications &&
-                      education?.certifications.length > 0 && (
-                        <ul className="list-unstyled">
-                          {education?.certifications.map((certification, i) => (
-                            <li key={i} className="text-muted mx-3">
-                              &#8226; {certification}
-                            </li>
-                          ))}
-                        </ul>
+                      {education?.relevantCoursework?.length > 0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-journal-bookmark-fill text-primary"></i>
+                            Relevant Coursework
+                          </h6>
+                          <ul className="list-unstyled">
+                            {education.relevantCoursework.map(
+                              (coursework, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <span className="small">{coursework}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
-                  </div>
 
-                  <div className="my-3">
-                    <h6 className="m-0 text-primary">Documents:</h6>
-                    {education?.proofOfEducationDocuments &&
-                      education?.proofOfEducationDocuments.length > 0 && (
-                        <ul className="list-unstyled">
-                          {education?.proofOfEducationDocuments.map(
-                            (doc, i) => (
-                              <li key={i} className="text-muted mx-3">
-                                &#8226;
-                                <a
-                                  href={doc.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-decoration-none"
-                                >
-                                  {" "}
-                                  {doc.originalName}
-                                </a>
-                              </li>
-                            )
-                          )}
-                        </ul>
+                      {education?.certifications?.length > 0 && (
+                        <div className="mb-3">
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-file-earmark-check-fill text-success"></i>
+                            Certifications
+                          </h6>
+                          <ul className="list-unstyled">
+                            {education.certifications.map(
+                              (certification, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <span className="small">{certification}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
-                  </div>
-                </>
-              )}
-            </li>
+
+                      {education?.proofOfEducationDocuments?.length > 0 && (
+                        <div>
+                          <h6 className="small fw-semibold d-flex align-items-center gap-2">
+                            <i className="bi bi-file-earmark-arrow-down-fill text-info"></i>
+                            Documents
+                          </h6>
+                          <ul className="list-unstyled">
+                            {education.proofOfEducationDocuments.map(
+                              (doc, i) => (
+                                <li key={i} className="d-flex mb-2">
+                                  <span className="me-2">•</span>
+                                  <a
+                                    href={doc.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="small text-decoration-none"
+                                  >
+                                    {doc.originalName}
+                                  </a>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       {/* Modal Form */}
       <Modal show={show} onHide={handleClose} size="xl" centered>
-        <Modal.Header className="bg-primary text-white" closeButton>
+        <Modal.Header
+          className=" text-white"
+          style={{ backgroundColor: "#1a4798" }}
+          closeButton
+        >
           <Modal.Title>
-            <i className="bi bi-mortarboard me-2"></i> Educational Background
-            Details
+            <i className="bi bi-mortarboard-fill me-2"></i> Educational
+            Background Details
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ maxHeight: "500px", overflowY: "auto" }}>
@@ -569,7 +647,8 @@ const EducationalBackground = () => {
           </button>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
             onClick={handleSubmit}
             disabled={isSubmitting}
           >

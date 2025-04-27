@@ -45,7 +45,6 @@ const Language = () => {
       return;
     }
 
-    // Check if language already exists
     if (
       languages.some(
         (lang) => lang.name.toLowerCase() === otherLanguage.toLowerCase()
@@ -70,14 +69,11 @@ const Language = () => {
 
   const handleDeleteLanguage = (index) => {
     const languageToDelete = languages[index];
-
-    // Check if it's a default language
     const isDefault = defaultLanguages.some(
       (lang) => lang.name === languageToDelete.name
     );
 
     if (isDefault) {
-      // For default languages, just reset the checkboxes
       const updatedLanguages = [...languages];
       updatedLanguages[index] = {
         ...updatedLanguages[index],
@@ -89,7 +85,6 @@ const Language = () => {
       setLanguages(updatedLanguages);
       triggerToast("Default language proficiency reset", "info");
     } else {
-      // For custom languages, remove them completely
       const updatedLanguages = languages.filter((_, i) => i !== index);
       setLanguages(updatedLanguages);
       triggerToast("Language removed", "success");
@@ -104,15 +99,10 @@ const Language = () => {
       const res = await axios.put(
         `${JOBSEEKER_API_END_POINT}/update-languages`,
         { languages },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-
-      console.log("Update successful:", res.data);
       triggerToast(res?.data?.message, "success");
     } catch (error) {
-      console.error("Update failed:", error);
       triggerToast(error?.response?.data?.message || "An error occurred");
     } finally {
       setIsSubmitting(false);
@@ -131,8 +121,6 @@ const Language = () => {
       );
 
       const savedLanguages = res?.data?.jobSeekerData?.languages || [];
-
-      // Merge default languages with saved languages
       const mergedLanguages = defaultLanguages.map((defaultLang) => {
         const savedLang = savedLanguages.find(
           (l) => l.name === defaultLang.name
@@ -140,7 +128,6 @@ const Language = () => {
         return savedLang || defaultLang;
       });
 
-      // Add any additional languages that aren't in the default list
       const additionalLanguages = savedLanguages.filter(
         (savedLang) =>
           !defaultLanguages.some(
@@ -156,74 +143,35 @@ const Language = () => {
 
   return (
     <div className="container mt-3">
-      <div className="row align-items-center my-3">
-        {/* Left side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-
-        {/* Centered title */}
-        <div className="col-auto">
-          <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-translate"></i> Language Proficiency
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="d-flex align-items-center">
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              background: "#1a4798",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "12px",
+            }}
+          >
+            <i className="bi bi-translate text-white"></i>
+          </div>
+          <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+            Language Proficiency
           </h5>
-        </div>
-
-        {/* Right side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <table className="table table-bordered">
-          <thead className="thead-light">
-            <tr>
-              <th className="fw-semibold">Language / Dialect</th>
-              <th className="fw-semibold">Read</th>
-              <th className="fw-semibold">Write</th>
-              <th className="fw-semibold">Speak</th>
-              <th className="fw-semibold">Understand</th>
-              <th className="text-center fw-semibold">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {languages.map((language, index) => (
-              <tr key={index}>
-                <td>{language.name}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={language.read}
-                    onChange={() => handleCheckboxChange(index, "read")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={language.write}
-                    onChange={() => handleCheckboxChange(index, "write")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={language.speak}
-                    onChange={() => handleCheckboxChange(index, "speak")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={language.understand}
-                    onChange={() => handleCheckboxChange(index, "understand")}
-                  />
-                </td>
-                <td className="text-center">
+        <div className="row">
+          {languages.map((language, index) => (
+            <div key={index} className="col-md-6 col-lg-4 mb-3">
+              <div className="card h-100">
+                <div className="card-header bg-light d-flex justify-content-between align-items-center">
+                  <h6 className="m-0 fw-semibold">{language.name}</h6>
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-danger"
@@ -238,46 +186,99 @@ const Language = () => {
                   >
                     <i className="bi bi-trash"></i>
                   </button>
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td colSpan="6">
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control me-2"
-                    placeholder="Other language: Specify"
-                    value={otherLanguage}
-                    onChange={(e) => setOtherLanguage(e.target.value)}
-                    onKeyDown={(e) =>
-                      e.key === "Enter" && handleAddOtherLanguage()
-                    }
-                  />
-                  <div className="input-group-append">
-                    <button
-                      type="button"
-                      className="btn btn-outline-info"
-                      onClick={handleAddOtherLanguage}
-                    >
-                      Add Language
-                    </button>
+                </div>
+                <div className="card-body">
+                  <div className="d-flex flex-wrap gap-3">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`read-${index}`}
+                        checked={language.read}
+                        onChange={() => handleCheckboxChange(index, "read")}
+                      />
+                      <label className="form-check-label" htmlFor={`read-${index}`}>
+                        Read
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`write-${index}`}
+                        checked={language.write}
+                        onChange={() => handleCheckboxChange(index, "write")}
+                      />
+                      <label className="form-check-label" htmlFor={`write-${index}`}>
+                        Write
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`speak-${index}`}
+                        checked={language.speak}
+                        onChange={() => handleCheckboxChange(index, "speak")}
+                      />
+                      <label className="form-check-label" htmlFor={`speak-${index}`}>
+                        Speak
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`understand-${index}`}
+                        checked={language.understand}
+                        onChange={() => handleCheckboxChange(index, "understand")}
+                      />
+                      <label className="form-check-label" htmlFor={`understand-${index}`}>
+                        Understand
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-body">
+            <h6 className="card-title mb-3">Add New Language</h6>
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter language name"
+                value={otherLanguage}
+                onChange={(e) => setOtherLanguage(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddOtherLanguage()}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-info"
+                onClick={handleAddOtherLanguage}
+              >
+                Add Language
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="d-flex justify-content-end mt-3">
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
                 <span
                   className="spinner-border spinner-border-sm me-2"
+                  style={{ backgroundColor: "#1a4798" }}
                   role="status"
                   aria-hidden="true"
                 ></span>

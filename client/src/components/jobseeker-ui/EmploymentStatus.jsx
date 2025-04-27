@@ -221,22 +221,27 @@ const EmploymentStatus = () => {
   return (
     <div className="container mt-3">
       {/* Section Header */}
-      <div className="row align-items-center my-3">
-        {/* Left side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-
-        {/* Centered title */}
-        <div className="col-auto">
-          <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-duffle-fill"></i> Employment Status
-          </h5>
-        </div>
-
-        {/* Right side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-suitcase-lg-fill text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Employment Status
+            </h5>
+          </div>
         </div>
       </div>
 
@@ -253,20 +258,18 @@ const EmploymentStatus = () => {
       ) : (
         <form onSubmit={handleSubmit}>
           {/* Main Employment Options */}
-          <div
-            className="card mb-4"
-            style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
-          >
-            <div
-              className="card-header text-white"
-              style={{ backgroundColor: "#1a4798" }}
-            >
+          <div className="card mb-4">
+            <div className="card-header bg-light">
               <h5 className="card-title mb-0">Current Employment Status</h5>
             </div>
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-md-6">
-                  <div className="form-check card p-3 h-100 border-primary">
+                  <div
+                    className={`form-check card p-3 h-100 ${
+                      employmentStatus === "employed" ? "border-primary" : ""
+                    }`}
+                  >
                     <input
                       className="form-check-input"
                       type="radio"
@@ -290,7 +293,11 @@ const EmploymentStatus = () => {
                   </div>
                 </div>
                 <div className="col-md-6">
-                  <div className="form-check card p-3 h-100 border-primary">
+                  <div
+                    className={`form-check card p-3 h-100 ${
+                      employmentStatus === "unemployed" ? "border-primary" : ""
+                    }`}
+                  >
                     <input
                       className="form-check-input"
                       type="radio"
@@ -319,14 +326,8 @@ const EmploymentStatus = () => {
 
           {/* Employment Type Details */}
           {employmentStatus === "employed" && (
-            <div
-              className="card mb-4"
-              style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
-            >
-              <div
-                className="card-header text-white"
-                style={{ backgroundColor: "#1a4798" }}
-              >
+            <div className="card mb-4">
+              <div className="card-header bg-light ">
                 <h5 className="card-title mb-0">Employment Details</h5>
               </div>
               <div className="card-body">
@@ -436,14 +437,8 @@ const EmploymentStatus = () => {
 
           {/* Unemployment Details */}
           {employmentStatus === "unemployed" && (
-            <div
-              className="card mb-4 "
-              style={{ borderColor: "rgba(13, 110, 253, 0.25)" }}
-            >
-              <div
-                className="card-header text-white"
-                style={{ backgroundColor: "#1a4798" }}
-              >
+            <div className="card mb-4 ">
+              <div className="card-header bg-light">
                 <h5 className="card-title mb-0">Unemployment Details</h5>
               </div>
               <div className="card-body">
@@ -563,7 +558,8 @@ const EmploymentStatus = () => {
               </button>
               <button
                 type="submit"
-                className="btn btn-primary px-4"
+                className="btn"
+                style={{ backgroundColor: "#1a4798", color: "white" }}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

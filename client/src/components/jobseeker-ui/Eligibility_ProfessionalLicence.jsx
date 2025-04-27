@@ -163,23 +163,27 @@ const EligibilityProfessionalLicence = () => {
 
   return (
     <div className="container mt-3">
-      <div className="row align-items-center my-3">
-        {/* Left side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-
-        {/* Centered title */}
-        <div className="col-auto">
-          <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-file-person-fill"></i> Eligibility /
-            Professional License
-          </h5>
-        </div>
-
-        {/* Right side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-card-heading text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Eligibility & Professional License
+            </h5>
+          </div>
         </div>
       </div>
       {error && (
@@ -195,21 +199,27 @@ const EligibilityProfessionalLicence = () => {
 
       <Row className="mb-3">
         <Col>
-          <Button
-            variant="primary"
-            onClick={handleEligibilityShow}
-            className="me-2"
-          >
-            Add Eligibility
-          </Button>
-          <Button variant="success" onClick={handleLicenseShow}>
-            Add Professional License
-          </Button>
+          <div className="d-flex justify-content-end">
+            {" "}
+            <Button
+              onClick={handleEligibilityShow}
+              style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}
+              className="me-2 text-white"
+            >
+              Add Eligibility
+            </Button>
+            <Button
+              style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}
+              onClick={handleLicenseShow}
+            >
+              Add Professional License
+            </Button>
+          </div>
         </Col>
       </Row>
 
-      <Row className="mb-4">
-        <Col md={6}>
+      <Row className="mb-3">
+        <Col md={6} className="mb-3">
           <div className="card">
             <div className="card-header">
               <h5>Eligibilities</h5>
@@ -283,7 +293,11 @@ const EligibilityProfessionalLicence = () => {
       </Row>
 
       {/* Eligibility Modal */}
-      <Modal show={showEligibilityModal} onHide={handleEligibilityClose}>
+      <Modal
+        centered
+        show={showEligibilityModal}
+        onHide={handleEligibilityClose}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add Eligibility</Modal.Title>
         </Modal.Header>
@@ -316,7 +330,10 @@ const EligibilityProfessionalLicence = () => {
             <Button variant="secondary" onClick={handleEligibilityClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit">
+            <Button
+              style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}
+              type="submit"
+            >
               Save Changes
             </Button>
           </Modal.Footer>
@@ -324,7 +341,7 @@ const EligibilityProfessionalLicence = () => {
       </Modal>
 
       {/* Professional License Modal */}
-      <Modal show={showLicenseModal} onHide={handleLicenseClose}>
+      <Modal centered show={showLicenseModal} onHide={handleLicenseClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add Professional License</Modal.Title>
         </Modal.Header>
@@ -357,7 +374,10 @@ const EligibilityProfessionalLicence = () => {
             <Button variant="secondary" onClick={handleLicenseClose}>
               Close
             </Button>
-            <Button variant="success" type="submit">
+            <Button
+              style={{ backgroundColor: "#1a4798", borderColor: "#1a4798" }}
+              type="submit"
+            >
               Save Changes
             </Button>
           </Modal.Footer>

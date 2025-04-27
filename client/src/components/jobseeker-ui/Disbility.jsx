@@ -149,23 +149,27 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
   return (
     <div className="container mt-3">
       {/* Section Header */}
-      <div className="row align-items-center my-3">
-        {/* Left side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-
-        {/* Centered title */}
-        <div className="col-auto">
-          <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-universal-access-circle"></i> Disability
-            Information
-          </h5>
-        </div>
-
-        {/* Right side of the horizontal line */}
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-person-wheelchair text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Disablity Information
+            </h5>
+          </div>
         </div>
       </div>
 
@@ -276,7 +280,10 @@ const DisabilityForm = ({ initialData, jobSeekerId }) => {
           {/* Submit button */}
           <div className="d-flex justify-content-end mt-4">
             <button
-              className="btn btn-primary"
+              className="btn text-white"
+              style={{
+                backgroundColor: "#1a4798",
+              }}
               onClick={handleSubmit}
               disabled={isSubmitting}
             >

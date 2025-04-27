@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
 import "./JobFair.css";
 import job_fair from "../../images/job-fair.png";
 import axios from "axios";
@@ -97,7 +105,10 @@ const JobFair = () => {
       await getAllPreRegistered();
     } catch (error) {
       console.error("Registration error:", error);
-      setError(error?.response?.data?.message || "Failed to pre-register. Please try again.");
+      setError(
+        error?.response?.data?.message ||
+          "Failed to pre-register. Please try again."
+      );
     } finally {
       setRegisterLoading(false);
     }
@@ -147,6 +158,9 @@ const JobFair = () => {
   if (!jobFairData) {
     return (
       <div className="job-fair-page">
+        <div className="floating-circle circle-1"></div>
+        <div className="floating-circle circle-2"></div>
+        <div className="floating-circle circle-3"></div>
         <Container className="py-5 text-center">
           <motion.div
             initial={{ opacity: 0 }}
@@ -159,11 +173,12 @@ const JobFair = () => {
               className="img-fluid mb-4"
               style={{ maxWidth: "300px" }}
             />
-            <h2 className="mb-3">No Active Job Fair</h2>
+            <h1 className="mb-3 fw-bold text-danger">No Active Job Fair</h1>
             <p className="lead text-muted mb-4">
-              There are currently no active job fairs. Please check back later for upcoming events.
+              There are currently no active job fairs. Please check back later
+              for upcoming events.
             </p>
-            <Button variant="outline-primary" onClick={getActiveJobFair}>
+            <Button variant="warning text-white" onClick={getActiveJobFair}>
               <i className="bi bi-arrow-repeat me-2"></i>
               Check Again
             </Button>
