@@ -316,20 +316,30 @@ const JobVacancyDetails = () => {
           >
             {({ values, touched, errors }) => (
               <Form>
-                <div className="row align-items-center my-3">
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
-                  </div>
-                  <div className="col-auto">
-                    <h5
-                      className="position-relative"
-                      style={{ color: "#1a4798" }}
-                    >
-                      <i className="bi bi-suitcase-lg-fill"></i> Job Detail
-                    </h5>
-                  </div>
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+                  <div className="">
+                    <div className="d-flex align-items-center">
+                      <div
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "#1a4798",
+                          borderRadius: "6px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "12px",
+                        }}
+                      >
+                        <i className="bi bi-suitcase-lg-fill text-white"></i>
+                      </div>
+                      <h5
+                        className="m-0 fw-semibold"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Job Details
+                      </h5>
+                    </div>
                   </div>
                 </div>
                 <div className="row">
@@ -462,20 +472,30 @@ const JobVacancyDetails = () => {
                   </div>
                 </div>
 
-                <div className="row align-items-center my-3">
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
-                  </div>
-                  <div className="col-auto">
-                    <h5
-                      className="position-relative"
-                      style={{ color: "#1a4798" }}
-                    >
-                      <i className="bi bi-wallet-fill"></i> Salary Field
-                    </h5>
-                  </div>
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+                  <div className="">
+                    <div className="d-flex align-items-center">
+                      <div
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "#1a4798",
+                          borderRadius: "6px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "12px",
+                        }}
+                      >
+                        <i className="bi bi-cash text-white"></i>
+                      </div>
+                      <h5
+                        className="m-0 fw-semibold"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Salary Field
+                      </h5>
+                    </div>
                   </div>
                 </div>
 
@@ -547,20 +567,30 @@ const JobVacancyDetails = () => {
                   </div>
                 </div>
 
-                <div className="row align-items-center my-3">
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
-                  </div>
-                  <div className="col-auto">
-                    <h5
-                      className="position-relative"
-                      style={{ color: "#1a4798" }}
-                    >
-                      <i className="bi bi-wallet-fill"></i> Job Specification
-                    </h5>
-                  </div>
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+                  <div className="">
+                    <div className="d-flex align-items-center">
+                      <div
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "#1a4798",
+                          borderRadius: "6px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "12px",
+                        }}
+                      >
+                        <i className="bi bi-gear-fill text-white"></i>
+                      </div>
+                      <h5
+                        className="m-0 fw-semibold"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Job Specification
+                      </h5>
+                    </div>
                   </div>
                 </div>
 
@@ -686,20 +716,30 @@ const JobVacancyDetails = () => {
                   )}
                 </FieldArray>
 
-                <div className="row align-items-center my-3">
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
-                  </div>
-                  <div className="col-auto">
-                    <h5
-                      className="position-relative"
-                      style={{ color: "#1a4798" }}
-                    >
-                      <i className="bi bi-suitcase-lg-fill"></i> Additional Info
-                    </h5>
-                  </div>
-                  <div className="col">
-                    <hr className="border-2" style={{ color: "#1a4798" }} />
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+                  <div className="">
+                    <div className="d-flex align-items-center">
+                      <div
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "#1a4798",
+                          borderRadius: "6px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "12px",
+                        }}
+                      >
+                        <i className="bi bi-info-circle text-white"></i>
+                      </div>
+                      <h5
+                        className="m-0 fw-semibold"
+                        style={{ color: "#1a4798" }}
+                      >
+                        Additional Information
+                      </h5>
+                    </div>
                   </div>
                 </div>
 

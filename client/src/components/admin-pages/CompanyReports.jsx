@@ -262,6 +262,24 @@ const CompanyReports = () => {
     );
   });
 
+  function getCompanyStatusIcon(status) {
+    const color = getStatusBadgeColor(status);
+    const props = { size: 20, className: `text-${color}` };
+
+    switch (status) {
+      case "accredited":
+        return <FiAward {...props} />;
+      case "incomplete":
+        return <FiFileText {...props} />;
+      case "declined":
+        return <FiFileText {...props} />;
+      case "revoked":
+        return <FiFileText {...props} />;
+      default:
+        return <FiFileText {...props} />;
+    }
+  }
+
   return (
     <div className="container">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
@@ -535,19 +553,17 @@ const CompanyReports = () => {
       </Card>
 
       {/* Summary Cards */}
-      <Row className="mb-4 g-4">
-        <Col xl={3} md={6}>
+      <Row className="g-3 mb-4">
+        <Col xl={3} md={6} sm={6}>
           <Card className="border-0 shadow-sm h-100">
-            <Card.Body>
+            <Card.Body className="p-3">
               <div className="d-flex align-items-center">
-                <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
-                  <FiHome size={24} className="text-primary" />
+                <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                  <FiHome size={20} className="text-primary" />
                 </div>
                 <div>
-                  <h6 className="text-uppercase text-primary mb-1">
-                    Total Companies
-                  </h6>
-                  <h2 className="mb-0">{summary.total}</h2>
+                  <h6 className="mb-0 text-muted small">Total Companies</h6>
+                  <h5 className="mb-0 fw-bold">{summary.total}</h5>
                 </div>
               </div>
             </Card.Body>
@@ -561,41 +577,18 @@ const CompanyReports = () => {
                 status
               )} shadow-sm h-100`}
             >
-              <Card.Body>
+              <Card.Body className="p-3">
                 <div className="d-flex align-items-center">
                   <div
                     className={`bg-${getStatusBadgeColor(
                       status
-                    )} bg-opacity-10 p-3 rounded me-3`}
+                    )} bg-opacity-10 p-2 rounded me-3`}
                   >
-                    {status === "accredited" && (
-                      <FiAward
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "incomplete" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "declined" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "revoked" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
+                    {getCompanyStatusIcon(status)}
                   </div>
                   <div>
-                    <h6 className="text-uppercase text-muted mb-1">{status}</h6>
-                    <h3 className="mb-0">{count}</h3>
+                    <h6 className="mb-0 text-muted small">{status}</h6>
+                    <h5 className="mb-0 fw-bold">{count}</h5>
                   </div>
                 </div>
               </Card.Body>
@@ -679,7 +672,9 @@ const CompanyReports = () => {
                             <FiUser size={20} className="text-warning" />
                           </div>
                           <div>
-                            <strong>{report.contactInfo.employerName}</strong>
+                            <h6 className="fw-semibold">
+                              {report.contactInfo.employerName}
+                            </h6>
                             <div className="text-muted small">
                               {report.contactInfo.employerPosition}
                             </div>

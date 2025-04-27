@@ -95,29 +95,36 @@ const AboutUs = () => {
   return (
     <div className="container">
       {/* Section Title: Company Information */}
-      <div className="row align-items-center my-3">
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-        <div className="col-auto">
-          <h5 className="position-relative" style={{ color: "#1a4798" }}>
-            <i className="bi bi-info-circle-fill"></i> About Us
-          </h5>
-        </div>
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-info-circle text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              About Us
+            </h5>
+          </div>
         </div>
       </div>
+
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           {/* Mission and Vision in the first column */}
           <div className="col-md-6">
             <div className="mb-3">
-              <label htmlFor="mission">
-                <h5 style={{ color: "#1a4798" }}>
-                  <i className="bi bi-bullseye me-2"></i> Mission
-                </h5>
-              </label>
+              <label htmlFor="mission">Mission</label>
               <textarea
                 id="mission"
                 className="form-control"
@@ -128,11 +135,7 @@ const AboutUs = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="vision">
-                <h5 style={{ color: "#1a4798" }}>
-                  <i className="bi bi-eye-fill me-2"></i> Vision
-                </h5>
-              </label>
+              <label htmlFor="vision">Vision</label>
               <textarea
                 id="vision"
                 className="form-control"
@@ -146,11 +149,7 @@ const AboutUs = () => {
           {/* Goals and Values in the second column */}
           <div className="col-md-6">
             <div className="mb-3">
-              <label htmlFor="goals">
-                <h5 style={{ color: "#1a4798" }}>
-                  <i className="bi bi-flag-fill me-2"></i> Goals
-                </h5>
-              </label>
+              <label htmlFor="goals">Goals</label>
               <textarea
                 id="goals"
                 className="form-control"
@@ -161,11 +160,7 @@ const AboutUs = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="values">
-                <h5 style={{ color: "#1a4798" }}>
-                  <i className="bi bi-heart-fill me-2"></i> Values
-                </h5>
-              </label>
+              <label htmlFor="values">Values</label>
               <textarea
                 id="values"
                 className="form-control"
@@ -178,17 +173,27 @@ const AboutUs = () => {
         </div>
 
         {/* Social Links Inputs */}
-        <div className="row align-items-center my-3">
-          <div className="col">
-            <hr className="border-2" style={{ color: "#1a4798" }} />
-          </div>
-          <div className="col-auto">
-            <h5 className="position-relative" style={{ color: "#1a4798" }}>
-              <i className="bi bi-info-circle-fill"></i> Social Links
-            </h5>
-          </div>
-          <div className="col">
-            <hr className="border-2" style={{ color: "#1a4798" }} />
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+          <div className="">
+            <div className="d-flex align-items-center">
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  background: "#1a4798",
+                  borderRadius: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: "12px",
+                }}
+              >
+                <i className="bi bi-link-45deg text-white"></i>
+              </div>
+              <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                Social Links
+              </h5>
+            </div>
           </div>
         </div>
 
@@ -291,7 +296,11 @@ const AboutUs = () => {
         </div>
 
         <div className="d-flex justify-content-end mt-4">
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
+          >
             <i className="bi bi-floppy"></i> Save Changes
           </button>
         </div>

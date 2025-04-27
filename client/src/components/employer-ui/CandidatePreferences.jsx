@@ -69,7 +69,9 @@ const CandidatePreferences = () => {
     event.preventDefault();
 
     const payload = {
-      educationalLevels: educationalLevels.filter((field) => field.trim() !== ""),
+      educationalLevels: educationalLevels.filter(
+        (field) => field.trim() !== ""
+      ),
       skills: skills.filter((skill) => skill.trim() !== ""),
       specializations: specializations.filter(
         (specialization) => specialization.trim() !== ""
@@ -100,17 +102,27 @@ const CandidatePreferences = () => {
 
   return (
     <form className="container mt-3" onSubmit={handleSubmit}>
-      <div className="row align-items-center my-3">
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
-        </div>
-        <div className="col-auto">
-          <h5 style={{ color: "#1a4798" }}>
-            <i className="bi bi-gear-fill"></i> Candidate Preferences
-          </h5>
-        </div>
-        <div className="col">
-          <hr className="border-2" style={{ color: "#1a4798" }} />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+        <div className="">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-gear-fill text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Candidate Preferences
+            </h5>
+          </div>
         </div>
       </div>
 
@@ -268,7 +280,11 @@ const CandidatePreferences = () => {
       </div>
 
       <div className="d-flex justify-content-end">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn text-white"
+          style={{ backgroundColor: "#1a4798" }}
+        >
           <i className="bi bi-floppy"></i> Save Changes
         </button>
       </div>

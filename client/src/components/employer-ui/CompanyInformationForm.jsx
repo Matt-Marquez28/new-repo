@@ -194,17 +194,27 @@ const CompanyInformationForm = () => {
       {({ setFieldValue, errors, touched }) => (
         <Form className="container mt-4">
           {/* Section Title: Company Information */}
-          <div className="row align-items-center my-3">
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-building-fill"></i> Company Information
-              </h5>
-            </div>
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-building-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Company Information
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -403,17 +413,27 @@ const CompanyInformationForm = () => {
           </div>
 
           {/* Section Title: Employer Information */}
-          <div className="row align-items-center my-3">
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-person-fill"></i> Employer Information
-              </h5>
-            </div>
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-person-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Employer Information
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -435,6 +455,8 @@ const CompanyInformationForm = () => {
                 className="invalid-feedback"
               />
             </div>
+          </div>
+          <div className="row">
             <div className="col-md-6 mb-3">
               <label htmlFor="employerPosition">Employer Position:</label>
               <Field
@@ -454,17 +476,27 @@ const CompanyInformationForm = () => {
           </div>
 
           {/* Section Title: Address Information */}
-          <div className="row align-items-center my-3">
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-geo-alt-fill"></i> Company Address
-              </h5>
-            </div>
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-geo-alt-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Company Address
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -568,17 +600,27 @@ const CompanyInformationForm = () => {
           </div>
 
           {/* Section Title: Contact Information */}
-          <div className="row align-items-center my-3">
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-telephone-fill"></i> Contact Information
-              </h5>
-            </div>
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-telephone-fill text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Contact Information
+                </h5>
+              </div>
             </div>
           </div>
 
@@ -600,6 +642,8 @@ const CompanyInformationForm = () => {
                 className="invalid-feedback"
               />
             </div>
+          </div>
+          <div className="row">
             <div className="col-md-6 mb-3">
               <label htmlFor="telephoneNumber">Telephone Number:</label>
               <Field
@@ -616,6 +660,8 @@ const CompanyInformationForm = () => {
                 className="invalid-feedback"
               />
             </div>
+          </div>
+          <div className="row">
             <div className="col-md-6 mb-3">
               <label htmlFor="emailAddress">Email Address:</label>
               <Field
@@ -635,22 +681,27 @@ const CompanyInformationForm = () => {
           </div>
 
           {/*title:  upload picture section */}
-          <div className="row align-items-center my-3">
-            {/* Left side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
-            </div>
-
-            {/* Centered title */}
-            <div className="col-auto">
-              <h5 className="position-relative" style={{ color: "#1a4798" }}>
-                <i className="bi bi-image"></i> Company Logo
-              </h5>
-            </div>
-
-            {/* Right side of the horizontal line */}
-            <div className="col">
-              <hr className="border-2" style={{ color: "#1a4798" }} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
+            <div className="">
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#1a4798",
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "12px",
+                  }}
+                >
+                  <i className="bi bi-image text-white"></i>
+                </div>
+                <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+                  Company Logo
+                </h5>
+              </div>
             </div>
           </div>
 

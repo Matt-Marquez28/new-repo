@@ -100,7 +100,7 @@ const CompanyProfile = () => {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate("/employer/dashboard", { replace: true });
   }, [navigate]);
 
   const toggleMobileSidebar = useCallback(() => {
@@ -214,9 +214,9 @@ const CompanyProfile = () => {
         <div className="flex-grow-1 overflow-auto">
           <Alert variant="primary" className="mb-3">
             <i className="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
-            Complete each section to showcase your brand and job opportunities.
-            A well-detailed profile can attract top talent and help job seekers
-            learn more about your company.
+            Complete each section to showcase your brand. A well-detailed
+            profile can attract top talent and help job seekers learn more about
+            your company.
           </Alert>
 
           <Card className="shadow-sm mb-4">

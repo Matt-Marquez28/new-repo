@@ -103,7 +103,7 @@ const JobSeekerDetails = () => {
   };
 
   return (
-    <Container className="col-md-10">
+    <Container>
       {/* Navigation Buttons */}
       <Row className="my-2">
         <Col>

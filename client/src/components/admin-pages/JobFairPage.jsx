@@ -275,7 +275,7 @@ const JobFairAdminPage = () => {
             <div className="card-body">
               <div className="d-flex align-items-center">
                 <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
-                  <i className="bi bi-calendar-check text-primary fs-4"></i>
+                  <i className="bi bi-calendar-check-fill text-primary fs-4"></i>
                 </div>
                 <div>
                   <h6 className="mb-1 text-muted">Total Events</h6>
@@ -290,7 +290,7 @@ const JobFairAdminPage = () => {
             <div className="card-body">
               <div className="d-flex align-items-center">
                 <div className="bg-success bg-opacity-10 p-3 rounded me-3">
-                  <i className="bi bi-building text-success fs-4"></i>
+                  <i className="bi bi-building-fill text-success fs-4"></i>
                 </div>
                 <div>
                   <h6 className="mb-1 text-muted">Registered Employers</h6>
@@ -305,7 +305,7 @@ const JobFairAdminPage = () => {
             <div className="card-body">
               <div className="d-flex align-items-center">
                 <div className="bg-info bg-opacity-10 p-3 rounded me-3">
-                  <i className="bi bi-people text-info fs-4"></i>
+                  <i className="bi bi-people-fill text-info fs-4"></i>
                 </div>
                 <div>
                   <h6 className="mb-1 text-muted">Registered Job Seekers</h6>

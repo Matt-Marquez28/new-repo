@@ -1,34 +1,39 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Dropdown } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import { JOB_VACANCY_API_END_POINT } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 
 const JobVacancyVerification = () => {
-  const [status, setStatus] = useState("all"); // State to store the selected status
-  const [jobVacancies, setJobVacancies] = useState([]);
-  const [filter, setFilter] = useState("all"); // State for selected filter
-  const [stats, setStats] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const navigate = useNavigate();
+  const [jobVacancies, setJobVacancies] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     getAllJobVacancies();
-  }, [filter]);
+  }, [statusFilter]);
 
   const getAllJobVacancies = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(
         `${JOB_VACANCY_API_END_POINT}/get-all-job-vacancies-admin`,
         {
-          params: { status: filter }, // Add the query parameter for status
+          params: {
+            status: statusFilter === "all" ? undefined : statusFilter,
+          },
         }
       );
-      console.log(res?.data?.stats);
       setJobVacancies(res?.data?.jobVacancies);
       setStats(res?.data?.stats);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -45,65 +50,49 @@ const JobVacancyVerification = () => {
     }
   };
 
-  const dropdownContent = (jobVacancyId) => (
-    <Dropdown.Menu>
-      <Dropdown.Item as="button" onClick={() => viewDetails(jobVacancyId)}>
-        <i className="bi bi-info-circle"></i> Details
-      </Dropdown.Item>
-    </Dropdown.Menu>
-  );
-
   const viewDetails = (jobVacancyId) => {
     navigate(`job-vacancy-verification-details/${jobVacancyId}`);
   };
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase()); // Convert search term to lowercase
-  };
-
-  // Filter job vacancies based on search term
   const filteredJobVacancies = jobVacancies.filter((jobVacancy) => {
     const company = jobVacancy?.companyId?.companyInformation || {};
     const matchesSearch =
-      jobVacancy?.jobTitle?.toLowerCase().includes(searchTerm) ||
-      company?.businessName?.toLowerCase().includes(searchTerm);
+      jobVacancy?.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company?.businessName?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesSearch;
   });
 
   const statsData = [
     {
-      title: "All Job Vacancies",
+      title: "All Jobs",
       value: stats?.all || 0,
-      icon: "bi bi-briefcase-fill",
-      bgColor: "bg-primary",
+      icon: "bi-suitcase-lg-fill",
+      color: "primary",
     },
     {
       title: "Pending",
       value: stats?.pending || 0,
-      icon: "bi bi-hourglass",
-      bgColor: "bg-warning",
+      icon: "bi-hourglass-top",
+      color: "warning",
     },
     {
       title: "Approved",
       value: stats?.approved || 0,
-      icon: "bi bi-file-earmark-check",
-      bgColor: "bg-success",
+      icon: "bi-file-earmark-check-fill",
+      color: "success",
     },
     {
       title: "Declined",
       value: stats?.declined || 0,
-      icon: "bi bi-file-earmark-x",
-      bgColor: "bg-danger",
+      icon: "bi-file-earmark-x-fill",
+      color: "danger",
     },
   ];
 
   return (
     <div className="container">
+      {/* Page Header */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div className="mb-3">
           <div className="d-flex align-items-center">
@@ -119,209 +108,180 @@ const JobVacancyVerification = () => {
                 marginRight: "12px",
               }}
             >
-              <i className="bi  bi-suitcase-lg-fill text-white"></i>
+              <i className="bi bi-suitcase-lg-fill text-white"></i>
             </div>
             <h4 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
-              Job Management
+              Job Vacancy Verification
             </h4>
           </div>
           <p className="text-muted mb-0 mt-1">
-            Verify company credentials and manage approval status
+            Verify job vacancies and manage approval status
           </p>
         </div>
       </div>
-      <section className="mb-3">
-        <div className="row g-2 g-md-3">
-          {statsData.map((stat, index) => (
-            <div key={index} className="col-6 col-md">
-              <div className="card border-0 shadow-sm h-100 bg-light">
-                <div className="card-body p-2 p-md-3">
-                  <div className="d-flex align-items-center">
-                    <div
-                      className={`${stat.bgColor} rounded-3 p-1 p-md-2 me-2 me-md-3`}
-                    >
-                      <i className={`${stat.icon} text-white fs-6 fs-md-5`}></i>
-                    </div>
-                    <div>
-                      <h6 className="card-subtitle text-muted mb-0 mb-md-1 small text-uppercase">
-                        {stat.title}
-                      </h6>
-                      <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
-                        {stat.value.toLocaleString()}
-                      </h5>
-                    </div>
+
+      {/* Stats Cards - Horizontal Layout for Desktop */}
+      <div className="row g-3 mb-4">
+        {statsData.map((stat, index) => (
+          <div key={index} className="col-md-3 col-6">
+            <div className="card border-0 shadow-sm h-100">
+              <div className="card-body p-3">
+                <div className="d-flex align-items-center">
+                  <div
+                    className={`bg-${stat.color} bg-opacity-10 p-2 rounded me-3`}
+                  >
+                    <i
+                      className={`bi ${stat.icon} text-${stat.color} fs-5`}
+                    ></i>
+                  </div>
+                  <div>
+                    <h6 className="mb-0 text-muted small">{stat.title}</h6>
+                    <h5 className="mb-0 fw-bold">{stat.value}</h5>
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Search UI */}
-      <div className="d-flex justify-content-center mb-3">
-        <div className="input-group" style={{ width: "100%" }}>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Find job vacancy by ( job title or company name )"
-            style={{ backgroundColor: "aliceblue", borderColor: "#3B71CA" }}
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <button className="btn btn-primary text-light" type="submit">
-            <i className="bi bi-search"></i> Search
-          </button>
-        </div>
+          </div>
+        ))}
       </div>
 
-      {/* Filters UI */}
-      <div className="d-flex justify-content-start mb-2">
-        <div className="d-flex align-items-center gap-2">
-          <div>
-            <select
-              id="filter"
-              className="form-select"
-              value={filter}
-              onChange={handleFilterChange}
-            >
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="declined">Declined</option>
-            </select>
+      {/* Filters */}
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-body">
+          <div className="row g-3">
+            <div className="col-md-8">
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0">
+                  <i className="bi bi-search"></i>
+                </span>
+                <input
+                  type="text"
+                  className="form-control border-start-0"
+                  placeholder="Search job vacancies by title or company name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <select
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="declined">Declined</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Table Container with Scrollable Body */}
-      <div style={{ maxHeight: "380px", overflow: "auto" }}>
-        <div style={{ minWidth: "900px" }}>
-          {" "}
-          {/* Minimum width to trigger horizontal scroll */}
-          <table
-            className="table table-hover table-striped mt-2"
-            style={{ width: "100%" }}
-          >
-            <thead
-              style={{
-                position: "sticky",
-                top: 0,
-                backgroundColor: "white",
-                zIndex: 1,
-              }}
-            >
-              <tr>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle"
-                  style={{ width: "25%" }}
-                >
-                  <i className="bi bi-briefcase-fill"></i> Job Title
-                </th>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle"
-                  style={{ width: "20%" }}
-                >
-                  <i className="bi bi-building-fill"></i> Company
-                </th>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle text-center"
-                  style={{ width: "15%" }}
-                >
-                  <i className="bi bi-calendar-event-fill"></i> Date Posted
-                </th>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle text-center"
-                  style={{ width: "10%" }}
-                >
-                  <i className="bi bi-search"></i> Vacancies
-                </th>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle text-center"
-                  style={{ width: "15%" }}
-                >
-                  <i className="bi bi-question-square-fill"></i> Publication
-                </th>
-                <th
-                  scope="col"
-                  className="small text-muted align-middle text-center"
-                  style={{ width: "15%" }}
-                >
-                  <i className="bi bi-hand-index-thumb-fill"></i> Handle
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredJobVacancies.length > 0 ? (
-                filteredJobVacancies.map((jobVacancy) => (
-                  <tr key={jobVacancy?._id}>
-                    <td
-                      scope="row"
-                      className="small align-middle text-muted"
-                      style={{ width: "25%" }}
-                    >
-                      {jobVacancy?.jobTitle}
-                    </td>
-                    <td
-                      className="small text-muted align-middle"
+      {/* Job Vacancies Table */}
+      <div className="card border-0 shadow-sm">
+        <div className="card-body p-0">
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-2">Loading job vacancies...</p>
+            </div>
+          ) : filteredJobVacancies.length === 0 ? (
+            <div className="text-center py-5">
+              <i className="bi bi-briefcase text-muted fs-1"></i>
+              <h5 className="mt-3">No job vacancies found</h5>
+              <p className="text-muted">Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-hover table-striped align-middle mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th style={{ width: "25%" }} className="fw-normal">
+                      Job Title
+                    </th>
+                    <th style={{ width: "20%" }} className="fw-normal">
+                      Company
+                    </th>
+                    <th style={{ width: "15%" }} className="fw-normal">
+                      Date Posted
+                    </th>
+                    <th style={{ width: "10%" }} className="fw-normal">
+                      Vacancies
+                    </th>
+                    <th style={{ width: "10%" }} className="fw-normal">
+                      Status
+                    </th>
+                    <th
                       style={{ width: "20%" }}
+                      className="fw-normal text-center"
                     >
-                      {jobVacancy.companyId?.companyInformation?.businessName}
-                    </td>
-                    <td
-                      className="small text-muted align-middle text-center"
-                      style={{ width: "15%" }}
-                    >
-                      {new Date(jobVacancy.createdAt).toLocaleDateString()}
-                    </td>
-                    <td
-                      className="small text-muted align-middle text-center"
-                      style={{ width: "10%" }}
-                    >
-                      {jobVacancy?.vacancies}
-                    </td>
-                    <td
-                      className="small text-muted align-middle text-center"
-                      style={{ width: "15%" }}
-                    >
-                      <span
-                        className={`text-white badge ${getStatusBadgeClass(
-                          jobVacancy.publicationStatus
-                        )}`}
-                      >
-                        {jobVacancy.publicationStatus}
-                      </span>
-                    </td>
-                    <td
-                      className="small text-muted align-middle text-center"
-                      style={{ width: "15%" }}
-                    >
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="light"
-                          className="text-secondary btn-sm"
-                        >
-                          <i className="bi bi-three-dots-vertical"></i>
-                        </Dropdown.Toggle>
-                        {dropdownContent(jobVacancy._id)}
-                      </Dropdown>
-                    </td>
+                      Actions
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="text-center">
-                    No records found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {filteredJobVacancies.map((jobVacancy) => (
+                    <tr key={jobVacancy._id}>
+                      <td>
+                        <h6 className="mb-1 text-primary fw-semibold">
+                          {jobVacancy?.jobTitle || "N/A"}
+                        </h6>
+                        <p className="text-muted small mb-0">
+                          {jobVacancy.description?.substring(0, 60) ||
+                            "No description"}
+                          ...
+                        </p>
+                      </td>
+                      <td>
+                        <span className="">
+                          {jobVacancy?.companyId?.companyInformation
+                            ?.businessName || "N/A"}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-muted">
+                          {new Date(jobVacancy.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-muted">
+                          {jobVacancy?.vacancies || "N/A"}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={`badge text-white ${getStatusBadgeClass(
+                            jobVacancy.publicationStatus
+                          )}`}
+                        >
+                          {jobVacancy.publicationStatus}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={() => viewDetails(jobVacancy._id)}
+                        >
+                          <i className="bi bi-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

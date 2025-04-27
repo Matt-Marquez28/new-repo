@@ -227,6 +227,26 @@ const ApplicationReports = () => {
     );
   });
 
+  function getStatusIcon(status) {
+    const color = getStatusBadgeColor(status);
+    const props = { size: 20, className: `text-${color}` };
+
+    switch (status) {
+      case "hired":
+        return <FiBriefcase {...props} />;
+      case "pending":
+        return <FiFileText {...props} />;
+      case "interview scheduled":
+        return <FiCalendar {...props} />;
+      case "interview completed":
+        return <FiFileText {...props} />;
+      case "declined":
+        return <FiFileText {...props} />;
+      default:
+        return <FiFileText {...props} />;
+    }
+  }
+
   return (
     <div className="container">
       {/* <div className="d-flex justify-content-between align-items-center mb-4">
@@ -464,19 +484,17 @@ const ApplicationReports = () => {
       </Card>
 
       {/* Summary Cards */}
-      <Row className="mb-4 g-4">
-        <Col xl={3} md={6}>
+      <Row className="g-3 mb-4">
+        <Col xl={3} md={6} sm={6}>
           <Card className="border-0 shadow-sm h-100">
-            <Card.Body>
+            <Card.Body className="p-3">
               <div className="d-flex align-items-center">
-                <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
-                  <FiUser size={24} className="text-primary" />
+                <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                  <FiUser size={20} className="text-primary" />
                 </div>
                 <div>
-                  <h6 className="text-uppercase text-primary mb-1">
-                    Total Applications
-                  </h6>
-                  <h2 className="mb-0">{summary.total}</h2>
+                  <h6 className="mb-0 text-muted small">Total Applications</h6>
+                  <h5 className="mb-0 fw-bold">{summary.total}</h5>
                 </div>
               </div>
             </Card.Body>
@@ -485,52 +503,19 @@ const ApplicationReports = () => {
 
         {Object.entries(summary.statuses).map(([status, count]) => (
           <Col xl={2} md={4} sm={6} key={status}>
-            <Card
-              className={` border-0 border-left-${getStatusBadgeColor(
-                status
-              )} shadow-sm h-100`}
-            >
-              <Card.Body>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body className="p-3">
                 <div className="d-flex align-items-center">
                   <div
                     className={`bg-${getStatusBadgeColor(
                       status
-                    )} bg-opacity-10 p-3 rounded me-3`}
+                    )} bg-opacity-10 p-2 rounded me-3`}
                   >
-                    {status === "hired" && (
-                      <FiBriefcase
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "pending" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "interview scheduled" && (
-                      <FiCalendar
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "interview completed" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
-                    {status === "declined" && (
-                      <FiFileText
-                        size={24}
-                        className={`text-${getStatusBadgeColor(status)}`}
-                      />
-                    )}
+                    {getStatusIcon(status)}
                   </div>
                   <div>
-                    <h6 className="text-uppercase text-muted mb-1">{status}</h6>
-                    <h3 className="mb-0">{count}</h3>
+                    <h6 className="mb-0 text-muted small">{status}</h6>
+                    <h5 className="mb-0 fw-bold">{count}</h5>
                   </div>
                 </div>
               </Card.Body>
@@ -611,7 +596,7 @@ const ApplicationReports = () => {
                             <FiBriefcase size={20} className="text-info" />
                           </div>
                           <div>
-                            <strong>{report.job.title}</strong>
+                            <h6 className="fw-semibold">{report.job.title}</h6>
                             <div className="text-muted small">
                               {report.job.department}
                             </div>
@@ -624,7 +609,9 @@ const ApplicationReports = () => {
                             <FiHome size={20} className="text-warning" />
                           </div>
                           <div>
-                            <strong>{report.company.businessName}</strong>
+                            <h6 className="fw-semibold">
+                              {report.company.businessName}
+                            </h6>
                             <div className="text-muted small">
                               {report.company.industry}
                             </div>

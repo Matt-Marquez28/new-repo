@@ -170,7 +170,14 @@ const ApplicationDetails = () => {
                 >
                   {application?.jobSeekerId?.skillsAndSpecializations?.specializations.map(
                     (specialization, index) => (
-                      <span key={index} className="badge bg-info me-1">
+                      <span
+                        key={index}
+                        className="badge me-1"
+                        style={{
+                          backgroundColor: "rgba(26, 71, 152, 0.1)",
+                          color: "#1a4798",
+                        }}
+                      >
                         {specialization}
                       </span>
                     )
@@ -196,53 +203,88 @@ const ApplicationDetails = () => {
                 <hr className="d-none d-md-block" />
 
                 {/* Contact Section - Always Visible */}
-                <div className="p-3 border rounded bg-light d-none d-md-block">
-                  <h5 className="mb-3" style={{ color: "#1a4798" }}>
-                    Contact
-                  </h5>
-                  <div className="d-flex text-start align-items-center gap-3 mb-3">
-                    <div>
-                      <i className="bi bi-envelope-fill fs-4 text-secondary"></i>
-                    </div>
-                    <div>
-                      <div className="small">Email</div>
-                      <div className="text-secondary small">
-                        {
-                          application?.jobSeekerId?.personalInformation
-                            ?.emailAddress
-                        }
-                      </div>
-                    </div>
-                  </div>
+                {(application?.jobSeekerId?.personalInformation?.emailAddress ||
+                  application?.jobSeekerId?.personalInformation
+                    ?.mobileNumber) && (
+                  <div className="bg-light p-3 rounded border mb-4 text-start">
+                    <h5
+                      className="d-flex align-items-center gap-2 mb-3"
+                      style={{ color: "#1a4798" }}
+                    >
+                      <i className="bi bi-envelope-at-fill"></i>
+                      Contact
+                    </h5>
 
-                  <div className="d-flex text-start align-items-center gap-3 mb-3">
-                    <div>
-                      <i className="bi bi-phone-fill fs-4 text-secondary"></i>
-                    </div>
-                    <div>
-                      <div className="small">Mobile No.</div>
-                      <div className="text-secondary small">
-                        {
-                          application?.jobSeekerId?.personalInformation
-                            ?.mobileNumber
-                        }
+                    {application?.jobSeekerId?.personalInformation
+                      ?.emailAddress && (
+                      <div className="d-flex align-items-center gap-3 mb-3">
+                        <div className="bg-white p-2 rounded border">
+                          <i
+                            className="bi bi-envelope-fill fs-5"
+                            style={{ color: "#1a4798" }}
+                          ></i>
+                        </div>
+                        <div>
+                          <div className="fw-semibold small text-muted">
+                            Email
+                          </div>
+                          <div className="small">
+                            {
+                              application.jobSeekerId.personalInformation
+                                .emailAddress
+                            }
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    )}
 
-                  <div className="d-flex text-start align-items-center gap-3 mb-3">
-                    <div>
-                      <i className="bi bi-telephone-fill fs-4 text-secondary"></i>
-                    </div>
-                    <div>
-                      <div className="small">Telephone No.</div>
-                      <div className="text-secondary small">
-                        {application?.jobSeekerId?.personalInformation
-                          ?.telephoneNumber || "not included"}
+                    {application?.jobSeekerId?.personalInformation
+                      ?.mobileNumber && (
+                      <div className="d-flex align-items-center gap-3 mb-3">
+                        <div className="bg-white p-2 rounded border">
+                          <i
+                            className="bi bi-phone-fill fs-5"
+                            style={{ color: "#1a4798" }}
+                          ></i>
+                        </div>
+                        <div>
+                          <div className="fw-semibold small text-muted">
+                            Mobile No.
+                          </div>
+                          <div className="small">
+                            {
+                              application.jobSeekerId.personalInformation
+                                .mobileNumber
+                            }
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {application?.jobSeekerId?.personalInformation
+                      ?.telephoneNumber && (
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="bg-white p-2 rounded border">
+                          <i
+                            className="bi bi-telephone-fill fs-5"
+                            style={{ color: "#1a4798" }}
+                          ></i>
+                        </div>
+                        <div>
+                          <div className="fw-semibold small text-muted">
+                            Telephone No.
+                          </div>
+                          <div className="small">
+                            {
+                              application.jobSeekerId.personalInformation
+                                .telephoneNumber
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
