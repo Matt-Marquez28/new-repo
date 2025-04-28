@@ -166,8 +166,8 @@ const CompanyReports = () => {
       "Company Size",
       "Type of Business",
       "Status",
-      "Accreditation ID",
-      "Accreditation Type",
+      // "Accreditation ID",
+      // "Accreditation Type",
       "Accreditation Date",
       "Is Renewal",
       "Employer Name",
@@ -177,17 +177,17 @@ const CompanyReports = () => {
       "Mobile Number",
       "Telephone",
       "Email",
-      "Facebook",
-      "Instagram",
-      "Twitter",
-      "Website",
-      "Job Vacancies",
-      "Registered Date",
-      "Last Updated",
-      "Remarks",
-      "Account Email",
-      "Account Username",
-      "Account Status",
+      // "Facebook",
+      // "Instagram",
+      // "Twitter",
+      // "Website",
+      // "Job Vacancies",
+      // "Registered Date",
+      // "Last Updated",
+      // "Remarks",
+      // "Account Email",
+      // "Account Username",
+      // "Account Status",
     ];
 
     const data = reports.map((report) => [
@@ -198,9 +198,13 @@ const CompanyReports = () => {
       report.businessInfo.companySize,
       report.businessInfo.typeOfBusiness,
       report.accreditation.status,
-      report.accreditation.accreditationId,
-      report.accreditation.accreditationType,
-      report.accreditation.accreditationDate,
+      // report.accreditation.accreditationId,
+      // report.accreditation.accreditationType,
+      report.accreditation.accreditationDate
+        ? new Date(report.accreditation.accreditationDate).toLocaleDateString(
+            "en-US"
+          )
+        : "",
       report.accreditation.isRenewal,
       report.contactInfo.employerName,
       report.contactInfo.employerPosition,
@@ -215,17 +219,17 @@ const CompanyReports = () => {
       report.contactInfo.mobileNumber,
       report.contactInfo.telephoneNumber,
       report.contactInfo.email,
-      report.socialMedia.facebook || "",
-      report.socialMedia.instagram || "",
-      report.socialMedia.twitter || "",
-      report.socialMedia.website || "",
-      report.vacancies,
-      report.registeredDate,
-      report.lastUpdated,
-      report.remarks || "",
-      report.accountInfo.email,
-      report.accountInfo.username,
-      report.accountInfo.isActive ? "Active" : "Inactive",
+      // report.socialMedia.facebook || "",
+      // report.socialMedia.instagram || "",
+      // report.socialMedia.twitter || "",
+      // report.socialMedia.website || "",
+      // report.vacancies,
+      // report.registeredDate,
+      // report.lastUpdated,
+      // report.remarks || "",
+      // report.accountInfo.email,
+      // report.accountInfo.username,
+      // report.accountInfo.isActive ? "Active" : "Inactive",
     ]);
 
     downloadCSV({
@@ -637,7 +641,6 @@ const CompanyReports = () => {
                     {/* <th className="border-0 fw-normal">Account</th> */}
                     {/* <th className="border-0 fw-normal">Vacancies</th> */}
                     <th className="border-0 fw-normal">Registered</th>
-                    <th className="border-0 text-center fw-normal">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -741,33 +744,6 @@ const CompanyReports = () => {
                             }
                           )}
                         </div>
-                      </td>
-                      <td className="text-end align-middle">
-                        <Dropdown>
-                          <Dropdown.Toggle
-                            variant="outline-secondary"
-                            size="sm"
-                            id="dropdown-actions"
-                            className="px-3"
-                          >
-                            Actions
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {/* <Dropdown.Item
-                              onClick={() =>
-                                handleViewCompany(report.companyId)
-                              }
-                            >
-                              <FiEye className="me-2" /> View Details
-                            </Dropdown.Item> */}
-                            <Dropdown.Item
-                              onClick={() => getSingleReport(report.companyId)}
-                            >
-                              <FaRegFileExcel className="me-2" /> Export to
-                              Excel
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
                       </td>
                     </tr>
                   ))}
