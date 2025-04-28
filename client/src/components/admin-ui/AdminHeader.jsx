@@ -182,7 +182,7 @@ const AdminHeader = () => {
             ></i>
           </Button>
 
-          <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded">
+          <Link className="d-flex align-items-center text-decoration-none text-secondary p-2 bg-white border rounded d-none d-lg-inline-flex">
             <i className="bi bi-clock-fill fs-6 me-2 text-primary"></i>
             <span>Office Hours: Mon - Fri 7:00 AM - 5:00 PM</span>
           </Link>
@@ -435,6 +435,17 @@ const AdminHeader = () => {
                 >
                   <i className="bi bi-people me-2"></i>
                   Job Fair
+                </NavLink>
+
+                <NavLink
+                  exact
+                  to="/admin/scanner"
+                  className="nav-link px-3 py-2 rounded"
+                  
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-qr-code-scan me-2"></i>
+                  Scanner
                 </NavLink>
 
                 <NavLink
