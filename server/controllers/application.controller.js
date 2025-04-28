@@ -1283,11 +1283,16 @@ export const getApplicationStatistics = async (req, res) => {
 //   }
 // };
 
-
-
 export const getAllApplicationReports = async (req, res) => {
   try {
-    const { year, month, status, businessName, hasDisability } = req.query;
+    const {
+      year,
+      month,
+      status,
+      businessName,
+      hasDisability,
+      isSeniorCitizen,
+    } = req.query;
 
     // Build the aggregation pipeline
     const pipeline = [];
@@ -1295,14 +1300,14 @@ export const getAllApplicationReports = async (req, res) => {
     // Initial match for status if provided
     if (status) {
       pipeline.push({
-        $match: { status }
+        $match: { status },
       });
     }
 
     // Date filtering
     if (year || month) {
       const dateFilter = {};
-      
+
       if (year) {
         const startYear = new Date(`${year}-01-01`);
         const endYear = new Date(`${parseInt(year) + 1}-01-01`);
@@ -1318,7 +1323,9 @@ export const getAllApplicationReports = async (req, res) => {
         dateFilter.$lt = endMonth;
       } else if (month) {
         const currentYear = new Date().getFullYear();
-        const startMonth = new Date(`${currentYear}-${month.padStart(2, "0")}-01`);
+        const startMonth = new Date(
+          `${currentYear}-${month.padStart(2, "0")}-01`
+        );
         const endMonth = new Date(startMonth);
         endMonth.setMonth(endMonth.getMonth() + 1);
         dateFilter.$gte = startMonth;
@@ -1326,7 +1333,7 @@ export const getAllApplicationReports = async (req, res) => {
       }
 
       pipeline.push({
-        $match: { createdAt: dateFilter }
+        $match: { createdAt: dateFilter },
       });
     }
 
@@ -1336,17 +1343,57 @@ export const getAllApplicationReports = async (req, res) => {
         from: "jobseekers",
         localField: "jobSeekerId",
         foreignField: "_id",
-        as: "jobSeeker"
-      }
+        as: "jobSeeker",
+      },
     });
     pipeline.push({ $unwind: "$jobSeeker" });
+
+    // Calculate age and filter for senior citizens if requested
+    // Replace the senior citizen filter part with this:
+    // Replace the senior citizen filter part in your controller with this:
+    if (isSeniorCitizen !== undefined && isSeniorCitizen !== "") {
+      // Calculate the date threshold for 60 years ago
+      const currentDate = new Date();
+      const thresholdDate = new Date(
+        currentDate.getFullYear() - 60,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+
+      // Add this field first for clear debugging
+      pipeline.push({
+        $addFields: {
+          birthDate: "$jobSeeker.personalInformation.birthDate",
+          thresholdDate: thresholdDate, // For debugging
+          isSeniorCitizen: {
+            $cond: {
+              if: {
+                $lte: [
+                  "$jobSeeker.personalInformation.birthDate",
+                  thresholdDate,
+                ],
+              },
+              then: true,
+              else: false,
+            },
+          },
+        },
+      });
+
+      // Then filter based on it
+      pipeline.push({
+        $match: {
+          isSeniorCitizen: isSeniorCitizen === "true",
+        },
+      });
+    }
 
     // Apply disability filter if provided
     if (hasDisability !== undefined) {
       pipeline.push({
         $match: {
-          "jobSeeker.disability.hasDisability": hasDisability === 'true'
-        }
+          "jobSeeker.disability.hasDisability": hasDisability === "true",
+        },
       });
     }
 
@@ -1356,8 +1403,8 @@ export const getAllApplicationReports = async (req, res) => {
         from: "jobvacancies",
         localField: "jobVacancyId",
         foreignField: "_id",
-        as: "jobVacancy"
-      }
+        as: "jobVacancy",
+      },
     });
     pipeline.push({ $unwind: "$jobVacancy" });
 
@@ -1368,14 +1415,17 @@ export const getAllApplicationReports = async (req, res) => {
           from: "companies",
           localField: "jobVacancy.companyId",
           foreignField: "_id",
-          as: "company"
-        }
+          as: "company",
+        },
       });
       pipeline.push({ $unwind: "$company" });
       pipeline.push({
         $match: {
-          "company.companyInformation.businessName": new RegExp(businessName, "i")
-        }
+          "company.companyInformation.businessName": new RegExp(
+            businessName,
+            "i"
+          ),
+        },
       });
     } else {
       // Still need to lookup company info even if not filtering
@@ -1384,8 +1434,8 @@ export const getAllApplicationReports = async (req, res) => {
           from: "companies",
           localField: "jobVacancy.companyId",
           foreignField: "_id",
-          as: "company"
-        }
+          as: "company",
+        },
       });
       pipeline.push({ $unwind: "$company" });
     }
@@ -1399,6 +1449,7 @@ export const getAllApplicationReports = async (req, res) => {
         "jobSeeker.personalInformation.lastName": 1,
         "jobSeeker.personalInformation.emailAddress": 1,
         "jobSeeker.personalInformation.mobileNumber": 1,
+        "jobSeeker.personalInformation.birthDate": 1,
         "jobSeeker.disability.hasDisability": 1,
         "jobSeeker.disability.types": 1,
         "jobSeeker.disability.otherDescription": 1,
@@ -1411,7 +1462,7 @@ export const getAllApplicationReports = async (req, res) => {
         hiredDate: 1,
         hiredBy: 1,
         remarks: 1,
-      }
+      },
     });
 
     // Sort by creation date
@@ -1421,81 +1472,143 @@ export const getAllApplicationReports = async (req, res) => {
     const applications = await Application.aggregate(pipeline);
 
     // Format report data
-    const reportData = applications.map((app) => ({
-      applicant: {
-        id: app.jobSeekerId,
-        name: `${app.jobSeeker.personalInformation.firstName} ${app.jobSeeker.personalInformation.lastName}`,
-        email: app.jobSeeker.personalInformation.emailAddress,
-        phone: app.jobSeeker.personalInformation.mobileNumber,
-        hasDisability: app.jobSeeker.disability?.hasDisability || false,
-        disabilityTypes: app.jobSeeker.disability?.types || [],
-        otherDisabilityDescription: app.jobSeeker.disability?.otherDescription || "",
-      },
-      job: {
-        title: app.jobVacancy.jobTitle,
-        department: app.jobVacancy.department,
-      },
-      company: {
-        businessName: app.company.companyInformation.businessName,
-        industry: app.company.companyInformation.industry,
-      },
-      application: {
-        status: app.status,
-        appliedDate: app.createdAt.toISOString().split("T")[0],
-        lastUpdated: app.updatedAt.toISOString().split("T")[0],
-        hiredDate: app.hiredDate
-          ? app.hiredDate.toISOString().split("T")[0]
-          : "N/A",
-        hiredBy: app.hiredBy || app.company.companyInformation.businessName,
-      },
-      remarks: app.remarks,
-    }));
+    const reportData = applications.map((app) => {
+      const birthDate = app.jobSeeker.personalInformation.birthDate;
+      const age = birthDate
+        ? new Date().getFullYear() - new Date(birthDate).getFullYear()
+        : null;
+
+      return {
+        applicant: {
+          id: app.jobSeekerId,
+          name: `${app.jobSeeker.personalInformation.firstName} ${app.jobSeeker.personalInformation.lastName}`,
+          email: app.jobSeeker.personalInformation.emailAddress,
+          phone: app.jobSeeker.personalInformation.mobileNumber,
+          birthDate: birthDate ? birthDate.toISOString().split("T")[0] : "N/A",
+          age: age,
+          isSeniorCitizen: age >= 60,
+          hasDisability: app.jobSeeker.disability?.hasDisability || false,
+          disabilityTypes: app.jobSeeker.disability?.types || [],
+          otherDisabilityDescription:
+            app.jobSeeker.disability?.otherDescription || "",
+        },
+        job: {
+          title: app.jobVacancy.jobTitle,
+          department: app.jobVacancy.department,
+        },
+        company: {
+          businessName: app.company.companyInformation.businessName,
+          industry: app.company.companyInformation.industry,
+        },
+        application: {
+          status: app.status,
+          appliedDate: app.createdAt.toISOString().split("T")[0],
+          lastUpdated: app.updatedAt.toISOString().split("T")[0],
+          hiredDate: app.hiredDate
+            ? app.hiredDate.toISOString().split("T")[0]
+            : "N/A",
+          hiredBy: app.hiredBy || app.company.companyInformation.businessName,
+        },
+        remarks: app.remarks,
+      };
+    });
 
     // Generate summary statistics
     const summaryPipeline = [...pipeline];
-    
+
     // Remove sorting and projection for counting
     summaryPipeline.pop(); // Remove sort
     summaryPipeline.pop(); // Remove project
-    
+
     // Add status counting
     summaryPipeline.push({
       $group: {
         _id: "$status",
-        count: { $sum: 1 }
-      }
+        count: { $sum: 1 },
+      },
     });
-    
+
     const statusCounts = await Application.aggregate(summaryPipeline);
-    
+
     // Count disability stats
     const disabilityPipeline = [...pipeline];
     disabilityPipeline.pop(); // Remove sort
     disabilityPipeline.pop(); // Remove project
-    
+
     disabilityPipeline.push({
       $group: {
         _id: "$jobSeeker.disability.hasDisability",
-        count: { $sum: 1 }
-      }
+        count: { $sum: 1 },
+      },
     });
-    
+
     const disabilityCount = await Application.aggregate(disabilityPipeline);
 
+    // Count senior citizen stats
+    // Replace the senior count pipeline with this:
+    const seniorPipeline = [
+      ...pipeline.filter((stage) => !stage.$sort && !stage.$project),
+    ];
+
+    // Add birthdate and age calculation
+    seniorPipeline.push({
+      $addFields: {
+        currentDate: new Date(),
+        thresholdDate: new Date(
+          new Date().getFullYear() - 60,
+          new Date().getMonth(),
+          new Date().getDate()
+        ),
+        isSeniorCitizen: {
+          $cond: {
+            if: {
+              $lte: [
+                "$jobSeeker.personalInformation.birthDate",
+                new Date(
+                  new Date().getFullYear() - 60,
+                  new Date().getMonth(),
+                  new Date().getDate()
+                ),
+              ],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    });
+
+    // Group by senior citizen status
+    seniorPipeline.push({
+      $group: {
+        _id: "$isSeniorCitizen",
+        count: { $sum: 1 },
+      },
+    });
+
+    const seniorCount = await Application.aggregate(seniorPipeline);
+
+    // Format the summary with safer defaults
     const summary = {
       total: applications.length,
       statuses: statusCounts.reduce((acc, curr) => {
         acc[curr._id] = curr.count;
         return acc;
       }, {}),
-      disabilityStats: disabilityCount.reduce((acc, curr) => {
-        acc[curr._id ? 'withDisability' : 'withoutDisability'] = curr.count;
-        return acc;
-      }, {}),
-      ...(businessName && {
-        hiringBusiness: businessName,
-        hiredCount: applications.filter((app) => app.status === "hired").length,
-      }),
+      disabilityStats: disabilityCount.reduce(
+        (acc, curr) => {
+          acc[curr._id ? "withDisability" : "withoutDisability"] = curr.count;
+          return acc;
+        },
+        { withDisability: 0, withoutDisability: 0 }
+      ),
+      seniorCitizenStats: seniorCount.reduce(
+        (acc, curr) => {
+          acc[curr._id ? "isSeniorCitizen" : "notSeniorCitizen"] = curr.count;
+          return acc;
+        },
+        { isSeniorCitizen: 0, notSeniorCitizen: 0 }
+      ),
     };
 
     res.status(200).json({
@@ -1510,7 +1623,18 @@ export const getAllApplicationReports = async (req, res) => {
           : "All months",
         status: status || "All statuses",
         businessName: businessName || "All businesses",
-        hasDisability: hasDisability !== undefined ? (hasDisability === 'true' ? 'Yes' : 'No') : 'All',
+        hasDisability:
+          hasDisability !== undefined
+            ? hasDisability === "true"
+              ? "Yes"
+              : "No"
+            : "All",
+        isSeniorCitizen:
+          isSeniorCitizen !== undefined
+            ? isSeniorCitizen === "true"
+              ? "Yes"
+              : "No"
+            : "All",
       },
       applications: reportData,
       count: reportData.length,
@@ -1523,7 +1647,6 @@ export const getAllApplicationReports = async (req, res) => {
     });
   }
 };
-
 
 // Get unique business names for filter dropdown
 export const getBusinessNames = async (req, res) => {
@@ -1564,5 +1687,3 @@ export const getBusinessNames = async (req, res) => {
     });
   }
 };
-
-

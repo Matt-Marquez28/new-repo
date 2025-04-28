@@ -40,7 +40,8 @@ const ApplicationReports = () => {
     month: null,
     status: "",
     businessName: "",
-    hasDisability: "", // Add this line
+    hasDisability: "",
+    isSeniorCitizen: "", // Add this line
   });
   const [summary, setSummary] = useState({
     total: 0,
@@ -110,6 +111,11 @@ const ApplicationReports = () => {
         params.append("businessName", filters.businessName);
       if (filters.hasDisability !== "")
         params.append("hasDisability", filters.hasDisability); // Add this line
+      // In your fetchReports function, make sure the params are properly set:
+      // In your fetchReports function
+      if (filters.isSeniorCitizen !== "") {
+        params.append("isSeniorCitizen", filters.isSeniorCitizen);
+      }
 
       const response = await fetch(
         `${APPLICATION_API_END_POINT}/get-all-application-reports?${params.toString()}`
@@ -142,7 +148,8 @@ const ApplicationReports = () => {
       month: null,
       status: "",
       businessName: "",
-      hasDisability: "", // Reset to empty string
+      hasDisability: "",
+      isSeniorCitizen: "", // Add this line
     });
     setSearchTerm("");
   };
@@ -253,28 +260,6 @@ const ApplicationReports = () => {
 
   return (
     <div className="container">
-      {/* <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Application Reports</h1>
-        <div>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            onClick={fetchReports}
-            className="me-2"
-          >
-            <FiRefreshCw className="me-1" /> Refresh
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleExportCSV}
-            disabled={reports.length === 0}
-          >
-            <FiDownload className="me-1" /> Export CSV
-          </Button>
-        </div>
-      </div> */}
-
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
         <div className="mb-3">
           <div className="d-flex align-items-center">
@@ -336,7 +321,8 @@ const ApplicationReports = () => {
               !filters.month &&
               !filters.status &&
               !filters.businessName &&
-              filters.hasDisability === "" && // Add this condition
+              filters.hasDisability === "" &&
+              filters.isSeniorCitizen === "" && // Add this line
               !searchTerm
             }
             className="text-danger p-0"
@@ -419,7 +405,7 @@ const ApplicationReports = () => {
             <Col md={3}>
               <Form.Group>
                 <Form.Label className="small text-muted">
-                  Disability Status
+                  Senior Citizen
                 </Form.Label>
                 <InputGroup>
                   <InputGroup.Text
@@ -430,15 +416,15 @@ const ApplicationReports = () => {
                   </InputGroup.Text>
                   <Form.Control
                     as="select"
-                    value={filters.hasDisability}
+                    value={filters.isSeniorCitizen}
                     onChange={(e) =>
-                      handleFilterChange("hasDisability", e.target.value)
+                      handleFilterChange("isSeniorCitizen", e.target.value)
                     }
                     className="border-start-0"
                   >
                     <option value="">All Applicants</option>
-                    <option value="true">With Disability</option>
-                    <option value="false">Without Disability</option>
+                    <option value="true">Senior Citizen (60+)</option>
+                    <option value="false">Not Senior Citizen</option>
                   </Form.Control>
                 </InputGroup>
               </Form.Group>
@@ -496,6 +482,34 @@ const ApplicationReports = () => {
                         {company.name}
                       </option>
                     ))}
+                  </Form.Control>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+
+            <Col md={3}>
+              <Form.Group>
+                <Form.Label className="small text-muted">
+                  Disability Status
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiUser size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.hasDisability}
+                    onChange={(e) =>
+                      handleFilterChange("hasDisability", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Applicants</option>
+                    <option value="true">With Disability</option>
+                    <option value="false">Without Disability</option>
                   </Form.Control>
                 </InputGroup>
               </Form.Group>
