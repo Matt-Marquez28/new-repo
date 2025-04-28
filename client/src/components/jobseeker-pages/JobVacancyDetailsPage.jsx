@@ -184,16 +184,12 @@ const JobVacancyDetailsPage = ({ currentUser }) => {
             type="button"
             className="btn btn-primary text-light"
             onClick={applyJobVacancy}
-            disabled={
-              isAlreadyApplied ||
-              new Date(jobVacancy?.applicationDeadline) < new Date()
-            } // Disable if already applied or past deadline
           >
             <i className="bi bi-file-earmark-check d-none d-sm-inline-block"></i>{" "}
             {new Date(jobVacancy?.applicationDeadline) < new Date()
               ? "Expired"
               : isAlreadyApplied
-              ? "Applied"
+              ? "Apply"
               : "Apply"}
           </button>
 

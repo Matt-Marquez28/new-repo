@@ -344,7 +344,7 @@ const CompanyVerification = () => {
                             <i className="bi bi-check-circle text-success"></i>
                           </div>
                           <span
-                            className={`badge ${getStatusBadgeClass(
+                            className={`badge text-white ${getStatusBadgeClass(
                               company.status
                             )}`}
                           >
