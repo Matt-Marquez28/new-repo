@@ -40,6 +40,7 @@ const ApplicationReports = () => {
     month: null,
     status: "",
     businessName: "",
+    hasDisability: "", // Add this line
   });
   const [summary, setSummary] = useState({
     total: 0,
@@ -107,6 +108,8 @@ const ApplicationReports = () => {
       if (filters.status) params.append("status", filters.status);
       if (filters.businessName)
         params.append("businessName", filters.businessName);
+      if (filters.hasDisability !== "")
+        params.append("hasDisability", filters.hasDisability); // Add this line
 
       const response = await fetch(
         `${APPLICATION_API_END_POINT}/get-all-application-reports?${params.toString()}`
@@ -139,6 +142,7 @@ const ApplicationReports = () => {
       month: null,
       status: "",
       businessName: "",
+      hasDisability: "", // Reset to empty string
     });
     setSearchTerm("");
   };
@@ -332,6 +336,7 @@ const ApplicationReports = () => {
               !filters.month &&
               !filters.status &&
               !filters.businessName &&
+              filters.hasDisability === "" && // Add this condition
               !searchTerm
             }
             className="text-danger p-0"
@@ -406,6 +411,34 @@ const ApplicationReports = () => {
                         </option>
                       );
                     })}
+                  </Form.Control>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+
+            <Col md={3}>
+              <Form.Group>
+                <Form.Label className="small text-muted">
+                  Disability Status
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text
+                    className="text-white"
+                    style={{ backgroundColor: "#1a4798" }}
+                  >
+                    <FiUser size={14} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    as="select"
+                    value={filters.hasDisability}
+                    onChange={(e) =>
+                      handleFilterChange("hasDisability", e.target.value)
+                    }
+                    className="border-start-0"
+                  >
+                    <option value="">All Applicants</option>
+                    <option value="true">With Disability</option>
+                    <option value="false">Without Disability</option>
                   </Form.Control>
                 </InputGroup>
               </Form.Group>

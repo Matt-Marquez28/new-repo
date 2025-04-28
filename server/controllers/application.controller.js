@@ -1095,125 +1095,341 @@ export const getApplicationStatistics = async (req, res) => {
   }
 };
 
+// export const getAllApplicationReports = async (req, res) => {
+//   try {
+//     const { year, month, status, businessName } = req.query;
+
+//     // Base filter
+//     const filter = {};
+
+//     // Add status filter if provided
+//     if (status) {
+//       filter.status = status;
+//     }
+
+//     // Add business name filter if provided
+//     if (businessName) {
+//       // First find companies that match the business name
+//       const companies = await Company.find({
+//         "companyInformation.businessName": new RegExp(businessName, "i"),
+//       }).select("_id");
+
+//       const companyIds = companies.map((c) => c._id);
+
+//       // Then find job vacancies from these companies
+//       const jobVacancies = await JobVacancy.find({
+//         companyId: { $in: companyIds },
+//       }).select("_id");
+
+//       const jobVacancyIds = jobVacancies.map((jv) => jv._id);
+//       filter.jobVacancyId = { $in: jobVacancyIds };
+//     }
+
+//     // Add date filtering for year and/or month
+//     if (year || month) {
+//       filter.createdAt = {};
+
+//       if (year) {
+//         const startYear = new Date(`${year}-01-01`);
+//         const endYear = new Date(`${parseInt(year) + 1}-01-01`);
+//         filter.createdAt.$gte = startYear;
+//         filter.createdAt.$lt = endYear;
+//       }
+
+//       if (month && year) {
+//         const startMonth = new Date(`${year}-${month.padStart(2, "0")}-01`);
+//         const endMonth = new Date(startMonth);
+//         endMonth.setMonth(endMonth.getMonth() + 1);
+//         filter.createdAt.$gte = startMonth;
+//         filter.createdAt.$lt = endMonth;
+//       } else if (month) {
+//         // If month is provided without year, use current year
+//         const currentYear = new Date().getFullYear();
+//         const startMonth = new Date(
+//           `${currentYear}-${month.padStart(2, "0")}-01`
+//         );
+//         const endMonth = new Date(startMonth);
+//         endMonth.setMonth(endMonth.getMonth() + 1);
+//         filter.createdAt.$gte = startMonth;
+//         filter.createdAt.$lt = endMonth;
+//       }
+//     }
+
+//     // Get application data with full details
+//     const applications = await Application.aggregate([
+//       { $match: filter },
+//       {
+//         $lookup: {
+//           from: "jobseekers",
+//           localField: "jobSeekerId",
+//           foreignField: "_id",
+//           as: "jobSeeker",
+//         },
+//       },
+//       { $unwind: "$jobSeeker" },
+//       {
+//         $lookup: {
+//           from: "jobvacancies",
+//           localField: "jobVacancyId",
+//           foreignField: "_id",
+//           as: "jobVacancy",
+//         },
+//       },
+//       { $unwind: "$jobVacancy" },
+//       {
+//         $lookup: {
+//           from: "companies",
+//           localField: "jobVacancy.companyId",
+//           foreignField: "_id",
+//           as: "company",
+//         },
+//       },
+//       { $unwind: "$company" },
+//       {
+//         $project: {
+//           status: 1,
+//           jobSeekerId: 1, // Include job seeker ID
+//           "jobSeeker.personalInformation.firstName": 1,
+//           "jobSeeker.personalInformation.lastName": 1,
+//           "jobSeeker.personalInformation.emailAddress": 1,
+//           "jobSeeker.personalInformation.mobileNumber": 1,
+//           "jobVacancy.jobTitle": 1,
+//           "jobVacancy.department": 1,
+//           "company.companyInformation.businessName": 1,
+//           "company.companyInformation.industry": 1,
+//           createdAt: 1,
+//           updatedAt: 1,
+//           hiredDate: 1,
+//           hiredBy: 1,
+//           remarks: 1,
+//         },
+//       },
+//       { $sort: { createdAt: -1 } },
+//     ]);
+
+//     // Format report data
+//     const reportData = applications.map((app) => ({
+//       applicant: {
+//         id: app.jobSeekerId, // Include job seeker ID in response
+//         name: `${app.jobSeeker.personalInformation.firstName} ${app.jobSeeker.personalInformation.lastName}`,
+//         email: app.jobSeeker.personalInformation.emailAddress,
+//         phone: app.jobSeeker.personalInformation.mobileNumber,
+//       },
+//       job: {
+//         title: app.jobVacancy.jobTitle,
+//         department: app.jobVacancy.department,
+//       },
+//       company: {
+//         businessName: app.company.companyInformation.businessName,
+//         industry: app.company.companyInformation.industry,
+//       },
+//       application: {
+//         status: app.status,
+//         appliedDate: app.createdAt.toISOString().split("T")[0], // Format as YYYY-MM-DD
+//         lastUpdated: app.updatedAt.toISOString().split("T")[0],
+//         hiredDate: app.hiredDate
+//           ? app.hiredDate.toISOString().split("T")[0]
+//           : "N/A",
+//         hiredBy: app.hiredBy || app.company.companyInformation.businessName,
+//       },
+//       remarks: app.remarks,
+//     }));
+
+//     // Generate summary statistics
+//     const statusCounts = await Application.aggregate([
+//       { $match: filter },
+//       {
+//         $group: {
+//           _id: "$status",
+//           count: { $sum: 1 },
+//         },
+//       },
+//     ]);
+
+//     const summary = {
+//       total: applications.length,
+//       statuses: statusCounts.reduce((acc, curr) => {
+//         acc[curr._id] = curr.count;
+//         return acc;
+//       }, {}),
+//       ...(businessName && {
+//         hiringBusiness: businessName,
+//         hiredCount: applications.filter((app) => app.status === "hired").length,
+//       }),
+//     };
+
+//     res.status(200).json({
+//       success: true,
+//       summary,
+//       filters: {
+//         year: year || "All years",
+//         month: month
+//           ? new Date(2000, parseInt(month) - 1).toLocaleString("default", {
+//               month: "long",
+//             })
+//           : "All months",
+//         status: status || "All statuses",
+//         businessName: businessName || "All businesses",
+//       },
+//       applications: reportData,
+//       count: reportData.length,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to generate application report",
+//       error: error.message,
+//     });
+//   }
+// };
+
+
+
 export const getAllApplicationReports = async (req, res) => {
   try {
-    const { year, month, status, businessName } = req.query;
+    const { year, month, status, businessName, hasDisability } = req.query;
 
-    // Base filter
-    const filter = {};
+    // Build the aggregation pipeline
+    const pipeline = [];
 
-    // Add status filter if provided
+    // Initial match for status if provided
     if (status) {
-      filter.status = status;
+      pipeline.push({
+        $match: { status }
+      });
     }
 
-    // Add business name filter if provided
-    if (businessName) {
-      // First find companies that match the business name
-      const companies = await Company.find({
-        "companyInformation.businessName": new RegExp(businessName, "i"),
-      }).select("_id");
-
-      const companyIds = companies.map((c) => c._id);
-
-      // Then find job vacancies from these companies
-      const jobVacancies = await JobVacancy.find({
-        companyId: { $in: companyIds },
-      }).select("_id");
-
-      const jobVacancyIds = jobVacancies.map((jv) => jv._id);
-      filter.jobVacancyId = { $in: jobVacancyIds };
-    }
-
-    // Add date filtering for year and/or month
+    // Date filtering
     if (year || month) {
-      filter.createdAt = {};
-
+      const dateFilter = {};
+      
       if (year) {
         const startYear = new Date(`${year}-01-01`);
         const endYear = new Date(`${parseInt(year) + 1}-01-01`);
-        filter.createdAt.$gte = startYear;
-        filter.createdAt.$lt = endYear;
+        dateFilter.$gte = startYear;
+        dateFilter.$lt = endYear;
       }
 
       if (month && year) {
         const startMonth = new Date(`${year}-${month.padStart(2, "0")}-01`);
         const endMonth = new Date(startMonth);
         endMonth.setMonth(endMonth.getMonth() + 1);
-        filter.createdAt.$gte = startMonth;
-        filter.createdAt.$lt = endMonth;
+        dateFilter.$gte = startMonth;
+        dateFilter.$lt = endMonth;
       } else if (month) {
-        // If month is provided without year, use current year
         const currentYear = new Date().getFullYear();
-        const startMonth = new Date(
-          `${currentYear}-${month.padStart(2, "0")}-01`
-        );
+        const startMonth = new Date(`${currentYear}-${month.padStart(2, "0")}-01`);
         const endMonth = new Date(startMonth);
         endMonth.setMonth(endMonth.getMonth() + 1);
-        filter.createdAt.$gte = startMonth;
-        filter.createdAt.$lt = endMonth;
+        dateFilter.$gte = startMonth;
+        dateFilter.$lt = endMonth;
       }
+
+      pipeline.push({
+        $match: { createdAt: dateFilter }
+      });
     }
 
-    // Get application data with full details
-    const applications = await Application.aggregate([
-      { $match: filter },
-      {
-        $lookup: {
-          from: "jobseekers",
-          localField: "jobSeekerId",
-          foreignField: "_id",
-          as: "jobSeeker",
-        },
-      },
-      { $unwind: "$jobSeeker" },
-      {
-        $lookup: {
-          from: "jobvacancies",
-          localField: "jobVacancyId",
-          foreignField: "_id",
-          as: "jobVacancy",
-        },
-      },
-      { $unwind: "$jobVacancy" },
-      {
+    // Lookup job seeker information
+    pipeline.push({
+      $lookup: {
+        from: "jobseekers",
+        localField: "jobSeekerId",
+        foreignField: "_id",
+        as: "jobSeeker"
+      }
+    });
+    pipeline.push({ $unwind: "$jobSeeker" });
+
+    // Apply disability filter if provided
+    if (hasDisability !== undefined) {
+      pipeline.push({
+        $match: {
+          "jobSeeker.disability.hasDisability": hasDisability === 'true'
+        }
+      });
+    }
+
+    // Lookup job vacancy information
+    pipeline.push({
+      $lookup: {
+        from: "jobvacancies",
+        localField: "jobVacancyId",
+        foreignField: "_id",
+        as: "jobVacancy"
+      }
+    });
+    pipeline.push({ $unwind: "$jobVacancy" });
+
+    // Apply business name filter if provided
+    if (businessName) {
+      pipeline.push({
         $lookup: {
           from: "companies",
           localField: "jobVacancy.companyId",
           foreignField: "_id",
-          as: "company",
-        },
-      },
-      { $unwind: "$company" },
-      {
-        $project: {
-          status: 1,
-          jobSeekerId: 1, // Include job seeker ID
-          "jobSeeker.personalInformation.firstName": 1,
-          "jobSeeker.personalInformation.lastName": 1,
-          "jobSeeker.personalInformation.emailAddress": 1,
-          "jobSeeker.personalInformation.mobileNumber": 1,
-          "jobVacancy.jobTitle": 1,
-          "jobVacancy.department": 1,
-          "company.companyInformation.businessName": 1,
-          "company.companyInformation.industry": 1,
-          createdAt: 1,
-          updatedAt: 1,
-          hiredDate: 1,
-          hiredBy: 1,
-          remarks: 1,
-        },
-      },
-      { $sort: { createdAt: -1 } },
-    ]);
+          as: "company"
+        }
+      });
+      pipeline.push({ $unwind: "$company" });
+      pipeline.push({
+        $match: {
+          "company.companyInformation.businessName": new RegExp(businessName, "i")
+        }
+      });
+    } else {
+      // Still need to lookup company info even if not filtering
+      pipeline.push({
+        $lookup: {
+          from: "companies",
+          localField: "jobVacancy.companyId",
+          foreignField: "_id",
+          as: "company"
+        }
+      });
+      pipeline.push({ $unwind: "$company" });
+    }
+
+    // Project the fields we need
+    pipeline.push({
+      $project: {
+        status: 1,
+        jobSeekerId: 1,
+        "jobSeeker.personalInformation.firstName": 1,
+        "jobSeeker.personalInformation.lastName": 1,
+        "jobSeeker.personalInformation.emailAddress": 1,
+        "jobSeeker.personalInformation.mobileNumber": 1,
+        "jobSeeker.disability.hasDisability": 1,
+        "jobSeeker.disability.types": 1,
+        "jobSeeker.disability.otherDescription": 1,
+        "jobVacancy.jobTitle": 1,
+        "jobVacancy.department": 1,
+        "company.companyInformation.businessName": 1,
+        "company.companyInformation.industry": 1,
+        createdAt: 1,
+        updatedAt: 1,
+        hiredDate: 1,
+        hiredBy: 1,
+        remarks: 1,
+      }
+    });
+
+    // Sort by creation date
+    pipeline.push({ $sort: { createdAt: -1 } });
+
+    // Execute the aggregation
+    const applications = await Application.aggregate(pipeline);
 
     // Format report data
     const reportData = applications.map((app) => ({
       applicant: {
-        id: app.jobSeekerId, // Include job seeker ID in response
+        id: app.jobSeekerId,
         name: `${app.jobSeeker.personalInformation.firstName} ${app.jobSeeker.personalInformation.lastName}`,
         email: app.jobSeeker.personalInformation.emailAddress,
         phone: app.jobSeeker.personalInformation.mobileNumber,
+        hasDisability: app.jobSeeker.disability?.hasDisability || false,
+        disabilityTypes: app.jobSeeker.disability?.types || [],
+        otherDisabilityDescription: app.jobSeeker.disability?.otherDescription || "",
       },
       job: {
         title: app.jobVacancy.jobTitle,
@@ -1225,7 +1441,7 @@ export const getAllApplicationReports = async (req, res) => {
       },
       application: {
         status: app.status,
-        appliedDate: app.createdAt.toISOString().split("T")[0], // Format as YYYY-MM-DD
+        appliedDate: app.createdAt.toISOString().split("T")[0],
         lastUpdated: app.updatedAt.toISOString().split("T")[0],
         hiredDate: app.hiredDate
           ? app.hiredDate.toISOString().split("T")[0]
@@ -1236,20 +1452,44 @@ export const getAllApplicationReports = async (req, res) => {
     }));
 
     // Generate summary statistics
-    const statusCounts = await Application.aggregate([
-      { $match: filter },
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+    const summaryPipeline = [...pipeline];
+    
+    // Remove sorting and projection for counting
+    summaryPipeline.pop(); // Remove sort
+    summaryPipeline.pop(); // Remove project
+    
+    // Add status counting
+    summaryPipeline.push({
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 }
+      }
+    });
+    
+    const statusCounts = await Application.aggregate(summaryPipeline);
+    
+    // Count disability stats
+    const disabilityPipeline = [...pipeline];
+    disabilityPipeline.pop(); // Remove sort
+    disabilityPipeline.pop(); // Remove project
+    
+    disabilityPipeline.push({
+      $group: {
+        _id: "$jobSeeker.disability.hasDisability",
+        count: { $sum: 1 }
+      }
+    });
+    
+    const disabilityCount = await Application.aggregate(disabilityPipeline);
 
     const summary = {
       total: applications.length,
       statuses: statusCounts.reduce((acc, curr) => {
         acc[curr._id] = curr.count;
+        return acc;
+      }, {}),
+      disabilityStats: disabilityCount.reduce((acc, curr) => {
+        acc[curr._id ? 'withDisability' : 'withoutDisability'] = curr.count;
         return acc;
       }, {}),
       ...(businessName && {
@@ -1270,6 +1510,7 @@ export const getAllApplicationReports = async (req, res) => {
           : "All months",
         status: status || "All statuses",
         businessName: businessName || "All businesses",
+        hasDisability: hasDisability !== undefined ? (hasDisability === 'true' ? 'Yes' : 'No') : 'All',
       },
       applications: reportData,
       count: reportData.length,
@@ -1282,6 +1523,7 @@ export const getAllApplicationReports = async (req, res) => {
     });
   }
 };
+
 
 // Get unique business names for filter dropdown
 export const getBusinessNames = async (req, res) => {
