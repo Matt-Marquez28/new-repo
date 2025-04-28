@@ -69,7 +69,7 @@ const UsersPage = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td scope="row" className="small text-muted align-middle">
+              <td scope="row" className="small text-primary align-middle">
                 {user.fullName}
               </td>
               <td className="small text-muted align-middle">{user.email}</td>
@@ -125,7 +125,7 @@ const AddStaffModal = ({ show, onHide, onSave }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton style={{ backgroundColor: "#1a4798" }}>
         <Modal.Title>Add New Staff</Modal.Title>
       </Modal.Header>
       <Modal.Body>

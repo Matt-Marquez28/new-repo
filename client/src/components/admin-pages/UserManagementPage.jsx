@@ -192,7 +192,7 @@ const UserManagementPage = () => {
                   <tr key={user._id}>
                     <td
                       scope="row"
-                      className="small text-muted align-middle fw-semibold"
+                      className="small text-primary align-middle fw-semibold"
                       style={{ width: "25%" }}
                     >
                       {`${user?.firstName} ${user?.lastName}`}
@@ -310,7 +310,11 @@ const AddStaffModal = ({ show, onHide, getAllSystemUsers }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header className="bg-primary" closeButton>
+      <Modal.Header
+        className=""
+        style={{ backgroundColor: "#1a4798" }}
+        closeButton
+      >
         <Modal.Title className="text-light">Create New User</Modal.Title>
       </Modal.Header>
       <Modal.Body>

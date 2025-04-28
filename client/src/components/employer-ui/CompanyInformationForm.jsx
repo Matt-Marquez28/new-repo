@@ -762,7 +762,11 @@ const CompanyInformationForm = () => {
 
           {/* Submit Button */}
           <div className="d-flex justify-content-end">
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn text-white"
+              style={{ background: "#1a4798" }}
+            >
               <i className="bi bi-floppy"></i> Save Changes
             </button>
           </div>

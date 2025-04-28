@@ -17,6 +17,8 @@ const CurriculumVitae = () => {
   const softSkills = jobseekerData?.skillsAndSpecializations?.softSkills;
   const educationalBackgrounds = jobseekerData?.educationalBackground;
   const workExperiences = jobseekerData?.workExperience;
+  const languages = jobseekerData?.languages;
+  const trainings = jobseekerData?.trainings;
 
   useEffect(() => {
     getJobSeekerData();
@@ -209,6 +211,41 @@ const CurriculumVitae = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Language Proficiency */}
+          {languages?.filter(
+            (lang) => lang.read || lang.write || lang.speak || lang.understand
+          ).length > 0 && (
+            <div className="bg-light p-3 rounded border mb-4">
+              <h5
+                className="d-flex align-items-center gap-2 mb-3"
+                style={{ color: "#1a4798" }}
+              >
+                <i className="bi bi-translate"></i>
+                Languages
+              </h5>
+
+              <div className="d-flex flex-wrap gap-2">
+                {languages
+                  .filter(
+                    (lang) =>
+                      lang.read || lang.write || lang.speak || lang.understand
+                  )
+                  .map((language, index) => (
+                    <span
+                      key={index}
+                      className="badge"
+                      style={{
+                        backgroundColor: "rgba(26, 71, 152, 0.1)",
+                        color: "#1a4798",
+                      }}
+                    >
+                      {language.name}
+                    </span>
+                  ))}
+              </div>
             </div>
           )}
 
@@ -558,6 +595,77 @@ const CurriculumVitae = () => {
                         )}
                       </div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Trainings Section - Added new section */}
+          {trainings?.length > 0 && (
+            <div className="bg-light p-3 rounded border mb-4">
+              <h5
+                className="d-flex align-items-center gap-2"
+                style={{ color: "#1a4798" }}
+              >
+                <i className="bi bi-award"></i>
+                Trainings & Certifications
+              </h5>
+              <div className="mt-3">
+                {trainings.map((training, index) => (
+                  <div key={index} className="mb-3 pb-2 border-bottom">
+                    <h6 className="fw-bold mb-1">{training.trainingName}</h6>
+                    <div className="small text-muted mb-1">
+                      {training.institution && (
+                        <div className="d-flex align-items-center gap-2">
+                          <i className="bi bi-building"></i>
+                          {training.institution}
+                        </div>
+                      )}
+                      {training.hours && (
+                        <div className="d-flex align-items-center gap-2">
+                          <i className="bi bi-clock"></i>
+                          {training.hours} hours
+                        </div>
+                      )}
+                    </div>
+                    {training.skills?.length > 0 && (
+                      <div className="mt-2">
+                        <div className="d-flex flex-wrap gap-2">
+                          {training.skills.map((skill, i) => (
+                            <span
+                              key={i}
+                              className="badge"
+                              style={{
+                                backgroundColor: "rgba(26, 71, 152, 0.1)",
+                                color: "#1a4798",
+                                fontSize: "0.75rem",
+                              }}
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {training.certificate && (
+                      <div className="mt-2">
+                        <div className="d-flex align-items-start gap-2">
+                          <i
+                            className="bi bi-file-earmark-text mt-1"
+                            style={{ color: "#1a4798" }}
+                          ></i>
+                          <div>
+                            <div className="fw-semibold small">
+                              Certificate:
+                            </div>
+                            <div className="text-muted small">
+                              {training.certificate}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -93,21 +93,7 @@ const AdminSidebar = () => {
               {!isCollapsed && "Job Vacancy Verification"}
             </NavLink>
           </li>
-          {/* <li className="nav-item">
-            <NavLink
-              exact
-              to="/analytics"
-              className="nav-link"
-              style={({ isActive }) => ({
-                ...(isActive ? activeLinkStyle : {}),
-                margin: "8px 0", // Increased vertical margin
-                padding: "8px 12px", // Padding
-              })}
-            >
-              <i className="bi bi-bar-chart-line me-2"></i>
-              {!isCollapsed && "Analytics"}
-            </NavLink>
-          </li> */}
+
           <li className="nav-item">
             <NavLink
               exact
@@ -150,9 +136,6 @@ const AdminSidebar = () => {
                 ...(isActive ? activeLinkStyle : {}),
                 margin: "8px 0", // Increased vertical margin
                 padding: "8px 12px", // Padding
-                ...(user.accountData.role === "staff"
-                  ? { pointerEvents: "none", color: "#ccc" } // Disabled styles
-                  : {}),
               })}
             >
               <i className="bi bi-people-fill me-2"></i>

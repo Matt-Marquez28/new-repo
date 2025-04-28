@@ -95,43 +95,53 @@ const LegalDocuments = () => {
   };
 
   const getStatus = (status) => {
-    switch (status) {
+    const baseClasses = "badge bg-light fs-6";
+    const iconClasses = "me-1"; // margin between icon and text
+
+    switch (status?.toLowerCase()) {
       case "pending":
         return (
           <span className="fw-semibold text-secondary">
-            <span className="badge bg-light text-warning fs-6">
-              <i className="bi bi-hourglass-split"></i> Pending
+            <span className={`${baseClasses} text-warning`}>
+              <i className={`bi bi-hourglass-split ${iconClasses}`}></i>
+              Pending
             </span>
           </span>
         );
       case "verified":
         return (
           <span className="fw-semibold text-secondary">
-            <span className="badge bg-light text-success fs-6">
-              <i className="bi bi-check-circle-fill"></i> Verified
+            <span className={`${baseClasses} text-success`}>
+              <i className={`bi bi-check-circle-fill ${iconClasses}`}></i>
+              Verified
             </span>
           </span>
         );
       case "declined":
         return (
           <span className="fw-semibold">
-            <span className="badge bg-light text-danger fs-6">
-              <i className="bi bi-x-circle-fill"></i> Declined
+            <span className={`${baseClasses} text-danger`}>
+              <i className={`bi bi-x-circle-fill ${iconClasses}`}></i>
+              Declined
             </span>
           </span>
         );
       case "expired":
         return (
           <span className="fw-semibold">
-            <span className="badge bg-light text-danger fs-6">
-              <i className="bi bi-hourglass-bottom"></i> Expired
+            <span className={`${baseClasses} text-danger`}>
+              <i className={`bi bi-hourglass-bottom ${iconClasses}`}></i>
+              Expired
             </span>
           </span>
         );
       default:
         return (
-          <span className="fw-semibold text-secondary">
-            <span className="badge bg-secondary">Unknown</span>
+          <span className="fw-semibold">
+            <span className={`${baseClasses} text-secondary`}>
+              <i className={`bi bi-question-circle-fill ${iconClasses}`}></i>
+              Unknown
+            </span>
           </span>
         );
     }
@@ -157,10 +167,28 @@ const LegalDocuments = () => {
 
   return (
     <div className="container">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <p className="m-0">
-            {" "}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div className="mb-3">
+          <div className="d-flex align-items-center">
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                background: "#1a4798",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <i className="bi bi-file-earmark-check-fill text-white"></i>
+            </div>
+            <h5 className="m-0 fw-semibold" style={{ color: "#1a4798" }}>
+              Legal Documents
+            </h5>
+          </div>
+          <p className="text-muted mb-0 mt-1">
             Accepted formats: JPG, PNG, PDF, Maximum file size: 5MB, Ensure the
             documents is clearly visible and not expired.
           </p>
@@ -168,6 +196,15 @@ const LegalDocuments = () => {
         <div className="d-flex justify-content-end mb-2">
           {getStatus(documents?.status)}
         </div>
+      </div>
+      <form onSubmit={handleSubmit}>
+        {/* <div>
+          <p className="m-0">
+            {" "}
+            Accepted formats: JPG, PNG, PDF, Maximum file size: 5MB, Ensure the
+            documents is clearly visible and not expired.
+          </p>
+        </div> */}
 
         <div className="row">
           {typeOfBusiness === "sole proprietorship" ? (
@@ -482,7 +519,8 @@ const LegalDocuments = () => {
         <div className="d-flex justify-content-end">
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn text-white"
+            style={{ backgroundColor: "#1a4798" }}
             disabled={isSubmitting} // Disable button when loading
           >
             {isSubmitting ? (

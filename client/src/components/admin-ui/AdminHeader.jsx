@@ -406,20 +406,6 @@ const AdminHeader = () => {
                   Job Vacancy Verification
                 </NavLink>
 
-                {/* <NavLink
-                  exact
-                  to="/admin/analytics"
-                  className="nav-link px-3 py-2 rounded"
-                  style={({ isActive }) => ({
-                    ...(isActive ? activeLinkStyle : {}),
-                    margin: "8px 0",
-                  })}
-                  onClick={() => setShowOffcanvas(false)}
-                >
-                  <i className="bi bi-bar-chart-line me-2"></i>
-                  Analytics
-                </NavLink> */}
-
                 <NavLink
                   exact
                   to="/admin/audit-trail"
@@ -436,7 +422,7 @@ const AdminHeader = () => {
 
                 <NavLink
                   exact
-                  to="/admin/user-management/user-option"
+                  to="/admin/job-fair"
                   className="nav-link px-3 py-2 rounded"
                   style={({ isActive }) => ({
                     ...(isActive ? activeLinkStyle : {}),
@@ -444,6 +430,20 @@ const AdminHeader = () => {
                     ...(user?.accountData?.role === "staff"
                       ? { pointerEvents: "none", color: "#ccc" }
                       : {}),
+                  })}
+                  onClick={() => setShowOffcanvas(false)}
+                >
+                  <i className="bi bi-people me-2"></i>
+                  Job Fair
+                </NavLink>
+
+                <NavLink
+                  exact
+                  to="/admin/user-management/user-option"
+                  className="nav-link px-3 py-2 rounded"
+                  style={({ isActive }) => ({
+                    ...(isActive ? activeLinkStyle : {}),
+                    margin: "8px 0",
                   })}
                   onClick={() => setShowOffcanvas(false)}
                 >

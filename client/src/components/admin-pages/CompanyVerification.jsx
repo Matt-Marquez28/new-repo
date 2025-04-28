@@ -231,10 +231,10 @@ const CompanyVerification = () => {
             </div>
           ) : (
             <div className="table-responsive">
-              <table className="table table-hover table-striped align-middle mb-0">
+              <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th style={{ width: "25%" }} className="fw-normal">
+                    <th style={{ width: "20%" }} className="fw-normal">
                       Company Details
                     </th>
                     <th style={{ width: "15%" }} className="fw-normal">
@@ -250,7 +250,7 @@ const CompanyVerification = () => {
                       Status
                     </th>
                     <th
-                      style={{ width: "15%" }}
+                      style={{ width: "10%" }}
                       className="fw-normal text-center"
                     >
                       Actions
@@ -262,7 +262,7 @@ const CompanyVerification = () => {
                     <tr key={company._id}>
                       <td>
                         <div className="d-flex align-items-center">
-                          {company?.companyInformation?.companyLogo && (
+                          {company?.companyInformation?.companyLogo ? (
                             <img
                               src={company.companyInformation.companyLogo}
                               alt="Company Logo"
@@ -273,6 +273,10 @@ const CompanyVerification = () => {
                                 objectFit: "cover",
                               }}
                             />
+                          ) : (
+                            <div className="bg-light p-2 rounded me-3">
+                              <i className="bi bi-building text-muted"></i>
+                            </div>
                           )}
                           <div>
                             <h6 className="mb-1 text-primary fw-semibold">
@@ -287,53 +291,73 @@ const CompanyVerification = () => {
                         </div>
                       </td>
                       <td>
-                        <span className="text-muted">
-                          {company?.companyInformation?.tinNumber
-                            ? company.companyInformation.tinNumber.replace(
-                                /(\d{3})(\d{3})(\d{3})(\d{3})/,
-                                "$1-$2-$3-$4"
-                              )
-                            : "N/A"}
-                        </span>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-info bg-opacity-10 p-2 rounded me-3">
+                            <i className="bi bi-credit-card text-info"></i>
+                          </div>
+                          <span className="text-muted small">
+                            {company?.companyInformation?.tinNumber
+                              ? company.companyInformation.tinNumber.replace(
+                                  /(\d{3})(\d{3})(\d{3})(\d{3})/,
+                                  "$1-$2-$3-$4"
+                                )
+                              : "N/A"}
+                          </span>
+                        </div>
                       </td>
                       <td>
-                        <span className="text-muted">
-                          {new Date(company.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-warning bg-opacity-10 p-2 rounded me-3">
+                            <i className="bi bi-calendar-check text-warning"></i>
+                          </div>
+                          <span className="text-muted small">
+                            {new Date(company.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                          </span>
+                        </div>
                       </td>
                       <td>
-                        <span
-                          className={`badge rounded-pill ${
-                            company.isRenewal
-                              ? "bg-primary text-white"
-                              : "bg-secondary text-white"
-                          }`}
-                        >
-                          {company.isRenewal ? "Yes" : "No"}
-                        </span>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-secondary bg-opacity-10 p-2 rounded me-3">
+                            <i className="bi bi-arrow-repeat text-secondary"></i>
+                          </div>
+                          <span
+                            className={`badge ${
+                              company.isRenewal
+                                ? "bg-primary text-white"
+                                : "bg-secondary text-white"
+                            }`}
+                          >
+                            {company.isRenewal ? "Yes" : "No"}
+                          </span>
+                        </div>
                       </td>
                       <td>
-                        <span
-                          className={`badge ${getStatusBadgeClass(
-                            company.status
-                          )}`}
-                        >
-                          {company.status}
-                        </span>
+                        <div className="d-flex align-items-center">
+                          <div className="bg-success bg-opacity-10 p-2 rounded me-3">
+                            <i className="bi bi-check-circle text-success"></i>
+                          </div>
+                          <span
+                            className={`badge ${getStatusBadgeClass(
+                              company.status
+                            )}`}
+                          >
+                            {company.status}
+                          </span>
+                        </div>
                       </td>
                       <td className="text-center">
                         <button
-                          className="btn btn-sm btn-outline-primary "
+                          className="btn btn-sm btn-outline-primary me-2"
                           onClick={() => viewDetails(company._id)}
                         >
-                          <i className="bi bi-eye"></i>
+                          <i className="bi bi-eye"></i> View
                         </button>
                       </td>
                     </tr>

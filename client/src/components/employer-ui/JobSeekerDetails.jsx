@@ -39,6 +39,7 @@ const JobSeekerDetails = () => {
   const educationalBackgrounds = jobseekerData?.educationalBackground;
   const workExperiences = jobseekerData?.workExperience;
   const trainings = jobseekerData?.trainings;
+  const languages = jobseekerData?.languages;
 
   useEffect(() => {
     getJobSeekerData();
@@ -114,7 +115,8 @@ const JobSeekerDetails = () => {
         <Col className=" d-flex gap-2 justify-content-end text-end">
           <ReportButton accountId={jobseekerData?.accountId} />
           <Button
-            variant="primary"
+            variant=""
+            style={{ backgroundColor: "#1a4798" }}
             className="text-light"
             onClick={handleSendInvitation}
           >
@@ -264,7 +266,7 @@ const JobSeekerDetails = () => {
                       className="d-flex align-items-center gap-2 mb-3"
                       style={{ color: "#1a4798" }}
                     >
-                      <i className="bi bi-envelope-at-fill"></i>
+                      <i className="bi bi-phone-fill"></i>
                       Contact Information
                     </h5>
 
@@ -305,6 +307,45 @@ const JobSeekerDetails = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Language Proficiency */}
+                {languages?.filter(
+                  (lang) =>
+                    lang.read || lang.write || lang.speak || lang.understand
+                ).length > 0 && (
+                  <div className="bg-light p-3 rounded border mb-4">
+                    <h5
+                      className="d-flex align-items-center gap-2 mb-3"
+                      style={{ color: "#1a4798" }}
+                    >
+                      <i className="bi bi-translate"></i>
+                      Languages
+                    </h5>
+
+                    <div className="d-flex flex-wrap gap-2">
+                      {languages
+                        .filter(
+                          (lang) =>
+                            lang.read ||
+                            lang.write ||
+                            lang.speak ||
+                            lang.understand
+                        )
+                        .map((language, index) => (
+                          <span
+                            key={index}
+                            className="badge"
+                            style={{
+                              backgroundColor: "rgba(26, 71, 152, 0.1)",
+                              color: "#1a4798",
+                            }}
+                          >
+                            {language.name}
+                          </span>
+                        ))}
+                    </div>
                   </div>
                 )}
 

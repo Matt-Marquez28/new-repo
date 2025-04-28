@@ -101,33 +101,54 @@ const JobVacancyVerificationDetails = () => {
   };
 
   const getStatus = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case "pending":
         return (
-          <Badge bg="warning" className="fs-6">
-            <i className="bi bi-hourglass-split me-2"></i> Pending
-          </Badge>
+          <span className="fw-semibold text-secondary">
+            <Badge bg="light" className="text-warning fs-6">
+              <i className="bi bi-hourglass-split me-2"></i> Pending
+            </Badge>
+          </span>
         );
       case "approved":
         return (
-          <Badge bg="success" className="fs-6">
-            <i className="bi bi-check-circle-fill me-2"></i> Approved
-          </Badge>
+          <span className="fw-semibold text-secondary">
+            <Badge bg="light" className="text-success fs-6">
+              <i className="bi bi-check-circle-fill me-2"></i> Approved
+            </Badge>
+          </span>
         );
       case "declined":
         return (
-          <Badge bg="danger" className="fs-6">
-            <i className="bi bi-x-circle-fill me-2"></i> Declined
-          </Badge>
+          <span className="fw-semibold">
+            <Badge bg="light" className="text-danger fs-6">
+              <i className="bi bi-x-circle-fill me-2"></i> Declined
+            </Badge>
+          </span>
         );
       default:
         return (
-          <Badge bg="secondary" className="fs-6">
-            <i className="bi bi-question-circle-fill me-2"></i> Unknown
-          </Badge>
+          <span className="fw-semibold">
+            <Badge bg="light" className="text-secondary fs-6">
+              <i className="bi bi-question-circle-fill me-2"></i> Unknown
+            </Badge>
+          </span>
         );
     }
   };
+
+  // Helper component for consistent info display
+  const InfoItem = ({ label, value, icon }) => (
+    <div className="d-flex align-items-center gap-3 mb-3">
+      <div className="bg-white p-2 rounded border">
+        <i className={`bi bi-${icon} fs-5`} style={{ color: "#1a4798" }}></i>
+      </div>
+      <div>
+        <div className="fw-semibold small text-muted">{label}</div>
+        <div className="small">{value || "-"}</div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container">
@@ -139,12 +160,11 @@ const JobVacancyVerificationDetails = () => {
         >
           <i className="bi bi-arrow-left me-2"></i> Back
         </button>
+        <div>{jobVacancy && getStatus(jobVacancy.publicationStatus)}</div>
 
         <div className="d-flex align-items-center gap-3">
-          {jobVacancy && getStatus(jobVacancy.publicationStatus)}
-
           <DropdownButton
-            variant="outline-primary"
+            variant="primary"
             title={
               <>
                 <i className="bi bi-hand-index-thumb-fill me-2"></i> Actions
@@ -239,188 +259,201 @@ const JobVacancyVerificationDetails = () => {
 
       {/* Job Vacancy Details */}
       {jobVacancy && (
-        <Card className="shadow-sm mb-4">
-          <Card.Header
-            className="text-white text-center"
+        <div className="card shadow-sm mb-4">
+          <div
+            className="card-header text-white text-center"
             style={{ backgroundColor: primaryColor }}
           >
-            <i className="bi bi-info-circle"></i> Job Vacancy Details
-          </Card.Header>
-          <Card.Body>
-            {/* Basic Information Section */}
-            <div className="mb-4">
-              <h5
-                className="mb-3 d-flex align-items-center"
-                style={{ color: primaryColor }}
-              >
-                <i className="bi bi-suitcase-lg-fill me-2"></i>
-                Job Information
-              </h5>
+            <div className="d-flex align-items-center justify-content-center">
+              <i className="bi bi-info-circle me-2"></i>
+              <h5 className="m-0">Job Vacancy Details</h5>
+            </div>
+          </div>
 
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Job Title</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.jobTitle}</p>
-                  </div>
+          <div className="card-body p-4">
+            <div className="row g-4">
+              {/* Left Column */}
+              <div className="col-md-6">
+                {/* Job Information */}
+                <div className="card p-3 mb-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-suitcase-lg-fill"></i>
+                    Job Information
+                  </h5>
+                  <InfoItem
+                    label="Job Title"
+                    value={jobVacancy.jobTitle}
+                    icon="briefcase-fill"
+                  />
+                  <InfoItem
+                    label="Employment Type"
+                    value={jobVacancy.employmentType}
+                    icon="person-workspace"
+                  />
+                  <InfoItem
+                    label="Work Location"
+                    value={jobVacancy.workLocation}
+                    icon="geo-alt-fill"
+                  />
+                  <InfoItem
+                    label="Vacancies"
+                    value={jobVacancy.vacancies}
+                    icon="people-fill"
+                  />
+                  <InfoItem
+                    label="Industry"
+                    value={jobVacancy.industry}
+                    icon="building-fill"
+                  />
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Employment Type</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.employmentType}</p>
-                  </div>
+                {/* Salary Information */}
+                <div className="card p-3 mb-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-wallet-fill"></i>
+                    Salary Information
+                  </h5>
+                  <InfoItem
+                    label="Salary Type"
+                    value={jobVacancy.salaryType}
+                    icon="cash-stack"
+                  />
+                  <InfoItem
+                    label="Minimum Salary"
+                    value={`$${jobVacancy.salaryMin?.toLocaleString()}`}
+                    icon="currency-dollar"
+                  />
+                  <InfoItem
+                    label="Maximum Salary"
+                    value={`$${jobVacancy.salaryMax?.toLocaleString()}`}
+                    icon="currency-exchange"
+                  />
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Work Location</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.workLocation}</p>
-                  </div>
+                {/* Additional Information */}
+                <div className="card p-3">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-info-circle-fill"></i>
+                    Additional Information
+                  </h5>
+                  <InfoItem
+                    label="Application Deadline"
+                    value={formatDate(jobVacancy.applicationDeadline)}
+                    icon="calendar-fill"
+                  />
+                  <InfoItem
+                    label="Interview Process"
+                    value={jobVacancy.interviewProcess}
+                    icon="list-check"
+                  />
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="col-md-6">
+                {/* Job Description */}
+                <div className="card mb-4 p-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-file-text-fill"></i>
+                    Job Description
+                  </h5>
+                  <p className="mb-0 text-secondary small">
+                    {jobVacancy.description || "No description provided."}
+                  </p>
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Vacancies</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.vacancies}</p>
-                  </div>
+                {/* Required Qualifications */}
+                <div className="card mb-4 p-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-list-check"></i>
+                    Required Qualifications
+                  </h5>
+                  <ul className="list-unstyled">
+                    {jobVacancy.requiredQualifications?.map(
+                      (qualification, index) => (
+                        <li key={index} className="mb-2">
+                          <div className="d-flex align-items-start">
+                            <i
+                              className="bi bi-check-circle-fill mt-1 me-2"
+                              style={{ color: primaryColor }}
+                            ></i>
+                            <span className="small">{qualification}</span>
+                          </div>
+                        </li>
+                      )
+                    )}
+                  </ul>
                 </div>
 
-                <div className="col-12 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Industry</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.industry}</p>
-                  </div>
+                {/* Responsibilities */}
+                <div className="card mb-4 p-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-card-checklist"></i>
+                    Responsibilities
+                  </h5>
+                  <ul className="list-unstyled">
+                    {jobVacancy.responsibilities?.map(
+                      (responsibility, index) => (
+                        <li key={index} className="mb-2">
+                          <div className="d-flex align-items-start">
+                            <i
+                              className="bi bi-check-circle-fill mt-1 me-2"
+                              style={{ color: primaryColor }}
+                            ></i>
+                            <span className="small">{responsibility}</span>
+                          </div>
+                        </li>
+                      )
+                    )}
+                  </ul>
                 </div>
 
-                <div className="col-12 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Job Description</h6>
-                    <p className="mb-0">{jobVacancy.description}</p>
+                {/* Skills Required */}
+                <div className="card p-4">
+                  <h5
+                    className="d-flex align-items-center gap-2 mb-3"
+                    style={{ color: primaryColor }}
+                  >
+                    <i className="bi bi-tools"></i>
+                    Skills Required
+                  </h5>
+                  <div className="d-flex flex-wrap gap-2">
+                    {jobVacancy.skillsRequired?.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="badge"
+                        style={{
+                          backgroundColor: "rgba(26, 71, 152, 0.1)",
+                          color: primaryColor,
+                        }}
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Salary Information Section */}
-            <div className="mb-4">
-              <h5
-                className="mb-3 d-flex align-items-center"
-                style={{ color: primaryColor }}
-              >
-                <i className="bi bi-wallet-fill me-2"></i>
-                Salary Information
-              </h5>
-
-              <div className="row">
-                <div className="col-md-4 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Salary Type</h6>
-                    <p className="mb-0 fw-bold">{jobVacancy.salaryType}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-4 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Minimum Salary</h6>
-                    <p className="mb-0 fw-bold">
-                      ${jobVacancy.salaryMin?.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="col-md-4 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Maximum Salary</h6>
-                    <p className="mb-0 fw-bold">
-                      ${jobVacancy.salaryMax?.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Job Specifications Section */}
-            <div className="mb-4">
-              <h5
-                className="mb-3 d-flex align-items-center"
-                style={{ color: primaryColor }}
-              >
-                <i className="bi bi-list-check me-2"></i>
-                Job Specifications
-              </h5>
-
-              <div className="mb-4">
-                <h6 className="text-muted mb-3">Required Qualifications</h6>
-                <ul className="list-group">
-                  {jobVacancy.requiredQualifications.map(
-                    (qualification, index) => (
-                      <li key={index} className="list-group-item">
-                        <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                        {qualification}
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-
-              <div className="mb-4">
-                <h6 className="text-muted mb-3">Responsibilities</h6>
-                <ul className="list-group">
-                  {jobVacancy.responsibilities.map((responsibility, index) => (
-                    <li key={index} className="list-group-item">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      {responsibility}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-4">
-                <h6 className="text-muted mb-3">Skills Required</h6>
-                <ul className="list-group">
-                  {jobVacancy.skillsRequired.map((skill, index) => (
-                    <li key={index} className="list-group-item">
-                      <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Additional Information Section */}
-            <div>
-              <h5
-                className="mb-3 d-flex align-items-center"
-                style={{ color: primaryColor }}
-              >
-                <i className="bi bi-info-circle-fill me-2"></i>
-                Additional Information
-              </h5>
-
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Application Deadline</h6>
-                    <p className="mb-0 fw-bold">
-                      {formatDate(jobVacancy.applicationDeadline)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Interview Process</h6>
-                    <p className="mb-0 fw-bold">
-                      {jobVacancy.interviewProcess}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
+          </div>
+        </div>
       )}
       <Footer />
     </div>

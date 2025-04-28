@@ -81,7 +81,7 @@ const CompanyVerificationDetails = () => {
       triggerToast(res?.data?.message, "primary");
     } catch (error) {
       triggerToast(error?.response?.data?.message, "danger");
-      console.log(error)
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -119,44 +119,52 @@ const CompanyVerificationDetails = () => {
   };
 
   const getStatus = (status) => {
-    switch (status) {
+    const baseClasses = "badge bg-light fs-6";
+    const iconClasses = "me-1"; // Consistent icon spacing
+
+    switch (status?.toLowerCase()) {
       case "pending":
         return (
           <span className="fw-semibold text-secondary">
-            <span className="badge bg-light text-warning fs-6">
-              <i className="bi bi-hourglass-split"></i> Pending
+            <span className={`${baseClasses} text-warning`}>
+              <i className={`bi bi-hourglass-split ${iconClasses}`}></i>
+              Pending
             </span>
           </span>
         );
       case "accredited":
         return (
           <span className="fw-semibold text-secondary">
-            <span className="badge bg-light text-success fs-6">
-              <i className="bi bi-check-circle-fill"></i> Accredited
+            <span className={`${baseClasses} text-success`}>
+              <i className={`bi bi-check-circle-fill ${iconClasses}`}></i>
+              Accredited
             </span>
           </span>
         );
       case "declined":
         return (
           <span className="fw-semibold">
-            <span className="badge bg-light text-danger fs-6">
-              <i className="bi bi-x-circle-fill"></i> Declined
+            <span className={`${baseClasses} text-danger`}>
+              <i className={`bi bi-x-circle-fill ${iconClasses}`}></i>
+              Declined
             </span>
           </span>
         );
       case "revoked":
         return (
           <span className="fw-semibold">
-            <span className="badge bg-light text-secondary fs-6">
-              <i className="bi bi-slash-circle-fill"></i> Revoked
+            <span className={`${baseClasses} text-secondary`}>
+              <i className={`bi bi-slash-circle-fill ${iconClasses}`}></i>
+              Revoked
             </span>
           </span>
         );
       default:
         return (
           <span className="fw-semibold">
-            <span className="badge bg-light text-secondary fs-6">
-              <i className="bi bi-question-circle-fill"></i> Unknown
+            <span className={`${baseClasses} text-secondary`}>
+              <i className={`bi bi-question-circle-fill ${iconClasses}`}></i>
+              Unknown
             </span>
           </span>
         );

@@ -91,20 +91,6 @@ const ApplicationDetails = () => {
 
   return (
     <div className="container">
-      {/* <div className="d-flex my-2 justify-content-between">
-        <div className="d-flex gap-2 align-items-center">
-          <button
-            type="button"
-            className="btn btn-light text-dark"
-            onClick={() => navigate(-1)}
-          >
-            <i class="bi bi-arrow-left"></i>
-          </button>
-          <h5 className="my-2" style={{ color: "#1a4798" }}>
-            Application for {application?.jobVacancyId?.jobTitle}
-          </h5>
-        </div>
-      </div> */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center my-3">
         <div className="">
           <div className="d-flex align-items-center">
@@ -132,165 +118,22 @@ const ApplicationDetails = () => {
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-md-4">
-          <div className="card shadow-sm mb-3">
-            <div
-              className="card-header text-center fw-normal text-light"
-              style={{ backgroundColor: "#1a4798" }}
-            >
-              Overview
-            </div>
-            <div className="card-body">
-              <div className="text-center">
-                {/* Photo Section - Hidden on medium screens */}
-                <div className="d-none d-md-block">
-                  <img
-                    src={
-                      application?.jobSeekerId?.personalInformation?.photo ||
-                      default_profile
-                    }
-                    className="rounded border shadow-sm"
-                    alt="Avatar"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-
-                {/* Name Section - Visible on all screens */}
-                <h5 className="my-2 fw-bold" style={{ color: "#555555" }}>
-                  {`${application?.jobSeekerId?.personalInformation?.firstName} ${application?.jobSeekerId?.personalInformation?.lastName}`}
-                </h5>
-                <p
-                  className="text-secondary m-0"
-                  style={{ fontSize: "0.85rem" }}
-                >
-                  {application?.jobSeekerId?.skillsAndSpecializations?.specializations.map(
-                    (specialization, index) => (
-                      <span
-                        key={index}
-                        className="badge me-1"
-                        style={{
-                          backgroundColor: "rgba(26, 71, 152, 0.1)",
-                          color: "#1a4798",
-                        }}
-                      >
-                        {specialization}
-                      </span>
-                    )
-                  )}
-                </p>
-
-                <hr />
-
-                {/* Hiring Progress Section - Always Visible */}
-                <div className="p-3 border rounded bg-light">
-                  <h5 className="mb-3" style={{ color: "#1a4798" }}>
-                    Hiring Progress
-                  </h5>
-                  {getStatusProgressBar(application?.status)}
-                  <span
-                    className="fw-semibold text-muted"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    {application?.status}
-                  </span>
-                </div>
-
-                <hr className="d-none d-md-block" />
-
-                {/* Contact Section - Always Visible */}
-                {(application?.jobSeekerId?.personalInformation?.emailAddress ||
-                  application?.jobSeekerId?.personalInformation
-                    ?.mobileNumber) && (
-                  <div className="bg-light p-3 rounded border mb-4 text-start">
-                    <h5
-                      className="d-flex align-items-center gap-2 mb-3"
-                      style={{ color: "#1a4798" }}
-                    >
-                      <i className="bi bi-envelope-at-fill"></i>
-                      Contact
-                    </h5>
-
-                    {application?.jobSeekerId?.personalInformation
-                      ?.emailAddress && (
-                      <div className="d-flex align-items-center gap-3 mb-3">
-                        <div className="bg-white p-2 rounded border">
-                          <i
-                            className="bi bi-envelope-fill fs-5"
-                            style={{ color: "#1a4798" }}
-                          ></i>
-                        </div>
-                        <div>
-                          <div className="fw-semibold small text-muted">
-                            Email
-                          </div>
-                          <div className="small">
-                            {
-                              application.jobSeekerId.personalInformation
-                                .emailAddress
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {application?.jobSeekerId?.personalInformation
-                      ?.mobileNumber && (
-                      <div className="d-flex align-items-center gap-3 mb-3">
-                        <div className="bg-white p-2 rounded border">
-                          <i
-                            className="bi bi-phone-fill fs-5"
-                            style={{ color: "#1a4798" }}
-                          ></i>
-                        </div>
-                        <div>
-                          <div className="fw-semibold small text-muted">
-                            Mobile No.
-                          </div>
-                          <div className="small">
-                            {
-                              application.jobSeekerId.personalInformation
-                                .mobileNumber
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {application?.jobSeekerId?.personalInformation
-                      ?.telephoneNumber && (
-                      <div className="d-flex align-items-center gap-3">
-                        <div className="bg-white p-2 rounded border">
-                          <i
-                            className="bi bi-telephone-fill fs-5"
-                            style={{ color: "#1a4798" }}
-                          ></i>
-                        </div>
-                        <div>
-                          <div className="fw-semibold small text-muted">
-                            Telephone No.
-                          </div>
-                          <div className="small">
-                            {
-                              application.jobSeekerId.personalInformation
-                                .telephoneNumber
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+      <div>
+        {/* Hiring Progress Section - Always Visible */}
+        <div className="p-3 border rounded bg-light mb-3">
+          <h5 className="mb-3 text-center" style={{ color: "#1a4798" }}>
+            Hiring Progress
+          </h5>
+          {getStatusProgressBar(application?.status)}
+          <span
+            className="text-center mt-1"
+            style={{ fontSize: "0.85rem", display: "block", color: "#1a4798" }}
+          >
+            {application?.status}
+          </span>
         </div>
 
-        <div className="col-md-8">
+        <div className="">
           <div className="card shadow-sm">
             <div className="card-header">
               <ul className="nav nav-pills card-header-pills">

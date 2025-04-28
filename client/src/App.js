@@ -206,7 +206,13 @@ const AppRoutes = () => {
         <Route path="company-reports" element={<CompanyReports />} />
         <Route
           path="user-management/system-users"
-          element={<UserManagementPage />}
+          element={
+            user?.accountData?.role === "admin" ? (
+              <UserManagementPage />
+            ) : (
+              <Navigate to="/admin/dashboard" />
+            )
+          }
         />
         <Route
           path="user-management/regular-users"

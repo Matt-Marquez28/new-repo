@@ -197,7 +197,7 @@ const JobVacancyVerification = () => {
             </div>
           ) : (
             <div className="table-responsive">
-              <table className="table table-hover table-striped align-middle mb-0">
+              <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
                     <th style={{ width: "25%" }} className="fw-normal">
@@ -224,60 +224,151 @@ const JobVacancyVerification = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredJobVacancies.map((jobVacancy) => (
-                    <tr key={jobVacancy._id}>
-                      <td>
-                        <h6 className="mb-1 text-primary fw-semibold">
-                          {jobVacancy?.jobTitle || "N/A"}
-                        </h6>
-                        <p className="text-muted small mb-0">
-                          {jobVacancy.description?.substring(0, 60) ||
-                            "No description"}
-                          ...
-                        </p>
-                      </td>
-                      <td>
-                        <span className="">
-                          {jobVacancy?.companyId?.companyInformation
-                            ?.businessName || "N/A"}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-muted">
-                          {new Date(jobVacancy.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-muted">
-                          {jobVacancy?.vacancies || "N/A"}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`badge text-white ${getStatusBadgeClass(
-                            jobVacancy.publicationStatus
-                          )}`}
-                        >
-                          {jobVacancy.publicationStatus}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => viewDetails(jobVacancy._id)}
-                        >
-                          <i className="bi bi-eye"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredJobVacancies.map((jobVacancy) => {
+                    // Find matching status icon from statsData
+                    const statusConfig = statsData.find(
+                      (stat) =>
+                        stat.title.toLowerCase() ===
+                        jobVacancy.publicationStatus.toLowerCase()
+                    );
+
+                    return (
+                      <tr key={jobVacancy._id}>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                              <i className="bi bi-briefcase text-primary"></i>
+                            </div>
+                            <div>
+                              <h6 className="mb-1 text-primary fw-semibold">
+                                {jobVacancy?.jobTitle || "N/A"}
+                              </h6>
+                              <p className="text-muted small mb-0 d-none d-md-inline-block">
+                                {jobVacancy.description?.substring(0, 60) ||
+                                  "No description"}
+                                ...
+                              </p>
+                              <div className="mt-1">
+                                {jobVacancy?.jobType && (
+                                  <span className="badge bg-info me-1">
+                                    {jobVacancy.jobType}
+                                  </span>
+                                )}
+                                {jobVacancy?.jobCategory && (
+                                  <span className="badge bg-secondary">
+                                    {jobVacancy.jobCategory}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="bg-warning bg-opacity-10 p-2 rounded me-3">
+                              <i className="bi bi-building text-warning"></i>
+                            </div>
+                            <div>
+                              <span className="fw-medium">
+                                {jobVacancy?.companyId?.companyInformation
+                                  ?.businessName || "N/A"}
+                              </span>
+                              {jobVacancy?.companyId?.companyInformation
+                                ?.industry && (
+                                <p className="text-muted small mb-0">
+                                  {
+                                    jobVacancy.companyId.companyInformation
+                                      .industry
+                                  }
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="bg-success bg-opacity-10 p-2 rounded me-3">
+                              <i className="bi bi-calendar-check text-success"></i>
+                            </div>
+                            <div>
+                              <span className="text-muted">
+                                {new Date(
+                                  jobVacancy.createdAt
+                                ).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </span>
+                              {jobVacancy?.deadline && (
+                                <p className="text-danger small mb-0">
+                                  <i className="bi bi-clock me-1"></i>
+                                  {new Date(
+                                    jobVacancy.deadline
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="bg-info bg-opacity-10 p-2 rounded me-3">
+                              <i className="bi bi-people text-info"></i>
+                            </div>
+                            <div>
+                              <span className="fw-medium">
+                                {jobVacancy?.vacancies || "N/A"}
+                              </span>
+                              {jobVacancy?.applications && (
+                                <p className="text-muted small mb-0">
+                                  {jobVacancy.applications.length} applied
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div
+                              className={`bg-${
+                                statusConfig?.color || "secondary"
+                              } bg-opacity-10 p-2 rounded me-3`}
+                            >
+                              <i
+                                className={`bi ${
+                                  statusConfig?.icon || "bi-circle-fill"
+                                } text-${statusConfig?.color || "secondary"}`}
+                              ></i>
+                            </div>
+                            <div>
+                              <span
+                                className={`badge bg-${
+                                  statusConfig?.color || "secondary"
+                                }`}
+                              >
+                                {jobVacancy.publicationStatus}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          <div className="d-flex justify-content-center">
+                            <button
+                              className="btn btn-sm btn-outline-primary me-2"
+                              onClick={() => viewDetails(jobVacancy._id)}
+                            >
+                              <i className="bi bi-eye me-1"></i> View
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

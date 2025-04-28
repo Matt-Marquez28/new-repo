@@ -1,8 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../shared-ui/Footer";
+import { useUser } from "../../contexts/user.context";
 
 const UserOption = () => {
+  const { user } = useUser();
   const navigate = useNavigate();
 
   return (
@@ -54,11 +56,23 @@ const UserOption = () => {
               </p>
               <button
                 className="btn rounded px-4 text-white"
-                style={{ backgroundColor: "#1a4798" }}
-                onClick={() => navigate("/admin/user-management/system-users")}
+                style={{
+                  backgroundColor:
+                    user?.role === "staff" ? "#6c757d" : "#1a4798",
+                  cursor: user?.role === "staff" ? "not-allowed" : "pointer",
+                }}
+                onClick={() => {
+                  if (user?.role !== "staff") {
+                    navigate("/admin/user-management/system-users");
+                  }
+                }}
+                disabled={user?.accountData?.role === "staff"}
               >
                 <i className="bi bi-gear-fill me-2"></i> Manage Administrator /
                 Staff Accounts
+                {user?.accountData?.role === "staff" && (
+                  <span className="ms-2">(Not Authorized)</span>
+                )}
               </button>
             </div>
           </div>

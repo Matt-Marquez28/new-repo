@@ -374,7 +374,7 @@ const JobFairAdminPage = () => {
             </div>
           ) : (
             <div className="table-responsive">
-              <table className="table table-hover table-striped align-middle mb-0">
+              <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
                     <th style={{ width: "25%" }} className="fw-normal">
@@ -412,7 +412,7 @@ const JobFairAdminPage = () => {
                             <h6 className="mb-1 text-primary fw-semibold">
                               {event.title}
                             </h6>
-                            <p className="text-muted small mb-0">
+                            <p className="text-muted small mb-0 d-none d-md-inline-block">
                               {event.description?.substring(0, 60) ||
                                 "No description"}
                               ...
